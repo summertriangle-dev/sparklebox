@@ -1,0 +1,36 @@
+wanted_card_things() {
+    case "$1" in
+    card_bg_*)
+        return 0
+        ;;
+    card_*_xl*)
+        return 0
+        ;;
+    *)
+        return 1
+        ;;
+    esac
+}
+
+get_bases_only() {
+    case "$1" in
+    chara_*_base.*)
+        return 0
+        ;;
+    *)
+        return 1
+        ;;
+    esac
+}
+
+want "card"; filter_with "wanted_card_things"
+
+flush
+
+want "chara"; filter_with "get_bases_only"
+
+flush
+
+want "cardsm master story"; filter_with "any"
+
+flush

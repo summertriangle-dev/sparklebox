@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% if is_dev %}
+    <link rel="stylesheet/less" type="text/css" href="{{ handler.static_url("css/main.less") }}" />
+    <script type="text/javascript" src="{{ handler.static_url("js/less.js") }}"></script>
+    {% else %}
+    <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
+    {% end %}
+    <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
+    <script type="text/javascript" src="{{ handler.static_url("js/skills.js") }}"></script>
+</head>
+
+<body>
+    <div class="container">
+        <table class="stats_table control_table">
+            <tr class="toggles_row control_row">
+                <th>Show lead skills targeting:</th>
+                <td onclick="toggle_kill_css(this)" data-kill-class="ca_all" class="life" title="All variants">X</td>
+                <th class="life_ax" title="All variants">All</th>
+                <td onclick="toggle_kill_css(this)" data-kill-class="ca_cute" class="Cute">X</td>
+                <th class="kizuna_ax">Cute</th>
+                <td onclick="toggle_kill_css(this)" data-kill-class="ca_passion" class="Passion">X</td>
+                <th class="vocal_ax">Passion</th>
+                <td onclick="toggle_kill_css(this)" data-kill-class="ca_cool" class="Cool">X</td>
+                <th class="vocal_ax">Cool</th>
+            </tr>
+        </table>
+        <table class="stats_table control_table">
+            <tr class="toggles_row control_row">
+                <th>Show lead skills affecting:</th>
+                <td onclick="toggle_kill_css(this)" data-kill-class="ce_vocal" class="vocal">X</td>
+                <th class="kizuna_ax">Vocal</th>
+                <td onclick="toggle_kill_css(this)" data-kill-class="ce_visual" class="visual">X</td>
+                <th class="vocal_ax">Visual</th>
+                <td onclick="toggle_kill_css(this)" data-kill-class="ce_dance" class="dance">X</td>
+                <th class="vocal_ax">Dance</th>
+                <td onclick="toggle_kill_css(this)" data-kill-class="ce_anyappeal" class="kizuna">X</td>
+                <th class="vocal_ax">All appeals</th>
+                <td onclick="toggle_kill_css(this)" data-kill-class="ce_life" class="life">X</td>
+                <th class="life_ax" title="All variants">Life</th>
+                <td onclick="toggle_kill_css(this)" data-kill-class="ce_skill" class="max_level">X</td>
+                <th class="vocal_ax">Skill Prob.</th>
+            </tr>
+        </table>
+        
+        <table class="table" style="width:100%">
+            <tr class="control_row">
+                <th colspan="2"></th>
+                <th>{{ _("Skill Name") }}</th>
+                <th>{{ _("Effect") }}</th>
+            </tr>
+        {% for chain in sorted(cards, key=lambda x: cards[x][0].id) %}
+            {% set card = cards[chain][0] %}
+            {% set chain = cards[chain] %}
+            
+            {% if card.lead_skill %}
+            <tr class="{{ enums.lskill_effective_target(card.lead_skill.target_attribute) }}
+                       {{ enums.lskill_effective_param(card.lead_skill.target_param) }}">
+                <td class="{{ enums.attribute(card.attribute) }}" style="width:1%">
+                    <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head"><img src="{{ image_host }}/icon/{{ card.id }}.png"></a>
+                </td>
+                <td class="{{ enums.attribute(card.attribute) }}">
+                    <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{{ tle.translate_name(card.name_only) }}</a><br>
+                        {% if card.title %}({% raw tlable(card.title) %}){% end %}
+                </td>
+                <td>{% raw tlable(card.lead_skill.name) %}</td>
+                <td>{% raw starlight.en.describe_lead_skill_html(card.lead_skill) %}</td>
+            </tr>
+            {% end %}
+        {% end %}
+        </table>
+    </div>
+    
+    {% include footer.html %}
+    <script>tlinject_activate()</script>
+</body>
+</html>

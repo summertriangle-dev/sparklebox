@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% if is_dev %}
+    <link rel="stylesheet/less" type="text/css" href="{{ handler.static_url("css/main.less") }}" />
+    <script type="text/javascript" src="{{ handler.static_url("js/less.js") }}"></script>
+    {% else %}
+    <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
+    {% end %}
+    <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
+    <script type="text/javascript" src="{{ handler.static_url("js/level.js") }}"></script>
+</head>
+
+<body>
+    <div class="container">
+        {% include chara_partial.html %}
+    </div>
+    <div class="container tight">
+        {% for chain in sorted(filter(lambda x: cards[x][0].chara_id == chara_id, cards), key=lambda x: cards[x][0].id) %}
+            {% set card = cards[chain][0] %}
+            {% set chain = cards[chain] %}
+            {% include card_partial.html %}
+        {% end %}
+    </div>
+    {% include footer.html %}
+    
+    <script>tlinject_activate()</script>
+</body>
+</html>

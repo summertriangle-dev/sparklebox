@@ -1,0 +1,546 @@
+* {
+  -webkit-font-smoothing: antialiased;
+  -webkit-font-size-adjust: none;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+a {
+  color: #56b8e0;
+}
+a:visited {
+  color: #56b8e0;
+}
+body {
+  background-color: #111111;
+  color: #eeeeee;
+}
+@media screen and (max-width: 600px) {
+  body {
+    margin: 0;
+  }
+}
+footer {
+  text-align: center;
+  padding: 10px;
+}
+.container {
+  margin: 0 auto;
+  max-width: 1280px;
+}
+.container.tight {
+  font-size: 0;
+}
+/* main.html */
+#search {
+  border: none;
+  width: 100%;
+  background-color: #444;
+  color: white;
+  font-size: 24px;
+  padding: 10px 20px;
+}
+#suggestions {
+  margin: 15px 0;
+}
+#suggestions > a {
+  display: block;
+  background-color: #333;
+  color: white;
+  font-size: 18px;
+  padding: 10px 20px;
+}
+#suggestions .highlight {
+  background-color: yellow;
+  color: #000;
+}
+.welcome_spec {
+  font-size: 0;
+  max-width: 332px;
+  margin: 0 auto;
+  position: relative;
+}
+.welcome_spec .riinaface {
+  height: 128px;
+  width: 128px;
+  position: absolute;
+  top: 46px;
+  left: 61px;
+}
+/* chara_partial */
+div.stdcon {
+  /*padding:8px 16px*/
+  position: relative;
+}
+.chara_header {
+  padding: 10px 20px;
+  background-color: #2b2b2b;
+}
+.chara_header .name_slab {
+  font-size: 24px;
+  font-weight: normal;
+  color: white;
+  margin-bottom: 10px;
+  text-shadow: 1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000, 0px 0px 15px #000000;
+}
+.chara_header .name_slab .english {
+  font-weight: normal;
+  font-style: italic;
+}
+.chara_header .infor_slab {
+  color: white;
+  text-shadow: 1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000;
+}
+.chara_header .infor_slab a {
+  color: #56b8e0;
+}
+.chara_header .pose_sprite_container {
+  background: center bottom no-repeat;
+  width: 100%;
+  height: 100%;
+}
+.table {
+  background-color: #fff;
+  color: black;
+  font-size: 16px;
+  border-collapse: collapse;
+}
+.table td {
+  border: 1px solid #ddd;
+  padding: 3px 6px;
+}
+.table tr:nth-child(even) {
+  background-color: #eee;
+}
+td.vocal,
+td.vocal span {
+  background-color: #ed5469;
+  color: #ffffff;
+  font-weight: normal;
+}
+td.dance,
+td.dance span {
+  background-color: #56b8e0;
+  color: #ffffff;
+  font-weight: normal;
+}
+td.visual,
+td.visual span {
+  background-color: #ff9a33;
+  color: #663300;
+  font-weight: normal;
+}
+td.life,
+td.life span {
+  background-color: #32d48a;
+  color: #07331f;
+  font-weight: normal;
+}
+td.max_level,
+td.max_level span {
+  background-color: #d3cb53;
+  color: #4c480e;
+  font-weight: normal;
+}
+td.kizuna,
+td.kizuna span {
+  background-color: #fa7add;
+  color: #ffffff;
+  font-weight: normal;
+}
+td.Cute,
+td.Cute span,
+td.Cute a {
+  border-color: #cc035d;
+  background-color: #fb0774;
+  font-weight: normal;
+  color: white;
+}
+td.Cool,
+td.Cool span,
+td.Cool a {
+  border-color: #0452e7;
+  background-color: #236dfb;
+  font-weight: normal;
+  color: white;
+}
+td.Passion,
+td.Passion span,
+td.Passion a {
+  border-color: #fdbd58;
+  background-color: #fca926;
+  font-weight: normal;
+  color: black;
+}
+.vocal_ax {
+  color: #e82641;
+}
+.dance_ax {
+  color: #2ba6d8;
+}
+.visual_ax {
+  color: #ff8100;
+}
+.kizuna_ax {
+  color: #f849d0;
+}
+.max_level_ax {
+  color: #c2b831;
+}
+.life_ax {
+  color: #25ae6f;
+}
+/* card_partial */
+.carcon {
+  /*width:@max_page_width / 2;*/
+  display: -webkit-flex;
+  display: flex;
+  background-color: white;
+  margin-bottom: 10px;
+}
+@media screen and (max-width: 600px) {
+  .carcon {
+    -webkit-flex-direction: column;
+    flex-direction: column;
+  }
+}
+.carcon .card_left {
+  display: inline-block;
+  min-width: 272px;
+  background-color: black;
+  text-align: center;
+  font-size: 0;
+}
+@media screen and (max-width: 600px) {
+  .carcon .card_left {
+    width: 100%;
+  }
+}
+.carcon .card_left img {
+  height: 340px;
+  width: 272px;
+}
+.carcon .card_left .card_image_offlink {
+  background-color: #373737;
+  text-align: left;
+  margin: 0;
+  padding: 8px 8px;
+}
+.carcon .card_left .card_image_offlink:nth-child(3) {
+  background-color: #2b2b2b;
+}
+.carcon .card_left .card_image_offlink:nth-child(4) {
+  background-color: #1e1e1e;
+}
+.carcon .card_left .card_image_offlink a {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 12px;
+}
+.carcon .card_left .card_image_offlink a:hover {
+  text-decoration: underline;
+}
+.carcon .card_right {
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  vertical-align: top;
+  color: #222;
+  /* this entire section is basically a hack to keep things aligned properly 
+     * chances are if you touch something here it will break, so don't do it */
+}
+.carcon .card_right > * {
+  font-size: 16px;
+}
+@media screen and (min-width: 769px) {
+  .carcon .card_right .name_tag {
+    height: 40px;
+  }
+  .carcon .card_right .name_tag .item {
+    line-height: 40px;
+    font-size: 20px;
+    padding: 0 10px 0 10px;
+  }
+  .carcon .card_right .name_tag .ext {
+    border-top: 20px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid transparent;
+  }
+}
+@media screen and (max-width: 768px) {
+  .carcon .card_right .name_tag {
+    height: 30px;
+  }
+  .carcon .card_right .name_tag .item {
+    line-height: 30px;
+    font-size: 15px;
+    padding: 0 7.5px 0 7.5px;
+  }
+  .carcon .card_right .name_tag .ext {
+    border-top: 15px solid transparent;
+    border-left: 7.5px solid transparent;
+    border-right: 7.5px solid transparent;
+    border-bottom: 15px solid transparent;
+  }
+}
+.carcon .card_right .name_tag.force_small {
+  height: 30px;
+}
+.carcon .card_right .name_tag.force_small .item {
+  line-height: 30px;
+  font-size: 15px;
+  padding: 0 7.5px 0 7.5px;
+}
+.carcon .card_right .name_tag.force_small .ext {
+  padding: 0;
+  border-top: 15px solid transparent;
+  border-left: 7.5px solid transparent;
+  border-right: 7.5px solid transparent;
+  border-bottom: 15px solid transparent;
+}
+.carcon .card_right .name_tag {
+  color: white;
+  font-size: 0;
+}
+.carcon .card_right .name_tag .item {
+  display: inline-block;
+  vertical-align: middle;
+}
+.carcon .card_right .name_tag .name::after {
+  /* force all-latin text to align as jap text */
+  content: "あ";
+  color: transparent;
+}
+.carcon .card_right .name_tag .ext {
+  vertical-align: middle;
+  padding: 0;
+}
+.carcon .card_right .name_tag.Cute {
+  background-color: #fb0774;
+}
+.carcon .card_right .name_tag.Cute .title {
+  background-color: #cc035d;
+}
+.carcon .card_right .name_tag.Cute .ext {
+  border-top-color: #cc035d;
+  border-left-color: #cc035d;
+}
+.carcon .card_right .name_tag.Cool {
+  background-color: #236dfb;
+}
+.carcon .card_right .name_tag.Cool .title {
+  background-color: #0452e7;
+}
+.carcon .card_right .name_tag.Cool .ext {
+  border-top-color: #0452e7;
+  border-left-color: #0452e7;
+}
+.carcon .card_right .name_tag.Passion {
+  color: #222;
+  background-color: #fca926;
+}
+.carcon .card_right .name_tag.Passion .title {
+  background-color: #fdbd58;
+}
+.carcon .card_right .name_tag.Passion .ext {
+  border-top-color: #fdbd58;
+  border-left-color: #fdbd58;
+}
+.carcon .card_right .spread_view {
+  height: 350px;
+  width: 100%;
+  background-position: center center;
+  background-size: cover;
+}
+.carcon .card_right .evolution_setter {
+  font-size: 80%;
+  opacity: 0.7;
+}
+.carcon .card_right .evolution_setter.selected {
+  opacity: 1.0;
+}
+.carcon .card_right > .content {
+  padding: 0 5px;
+}
+.carcon .card_right > .content.tight {
+  padding: 0;
+}
+.carcon .card_right td {
+  padding: 3px 6px;
+}
+.carcon .card_right th {
+  font-size: 70%;
+  text-transform: uppercase;
+}
+.carcon .card_right .stats.box {
+  width: 100%;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  margin: 0;
+  background-color: #f2f2f2;
+}
+.carcon .card_right .stats_table {
+  text-align: center;
+}
+span.let,
+span.var {
+  color: green;
+}
+span.var {
+  font-weight: bold;
+}
+.box {
+  margin: 0 5px 10px;
+  display: inline-block;
+  border: 1px solid;
+  vertical-align: top;
+}
+.box.col2 {
+  /* don't know why but it works 
+     * TODO replace it with something sane */
+  width: calc(50% - 13px);
+}
+.box > .header {
+  color: white;
+  height: 24px;
+  font-size: 0;
+}
+.box > .header .item {
+  display: inline-block;
+  line-height: 24px;
+  font-size: 16px;
+  padding: 0 4px 0 4px;
+  vertical-align: middle;
+}
+.box > .header .right::after {
+  /* force all-latin text to layout as jap text */
+  content: "あ";
+  color: transparent;
+}
+.box > .header .ext {
+  border-top: 12px solid transparent;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 12px solid transparent;
+  vertical-align: middle;
+  padding: 0;
+}
+.box.Cute {
+  border-color: #cc035d;
+}
+.box.Cute > .header {
+  background-color: #fb0774;
+}
+.box.Cute > .header .left {
+  background-color: #cc035d;
+}
+.box.Cute > .header .ext {
+  border-top-color: #cc035d;
+  border-left-color: #cc035d;
+}
+.box.Cool {
+  border-color: #0452e7;
+}
+.box.Cool > .header {
+  background-color: #236dfb;
+}
+.box.Cool > .header .left {
+  background-color: #0452e7;
+}
+.box.Cool > .header .ext {
+  border-top-color: #0452e7;
+  border-left-color: #0452e7;
+}
+.box.Passion {
+  border-color: #fdbd58;
+}
+.box.Passion > .header {
+  color: #222;
+  background-color: #fca926;
+}
+.box.Passion > .header .left {
+  background-color: #fdbd58;
+}
+.box.Passion > .header .ext {
+  border-top-color: #fdbd58;
+  border-left-color: #fdbd58;
+}
+.box > .content {
+  padding: 5px;
+}
+.box > .content > * {
+  vertical-align: middle;
+}
+.tlable:hover {
+  background-color: #666!important;
+  color: white!important;
+}
+.stepper {
+  font-size: 0;
+  border: 1px solid green;
+  display: inline-block;
+  line-height: normal;
+}
+.stepper input[type="text"] {
+  padding: 0;
+  margin: 0;
+  border: none;
+  width: 50px;
+  line-height: 18px;
+  font-size: 13px;
+  text-align: center;
+  vertical-align: top;
+}
+.stepper button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  min-width: 26px;
+  line-height: 18px;
+  font-size: 16px;
+  font-weight: bold;
+  background: green;
+  color: white;
+}
+.control_row {
+  background-color: #444;
+}
+.control_table .control_row,
+.control_table {
+  background-color: #333;
+  color: white;
+}
+.control_row th {
+  color: white;
+  text-align: left;
+  padding: 3px 6px;
+  text-transform: uppercase;
+  font-size: 80%;
+}
+.toggles_row td {
+  min-width: 30px;
+  text-align: center;
+}
+/* image switcher */
+.rel {
+  position: relative;
+}
+.hang_inside {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+.spread_view .hang_inside {
+  right: auto;
+  left: 10px;
+}
+.image_switch {
+  padding: 3px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 2px;
+  background-color: rgba(0, 0, 0, 0.75);
+  font-size: 13px;
+  color: white;
+  text-decoration: none;
+}

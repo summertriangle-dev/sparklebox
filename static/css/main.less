@@ -1,0 +1,592 @@
+@main_bg: #111;
+@main_text: #eee;
+
+@standard_inset_h: 20px;
+@standard_inset_v: 10px;
+
+@max_page_width: 1280px;
+
+@cute_colour: rgb(251, 7, 116);
+@cool_colour: rgb(35, 109, 251);
+@passion_colour: rgb(252, 169, 38);
+
+@vocal_colour: rgb(237, 84, 105);
+@dance_colour: rgb(86, 184, 224);
+@visual_colour: rgb(255, 154, 51);
+@level_colour: #d3cb53;
+@life_colour: #32d48a;
+@kizuna_colour: #fa7add;
+
+@card_img_height: 340px;
+@card_img_width: 272px;
+
+@name_tag_height: 40px;
+@name_tag_pad: @name_tag_height / 4;
+@name_tag_height_sm: 30px;
+@name_tag_pad_sm: @name_tag_height_sm / 4;
+
+@box_header_height: 24px;
+@box_header_pad: 4px;
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -webkit-font-size-adjust:none;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+a {
+  color:@dance_colour;
+}
+a:visited {
+  color:@dance_colour;
+}
+  
+body {
+  @media screen and (max-width:600px) {
+    margin:0;
+  }
+  background-color:@main_bg;
+  color:@main_text;
+}
+  
+footer {
+  text-align:center;
+  padding:10px;
+}
+  
+.container {
+  margin:0 auto;
+  max-width:@max_page_width;
+  
+  &.tight {
+    font-size:0;
+  }
+}
+
+/* main.html */
+
+#search {
+  border:none;
+  width:100%;
+  background-color:#444;
+  color:white;
+  font-size:24px;
+  padding: 10px 20px;
+}
+
+#suggestions {
+  margin: 15px 0; 
+
+  & > a {
+    display:block; background-color:#333; color:white; font-size:18px; padding: @standard_inset_v @standard_inset_h;
+  }
+  
+  .highlight {
+    background-color:yellow; color:#000;
+  }
+}
+
+.welcome_spec {
+  font-size:0;
+  max-width:332px;
+  margin:0 auto;
+  position:relative;
+  
+  .riinaface {
+    height:128px;
+    width:128px;
+    position:absolute;
+    top:46px;
+    left:61px;
+  }
+}
+
+/* chara_partial */
+
+div.stdcon {
+  /*padding:8px 16px*/ position:relative;
+}
+
+.chara_header {
+  padding:@standard_inset_v @standard_inset_h;
+  background-color:darken(#444, 10%);
+  
+  .name_slab {
+    font-size:24px; 
+    font-weight:normal; 
+    color:white;
+    margin-bottom:10px;
+    
+    text-shadow:1px 0px #000, -1px 0px #000, 0px 1px #000, 0px -1px #000,
+          0px 0px 15px #000;
+    
+    .english {
+      font-weight:normal; font-style: italic;
+    }
+  }
+  
+  .infor_slab {
+    color:white;
+    text-shadow:1px 0px #000, -1px 0px #000, 0px 1px #000, 0px -1px #000;
+    
+    a {
+      color:#56b8e0;
+    }
+  }
+  
+  .pose_sprite_container {
+    background:center bottom no-repeat;
+    width:100%; height:100%;
+  }
+}
+
+.table {
+  background-color:#fff; color:black;
+  font-size:16px;
+  border-collapse:collapse;
+  
+  td {
+    border:1px solid #ddd;
+    padding:3px 6px;
+  }
+  tr:nth-child(even) {
+    background-color:#eee;
+  }
+}
+
+td {
+  &.vocal, &.vocal span {
+    background-color:@vocal_colour;
+    color:lighten(saturate(@vocal_colour, 10%), 40%);
+    font-weight:normal;
+  }
+  &.dance, &.dance span {
+    background-color:@dance_colour;
+    color:lighten(saturate(@dance_colour, 10%), 40%);
+    font-weight:normal;
+  }
+  &.visual, &.visual span {
+    background-color:@visual_colour;
+    color:darken(saturate(@visual_colour, 10%), 40%);
+    font-weight:normal;
+  }
+  &.life, &.life span {
+    background-color:@life_colour;
+    color:darken(saturate(@life_colour, 10%), 40%);
+    font-weight:normal;
+  }
+  &.max_level, &.max_level span {
+    background-color:@level_colour;
+    color:darken(saturate(@level_colour, 10%), 40%);
+    font-weight:normal;
+  }
+  &.kizuna, &.kizuna span {
+    background-color:@kizuna_colour;
+    color:lighten(saturate(@kizuna_colour, 10%), 40%);
+    font-weight:normal;
+  }
+  &.Cute, &.Cute span, &.Cute a {
+    border-color:darken(@cute_colour, 10%);
+    background-color: @cute_colour;
+    font-weight:normal;
+    color:white;
+  }
+  &.Cool, &.Cool span, &.Cool a  {
+    border-color:darken(@cool_colour, 10%);
+    background-color: @cool_colour;
+    font-weight:normal;
+    color:white;
+  }
+  &.Passion, &.Passion span, &.Passion a  {
+    border-color:lighten(@passion_colour, 10%);
+    background-color: @passion_colour;
+    font-weight:normal;
+    color:black;
+  }
+}
+
+.vocal_ax { color:darken(@vocal_colour, 10%); }
+.dance_ax { color:darken(@dance_colour, 10%); }
+.visual_ax { color:darken(@visual_colour, 10%); }
+.kizuna_ax { color:darken(@kizuna_colour, 10%); }
+.max_level_ax { color:darken(@level_colour, 10%); }
+.life_ax { color:darken(@life_colour, 10%); }
+
+/* card_partial */
+
+.carcon {
+  /*width:@max_page_width / 2;*/
+  display:-webkit-flex;
+  display:flex;
+  background-color: white;
+  margin-bottom:10px;
+  
+  @media screen and (max-width:600px) {
+    -webkit-flex-direction:column;
+    flex-direction:column;
+  }
+  
+  .card_left {
+    display:inline-block;
+    min-width:@card_img_width;
+    background-color:black;
+    text-align:center;
+    font-size:0;
+    
+    @media screen and (max-width:600px) {
+      width:100%;
+    }
+    
+    img {
+      height:@card_img_height;
+      width:@card_img_width;
+    }
+    
+    .card_image_offlink {
+      background-color:darken(#444, 5%);
+      text-align:left;
+      margin:0;
+      padding:8px 8px;
+      
+      &:nth-child(3) {
+        background-color:darken(#444, 10%); 
+      }
+      
+      &:nth-child(4) {
+        background-color:darken(#444, 15%); 
+      }
+      
+      a {
+        color:white;
+        font-weight:bold;
+        text-decoration:none;
+        font-size:12px;
+        
+        &:hover {
+          text-decoration:underline;
+        }
+      }
+    }
+  }
+  
+  .card_right {
+    -webkit-flex-grow:1;
+    flex-grow:1;
+    vertical-align:top;
+    color:#222;
+    
+    & > * {
+      font-size:16px;
+    }
+    
+    /* this entire section is basically a hack to keep things aligned properly 
+     * chances are if you touch something here it will break, so don't do it */
+    
+    @media screen and (min-width:769px) {
+      .name_tag {
+        height:@name_tag_height;
+        
+        .item {
+          line-height: @name_tag_height;
+          font-size: @name_tag_height - (@name_tag_pad * 2);
+          padding:0 @name_tag_pad 0 @name_tag_pad;
+        }
+        .ext {
+          border-top:@name_tag_height / 2 solid transparent;
+          border-left:@name_tag_height / 4 solid transparent;
+          border-right:@name_tag_height / 4 solid transparent;
+          border-bottom:(@name_tag_height / 2) solid transparent;
+        }
+      }
+    }
+    
+    @media screen and (max-width:768px) {
+      .name_tag {
+        height:@name_tag_height_sm;
+        
+        .item {
+          line-height: @name_tag_height_sm;
+          font-size: @name_tag_height_sm - (@name_tag_pad_sm * 2);
+          padding:0 @name_tag_pad_sm 0 @name_tag_pad_sm;
+        }
+        .ext {
+          border-top:@name_tag_height_sm / 2 solid transparent;
+          border-left:@name_tag_height_sm / 4 solid transparent;
+          border-right:@name_tag_height_sm / 4 solid transparent;
+          border-bottom:(@name_tag_height_sm / 2) solid transparent;
+        }
+      }
+    }
+    
+    .name_tag.force_small {
+      height:@name_tag_height_sm;
+      
+      .item {
+        line-height: @name_tag_height_sm;
+        font-size: @name_tag_height_sm - (@name_tag_pad_sm * 2);
+        padding:0 @name_tag_pad_sm 0 @name_tag_pad_sm;
+      }
+      .ext {
+        padding:0;
+        border-top:@name_tag_height_sm / 2 solid transparent;
+        border-left:@name_tag_height_sm / 4 solid transparent;
+        border-right:@name_tag_height_sm / 4 solid transparent;
+        border-bottom:(@name_tag_height_sm / 2) solid transparent;
+      }
+    }
+    
+    .name_tag {
+      color:white;
+      font-size:0;
+      
+      .item {
+        display:inline-block;
+        vertical-align:middle;
+      }
+      
+      .name::after {
+        /* force all-latin text to align as jap text */
+        content:"あ";
+        color:transparent;
+      }
+      
+      .ext {
+        vertical-align:middle;
+        padding:0;
+      }
+      
+      &.Cute {
+        background-color: @cute_colour;
+        .title { background-color: darken(@cute_colour, 10%); }
+        .ext { border-top-color: darken(@cute_colour, 10%); border-left-color: darken(@cute_colour, 10%); }
+      }
+      &.Cool {
+        background-color: @cool_colour;
+        .title { background-color: darken(@cool_colour, 10%); }
+        .ext { border-top-color: darken(@cool_colour, 10%); border-left-color: darken(@cool_colour, 10%); }
+      }
+      &.Passion {
+        color:#222;
+        background-color: @passion_colour;
+        .title { background-color: lighten(@passion_colour, 10%); }
+        .ext { border-top-color: lighten(@passion_colour, 10%); border-left-color: lighten(@passion_colour, 10%); }
+      }
+    }
+    
+    .spread_view {
+      height:350px;
+      width:100%;
+      background-position:center center;
+      background-size:cover;
+    }
+    
+    .evolution_setter {
+      font-size:80%;
+      opacity:0.7;
+
+      &.selected {
+        opacity:1.0;
+      }
+    }
+    
+    & > .content {
+      padding:0 5px;
+      
+      &.tight {
+        padding:0;
+      }
+    }
+    
+    td {
+      padding:3px 6px;
+    }
+    
+    th {
+      font-size:70%;
+      text-transform:uppercase;
+    }
+    
+    .stats.box {
+      width:100%;
+      border-left:0;
+      border-right:0;
+      border-top:0;
+      margin:0;
+      background-color:darken(white, 5%);
+    }
+    
+    .stats_table {
+      text-align:center;
+    }
+  }
+}
+
+span.let, span.var {
+  color:green;
+}
+span.var {
+  font-weight:bold;
+}
+
+.box {
+  margin:0 5px 10px;
+  display:inline-block;
+  border: 1px solid;
+  vertical-align:top;
+  
+  &.col2 {
+    /* don't know why but it works 
+     * TODO replace it with something sane */
+    width:~"calc(50% - 13px)";
+  }
+  
+  & > .header {
+    color:white;
+    height:@box_header_height;
+    font-size:0;
+    
+    .item {
+      display:inline-block;
+      line-height: @box_header_height;
+      font-size: @box_header_height - (@box_header_pad * 2);
+      padding:0 @box_header_pad 0 @box_header_pad;
+      vertical-align:middle;
+    }
+
+    .right::after {
+      /* force all-latin text to layout as jap text */
+      content:"あ";
+      color:transparent;
+    }
+    
+    .ext {
+      border-top:@box_header_height / 2 solid transparent;
+      border-left:@box_header_height / 4 solid transparent;
+      border-right:@box_header_height / 4 solid transparent;
+      border-bottom:(@box_header_height / 2) solid transparent;
+      vertical-align:middle;
+      padding:0;
+    }
+  }
+  
+  &.Cute {
+    border-color:darken(@cute_colour, 10%);
+    
+    & > .header {
+      background-color: @cute_colour;
+      .left { background-color: darken(@cute_colour, 10%); }
+      .ext { border-top-color: darken(@cute_colour, 10%); border-left-color: darken(@cute_colour, 10%); }
+    }
+  }
+  &.Cool {
+    border-color:darken(@cool_colour, 10%);
+    
+    & > .header {
+      background-color: @cool_colour;
+      .left { background-color: darken(@cool_colour, 10%); }
+      .ext { border-top-color: darken(@cool_colour, 10%); border-left-color: darken(@cool_colour, 10%); }
+    }
+  }
+  &.Passion {
+    border-color:lighten(@passion_colour, 10%);
+    
+    & > .header {
+      color:#222;
+      background-color: @passion_colour;
+      .left { background-color: lighten(@passion_colour, 10%); }
+      .ext { border-top-color: lighten(@passion_colour, 10%); border-left-color: lighten(@passion_colour, 10%); }
+    }
+  }
+  
+  & > .content {
+    padding:5px;
+    
+    & > * {
+      vertical-align:middle;
+    }
+  }
+}
+
+.tlable:hover {
+  background-color:#666!important;
+  color:white!important;
+}
+
+.stepper {
+  font-size:0;
+  border:1px solid green;
+  display:inline-block;
+  line-height:normal;
+  
+  input[type="text"] {
+    padding:0;
+    margin:0;
+    border:none;
+    
+    width:50px;
+    line-height:18px;
+    font-size:13px;
+    text-align:center;
+    
+    vertical-align:top;
+  }
+  button {
+    padding:0;
+    margin:0;
+    border:none;
+    
+    min-width:26px;
+    line-height:18px;
+    font-size:16px;
+    font-weight:bold;
+    
+    background:green;
+    color:white;
+  }
+}
+
+.control_row {
+  background-color:#444;
+}
+
+.control_table .control_row, .control_table {
+  background-color:#333;
+  color:white;
+}
+
+.control_row th {
+  color:white;
+  text-align:left;
+  padding:3px 6px;
+  text-transform:uppercase;
+  font-size:80%;
+}
+
+.toggles_row td {
+  min-width:30px;
+  text-align:center;
+}
+
+/* image switcher */
+
+.rel {
+  position:relative;
+}
+
+.hang_inside {
+  position:absolute;
+  bottom:10px; right:10px;
+}
+.spread_view .hang_inside {
+  right:auto; left:10px;
+}
+.image_switch {
+  padding:3px 7px;
+  border:1px solid rgba(255, 255, 255, 0.9);
+  border-radius:2px;
+  background-color:rgba(0, 0, 0, 0.75);
+  font-size:13px;
+  color:white;
+  text-decoration:none;
+}

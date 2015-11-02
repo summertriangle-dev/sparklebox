@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    {% if is_dev %}
+    <link rel="stylesheet/less" type="text/css" href="{{ handler.static_url("css/main.less") }}" />
+    <script type="text/javascript" src="{{ handler.static_url("js/less.js") }}"></script>
+    {% else %}
+    <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
+    {% end %}
+</head>
+
+<body>
+    <table class="table">
+        <tr>
+            {% for key in fields %}
+            <th>{{ key }}</th>
+            {% end %}
+        </tr>
+        {% for obj in data %}
+        <tr>
+            {% for value in obj %}
+            <td>{{ value }}</td>
+            {% end %}
+        </tr>
+        {% end %}
+    </table>
+</body>
+</html>

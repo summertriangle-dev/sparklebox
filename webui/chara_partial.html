@@ -1,0 +1,24 @@
+<div class="stdcon chara_header">
+    <div class="name_slab">
+        {% for kanji, furi in zip( *map(str.split, (chara.kanji_spaced, chara.kana_spaced)) ) %}
+        <ruby>
+            <rb>{{ kanji }}</rb> <rp>(</rp><rt>{{ furi }}</rt><rp>)</rp>
+        </ruby>
+        {% end %}
+    
+        (<span class="english">{{ chara.conventional }}</span>)
+    </div>
+    <div class="infor_slab">
+        Only card data is hosted here. For everything else, there's the
+        <a href="http://cgdex.project-imas.com/">CGdex</a>
+        and the
+        <a href="https://hpt.moe/deresute/{{ chara.conventional.replace(" ", "_") }}">English Deresute Wiki</a>.
+    </div>
+</div>
+<div id="raw_chara_{{ chara_id }}" style="display:none" class="stdcon table">
+    <table style="height:100%">
+        {% for key, value in chara.__dict__.items() %}
+        <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+        {% end %}
+    </table>
+</div>

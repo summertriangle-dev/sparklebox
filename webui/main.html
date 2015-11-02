@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% if is_dev %}
+    <link rel="stylesheet/less" type="text/css" href="{{ handler.static_url("css/main.less") }}" />
+    <script type="text/javascript" src="{{ handler.static_url("js/less.js") }}"></script>
+    {% else %}
+    <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
+    {% end %}
+    <script type="text/javascript" src="{{ handler.static_url("js/livesearch.js") }}"></script>
+</head>
+
+{% import random %}
+
+<body>
+    <div class="container" style="max-width:800px">
+        <div class="welcome_spec">
+            <img class="chara_image" width="332" height="422" src="{{ image_host }}/chara/{{ 178 }}/0.png" />
+            <div class="riinaface" style="background-image:url({{ image_host }}/special/dari{{ random.randint(1, 5) }}.png)"></div>
+        </div>
+        <input type="text" id="search" placeholder="{{ _("Names") }}" onkeyup="suggest(this, this.value)">
+        <div id="suggestions"></div>
+    </div>
+    <div class="container" style="max-width:800px">
+        <p>This is temporary while I sort stuff out...</p>
+        <ul>
+            <li><a href="/skill_table">Skills table</a></li>
+            <li><a href="/lead_skill_table">Lead skills table</a></li>
+            <li>Use the search field above to get limited card data...</li>
+        </ul>
+    </div>
+    
+    {% for new_list in history %}
+    <div class="container" style="max-width:800px">
+        <p>{{ new_list["date"] }}</p>
+        <p><a href="/card/{{ ",".join(map(str, new_list["cids"])) }}">Batch</a></p>
+        {% for card in new_list["cids"] %}
+        <a href="/card/{{card}}"><img width="48" height="48" src="{{ image_host }}/icon/{{ card }}.png" /></a>
+        {% end %}
+    </div>
+    {% end %}
+    
+    {% include footer.html %}
+</body>
+</html>

@@ -1,0 +1,9 @@
+<table style="height:100%" class="diff_table">
+    <tr><th colspan="2">Diff: card_data.txt</th></tr>
+    
+    {% for diff_item in diff %}
+    <tr><td class="{{ diff_item["change_type"] }}">{{ _(diff_item["change_type"]) }}</td>
+        <td><a href="/{{ diff_item["where"] }}">{{ diff_item["title"] }}</a>
+            {% if "extra" in diff_item %}<pre>{{ diff_item["extra"] }}</pre>{% end %}</td></tr>
+    {% end %}
+</table>

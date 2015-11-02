@@ -1,0 +1,129 @@
+<div class="carcon" data-chain="{{ " ".join(map(str, (_card.id for _card in chain))) }}" data-showing-id="{{ card.id }}">
+  {% if not card.has_spread %}
+  <div class="card_left">
+    <div class="rel">
+      <img class="card_image" src="{{ image_host }}/card/{{ card.id }}.png" />
+      <div class="hang_inside">
+        <a class="image_switch" href="javascript:void(0);" onclick="toggle_transform_state(this, pn(this, 4))">{{ _("Swap costume") }}</a>
+      </div>
+    </div>
+    
+    <p class="card_image_offlink"><a class="sprite_link" href="{{ image_host }}/chara/{{ card.chara.chara_id }}/{{ card.pose }}.png">{{ _("View sprite") }}</a></p>
+    <p class="card_image_offlink"><a href="javascript:void(0);" onclick="document.getElementById('raw_card_{{ card.id }}').style.display = 'block';this.parentNode.parentNode.removeChild(this.parentNode)">
+      {{ _("Expand raw data table") }}</a></p>
+  </div>
+  {% end %}
+
+  <div id="c_{{ card.id }}_head" class="card_right">
+    <div class="name_tag {{ enums.attribute(card.attribute) }}">
+      {% if card.title %}
+      <span class="item title">{% raw tlable(card.title) %}</span>
+      <span class="item ext"></span>
+      {% end %}
+      <span class="item name">
+        {{ tle.translate_name(card.name_only) }}
+        <span style="font-size:70%">[{{ enums.rarity(card.rarity) }}]</span>
+      </span>
+    </div>
+    
+    {% if card.has_spread %}
+    <div class="spread_view rel" style="background-image:url({{ image_host }}/spread/{{ card.id }}.png)">
+      <a class="spread_link" style="height:100%;width:100%;display:block" href="{{ image_host }}/spread/{{ card.id }}.png"></a>
+      <div class="hang_inside">
+        <a class="image_switch" href="javascript:void(0);" onclick="toggle_transform_state(this, pn(this, 4))">{{ _("Swap costume") }}</a>
+        <a class="image_switch sprite_link" href="{{ image_host }}/chara/{{ card.chara.chara_id }}/{{ card.pose }}.png">{{ _("View sprite") }}</a>
+        <a class="image_switch" href="javascript:void(0);" onclick="document.getElementById('raw_card_{{ card.id }}').style.display = 'block';this.parentNode.removeChild(this)">{{ _("Expand raw data table") }}</a>
+      </div>
+    </div>
+    {% end %}
+
+    <div class="content tight">
+      {% for _card in chain %}
+      <div id="sb_{{ _card.id }}" class="stats box {{ enums.attribute(_card.attribute) }}"
+        {% if _card.id != card.id %}style="display:none"{% end %}>
+        <div class="header">
+          <span class="item left">Base stats</span>
+          <span class="item ext"></span>
+          <div class="item right">
+            {{ _("Regular") if _card.evolution_id else _("Transformed") }}:
+            Lv.
+            <div class="stepper" data-stepper-max="{{ _card.rarity_dep.base_max_level }}">
+              <button onclick="stats_step(this, {{ _card.id }}, -1)">-</button>
+              <input class="stats_step" onchange="base_onchange(this)" type="text" value="All" />
+              <button onclick="stats_step(this, {{ _card.id }}, 1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="content">
+          <img src="{{ image_host }}/icon/{{ _card.id }}.png" />
+          <table class="stats_table" style="display:inline-table">
+            <tr>
+              <td rowspan="2" style="padding:0;"></td>
+              <td class="life">{{ _card.hp_max }} <span style="font-size:80%">+{{ _card.bonus_hp }}</span></td>
+              <td class="vocal"><span class="var">{{ _card.vocal_min }}..{{ _card.vocal_max }}</span>
+                        <span style="font-size:80%">+{{ _card.bonus_vocal }}</span></td>
+              <td class="dance"><span class="var">{{ _card.dance_min }}..{{ _card.dance_max }}</span>
+                        <span style="font-size:80%">+{{ _card.bonus_dance }}</span></td>
+              <td class="visual"><span class="var">{{ _card.visual_min }}..{{ _card.visual_max }}</span>
+                         <span style="font-size:80%">+{{ _card.bonus_visual }}</span></td></tr>
+
+            <tr><th class="life_ax">Life</th>
+              <th class="vocal_ax">Vocal</th>
+              <th class="dance_ax">Dance</th>
+              <th class="visual_ax">Visual</th></tr>
+          </table>
+          
+          <table class="stats_table" style="display:inline-table">
+            <tr><td class="kizuna">{{ _card.rarity_dep.max_love }}</td>
+              <td class="max_level">{{ _card.rarity_dep.base_max_level }}</td></tr>
+            <tr><th class="kizuna_ax">Max Bond</th>
+              <th class="max_level_ax">Max Level</th></tr>
+          </table>
+        </div>
+      </div>
+      {% end %}
+    </div>
+    <div class="content">
+      <p>I'd like to see some more stuff here soon (issue #1).</p>
+      
+      {% if card.skill %}
+      <div class="skill box {{ enums.attribute(card.attribute) }}">
+        <div class="header">
+          <span class="item left">{{ _("Skill") }}</span>
+          <span class="item ext"></span>
+          <div class="item right">{% raw tlable(card.skill.skill_name) %}</span>
+            <div class="stepper" data-stepper-max="10">
+              <button onclick="skill_step(this, {{ card.id }}, -1)">-</button>
+              <input class="skill_step" onchange="skill_onchange(this)" type="text" value="All" />
+              <button onclick="skill_step(this, {{ card.id }}, 1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="content">
+          <small>({{ _(enums.skill_type(card.skill.skill_type)) }})</small>
+          <span title="{{ card.skill.explain }}">{% raw starlight.en.describe_skill_html(card.skill) %}</span>
+        </div>
+      </div>
+      {% end %}
+      
+      {% if card.leader_skill_id %}
+      <div class="skill box {{ enums.attribute(card.attribute) }}">
+        <div class="header">
+          <span class="item left">{{ _("Leader Skill") }}</span>
+          <span class="item ext"></span>
+          <span class="item right">{% raw tlable(card.lead_skill.name) %}</span>
+        </div>
+        <div class="content">
+          <span title="{{ card.lead_skill.explain }}">{% raw starlight.en.describe_lead_skill_html(card.lead_skill) %}</span>
+        </div>
+      </div>
+      {% end %}
+    </div>
+  </div>
+  
+  <table style="height:100%;display:none" id="raw_card_{{ card.id }}" class="table">
+    {% for key, value in card.__dict__.items() %}
+    <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+    {% end %}
+  </table>
+</div>
