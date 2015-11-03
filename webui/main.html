@@ -13,6 +13,7 @@
 </head>
 
 {% import random %}
+{% import itertools %}
 
 <body>
   <div class="container" style="max-width:800px">
@@ -34,7 +35,7 @@
 
   {% for new_list in history[:8] %}
   <div class="container" style="max-width:800px">
-    <p>{{ new_list["date"] }} (<a href="/card/{{ ",".join(map(str, new_list["cids"])) }}">Batch</a>)</p>
+    <p>{{ new_list["date"] }} (<a href="/card/{{ ",".join(map(str, itertools.chain(*(x for _, x in new_list["cids"].items())))) }}">Batch</a>)</p>
     {% for key in ["event", "ssr", "sr", "r", "n"] %}
     {% if new_list["cids"][key] %}
     <div>
