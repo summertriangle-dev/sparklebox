@@ -138,6 +138,12 @@ class TranslateReadAPI(tornado.web.RequestHandler):
                 return
 
         unique = list(set(load))
+
+        if not unique:
+            self.set_header("Content-Type", "application/json; charset=utf-8")
+            self.write("{}")
+            self.finish()
+
         self.settings["tle"].translate(self.complete, *unique)
 
     def complete(self, ret):

@@ -15,9 +15,9 @@ function load_translations(trans, cb) {
 
 function submit_tl_string(node, text) {
     var sub = prompt("What is the English translation of '" + text + "'?");
-    
+
     if (sub === null) return
-    
+
     var xhr = new XMLHttpRequest()
     xhr.open("POST", "/send_tl", true)
     xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
@@ -43,13 +43,15 @@ function set_strings_by_table(table) {
 function tlinject_activate() {
     var tls = []
     var strings = document.getElementsByClassName("tlable")
+    if (strings.length == 0) return;
+
     for (var i = 0; i < strings.length; i++) {
         if (tls.indexOf(strings[i].textContent) == -1)
             tls.push(strings[i].textContent);
         strings[i].setAttribute("data-original-string", strings[i].textContent);
         strings[i].setAttribute("onclick", "submit_tl_string(this, this.getAttribute('data-original-string'))")
     }
-    
+
     load_translations(tls, function(tls2) {
         for (var i = 0; i < strings.length; i++) {
             console.log(strings[i].textContent)
