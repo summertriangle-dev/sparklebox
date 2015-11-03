@@ -39,13 +39,28 @@ expose_static_json("/suggest",
                    {value.conventional.lower(): [value.conventional, key] for key, value in starlight.names.items()})
 
 
+def sieve_diff_contents(de):
+    ret = {
+        "event": [],
+        "ssr": [],
+        "sr": [],
+        "r": [],
+        "n": []
+    }
+    for card_id in filter(lambda x: starlight.card_db[x].evolution_id, de["cids"]):
+        if card_id in event_cards:
+            ret["event"].append(card_id)
+        else:
+            key = ["n", "n", "r", "r", "sr", "sr", "ssr", "ssr"][starlight.card_db[card_id].rarity - 1]
+            ret[key].append(card_id)
+    return {"date": de["date"], "cids": ret}
+event_cards = [x.reward_id for x in starlight.cached_db(starlight.ark_data_path("event_available.txt"))]
+HISTORY = [sieve_diff_contents(x) for x in reversed(starlight.jsonl(starlight.private_data_path("history.json")))]
+
 @route(r"/")
 class Home(tornado.web.RequestHandler):
-    HISTORY = sorted(starlight.jsonl(starlight.private_data_path("history.json")),
-                     key=lambda x: x["date"], reverse=True)
-
     def get(self):
-        self.render("main.html", history=self.HISTORY, **self.settings)
+        self.render("main.html", history=HISTORY, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 
