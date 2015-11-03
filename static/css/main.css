@@ -67,6 +67,11 @@ footer {
   left: 61px;
 }
 /* chara_partial */
+div.icon {
+  width: 48px;
+  height: 48px;
+  display: inline-block;
+}
 div.stdcon {
   /*padding:8px 16px*/
   position: relative;

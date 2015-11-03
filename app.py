@@ -110,6 +110,7 @@ def main():
                                           enums=enums,
                                           starlight=starlight,
                                           tlable=endpoints.tlable,
+                                          icon=endpoints.icon,
                                           analytics=analytics.Analytics(),
                                           version=version)
     http_server = tornado.httpserver.HTTPServer(application, xheaders=1)

@@ -1,0 +1,6 @@
+#!/bin/bash
+OUTPUT=$1
+IMAGES=${@:2}
+
+montage -background transparent \
+        -geometry 48x48+0+0 -tile 8x8 $IMAGES $OUTPUT

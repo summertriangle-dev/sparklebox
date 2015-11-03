@@ -31,6 +31,10 @@ def tlable(text):
         tornado.escape.xhtml_escape(text), tlable_make_assr(text))
 
 
+def icon(css_class):
+    return """<div class="icon icon_{0}"></div>""".format(css_class)
+
+
 expose_static_json("/suggest",
                    {value.conventional.lower(): [value.conventional, key] for key, value in starlight.names.items()})
 
