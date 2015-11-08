@@ -8,6 +8,10 @@ import starlight
 import hashlib
 import base64
 import time
+import pytz
+from datetime import datetime
+
+JST = pytz.timezone("Asia/Tokyo")
 
 try:
     import ap
@@ -60,7 +64,19 @@ HISTORY = [sieve_diff_contents(x) for x in reversed(starlight.jsonl(starlight.pr
 @route(r"/")
 class Home(tornado.web.RequestHandler):
     def get(self):
-        self.render("main.html", history=HISTORY, **self.settings)
+        eda = starlight.cached_db(starlight.ark_data_path("event_data.txt"))
+        now = pytz.utc.localize(datetime.utcnow())
+        for event in eda:
+            if (now > JST.localize(datetime.strptime(event.event_start, "%Y-%m-%d %H:%M:%S")) and
+                now < JST.localize(datetime.strptime(event.event_end, "%Y-%m-%d %H:%M:%S"))):
+                break
+        else:
+            event = None
+
+        # FIXME this is ridiculous. i just want to convert a fucking timestamp to a fucking UTC timestamp.
+        event_end = time.mktime(JST.localize(datetime.strptime(event.event_end, "%Y-%m-%d %H:%M:%S")).astimezone(pytz.utc).timetuple())
+
+        self.render("main.html", history=HISTORY, has_event=bool(event), event=event, event_end=event_end, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 
