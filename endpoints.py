@@ -74,9 +74,10 @@ class Home(tornado.web.RequestHandler):
             event = None
 
         # FIXME this is ridiculous. i just want to convert a fucking timestamp to a fucking UTC timestamp.
-        event_end = time.mktime(JST.localize(datetime.strptime(event.event_end, "%Y-%m-%d %H:%M:%S")).astimezone(pytz.utc).timetuple())
+        evedt = JST.localize(datetime.strptime(event.event_end, "%Y-%m-%d %H:%M:%S"))
+        delta = evedt - pytz.utc.localize(datetime.utcfromtimestamp(0))
 
-        self.render("main.html", history=HISTORY, has_event=bool(event), event=event, event_end=event_end, **self.settings)
+        self.render("main.html", history=HISTORY, has_event=bool(event), event=event, event_end=delta.days * 86400 + delta.seconds, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 

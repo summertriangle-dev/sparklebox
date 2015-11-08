@@ -72,7 +72,7 @@ function event_counter_init() {
     var ec = document.getElementById("event_counter")
     setInterval(function() {
         var d = new Date()
-        var msLeft = (parseFloat(ec.getAttribute("data-event-end")) * 1000) - (d.getTime() + (d.getTimezoneOffset() * 60 * 1000))
+        var msLeft = (parseFloat(ec.getAttribute("data-event-end")) * 1000) - d.getTime()
         var seconds = msLeft / 1000
         var secondsOnly = seconds % 60
         var minutes = (seconds - secondsOnly) / 60
