@@ -10,6 +10,7 @@ import base64
 import time
 import pytz
 from datetime import datetime
+from calendar import timegm
 
 JST = pytz.timezone("Asia/Tokyo")
 
@@ -74,10 +75,14 @@ class Home(tornado.web.RequestHandler):
             event = None
 
         # FIXME this is ridiculous. i just want to convert a fucking timestamp to a fucking UTC timestamp.
-        evedt = JST.localize(datetime.strptime(event.event_end, "%Y-%m-%d %H:%M:%S"))
-        delta = evedt - pytz.utc.localize(datetime.utcfromtimestamp(0))
+        if event:
+            evedt = JST.localize(datetime.strptime(event.event_end, "%Y-%m-%d %H:%M:%S")).astimezone(pytz.utc)
+            delta = evedt - pytz.utc.localize(datetime.utcfromtimestamp(0))
+            event_end = timegm(evedt.timetuple())
+        else:
+            event_end = None
 
-        self.render("main.html", history=HISTORY, has_event=bool(event), event=event, event_end=delta.days * 86400 + delta.seconds, **self.settings)
+        self.render("main.html", history=HISTORY, has_event=bool(event), event=event, event_end=event_end, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 
