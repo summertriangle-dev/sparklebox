@@ -71,7 +71,7 @@ div.icon {
   width: 48px;
   height: 48px;
   display: inline-block;
-  background-image: url(../static/marker_missing_icon.png);
+  background-image: url(../img/marker_missing_icon.png);
 }
 div.stdcon {
   /*padding:8px 16px*/
