@@ -41,7 +41,7 @@ a {
 a:visited {
   color:@dance_colour;
 }
-  
+
 body {
   @media screen and (max-width:600px) {
     margin:0;
@@ -49,16 +49,16 @@ body {
   background-color:@main_bg;
   color:@main_text;
 }
-  
+
 footer {
   text-align:center;
   padding:10px;
 }
-  
+
 .container {
   margin:0 auto;
   max-width:@max_page_width;
-  
+
   &.tight {
     font-size:0;
   }
@@ -76,12 +76,12 @@ footer {
 }
 
 #suggestions {
-  margin: 15px 0; 
+  margin: 15px 0;
 
   & > a {
     display:block; background-color:#333; color:white; font-size:18px; padding: @standard_inset_v @standard_inset_h;
   }
-  
+
   .highlight {
     background-color:yellow; color:#000;
   }
@@ -92,7 +92,7 @@ footer {
   max-width:332px;
   margin:0 auto;
   position:relative;
-  
+
   .riinaface {
     height:128px;
     width:128px;
@@ -107,6 +107,7 @@ footer {
 div.icon {
   width:48px; height:48px;
   display:inline-block;
+  background-image:url(../static/marker_missing_icon.png);
 }
 
 div.stdcon {
@@ -116,30 +117,30 @@ div.stdcon {
 .chara_header {
   padding:@standard_inset_v @standard_inset_h;
   background-color:darken(#444, 10%);
-  
+
   .name_slab {
-    font-size:24px; 
-    font-weight:normal; 
+    font-size:24px;
+    font-weight:normal;
     color:white;
     margin-bottom:10px;
-    
+
     text-shadow:1px 0px #000, -1px 0px #000, 0px 1px #000, 0px -1px #000,
           0px 0px 15px #000;
-    
+
     .english {
       font-weight:normal; font-style: italic;
     }
   }
-  
+
   .infor_slab {
     color:white;
     text-shadow:1px 0px #000, -1px 0px #000, 0px 1px #000, 0px -1px #000;
-    
+
     a {
       color:#56b8e0;
     }
   }
-  
+
   .pose_sprite_container {
     background:center bottom no-repeat;
     width:100%; height:100%;
@@ -150,7 +151,7 @@ div.stdcon {
   background-color:#fff; color:black;
   font-size:16px;
   border-collapse:collapse;
-  
+
   td {
     border:1px solid #ddd;
     padding:3px 6px;
@@ -226,72 +227,72 @@ td {
   display:flex;
   background-color: white;
   margin-bottom:10px;
-  
+
   @media screen and (max-width:600px) {
     -webkit-flex-direction:column;
     flex-direction:column;
   }
-  
+
   .card_left {
     display:inline-block;
     min-width:@card_img_width;
     background-color:black;
     text-align:center;
     font-size:0;
-    
+
     @media screen and (max-width:600px) {
       width:100%;
     }
-    
+
     img {
       height:@card_img_height;
       width:@card_img_width;
     }
-    
+
     .card_image_offlink {
       background-color:darken(#444, 5%);
       text-align:left;
       margin:0;
       padding:8px 8px;
-      
+
       &:nth-child(3) {
-        background-color:darken(#444, 10%); 
+        background-color:darken(#444, 10%);
       }
-      
+
       &:nth-child(4) {
-        background-color:darken(#444, 15%); 
+        background-color:darken(#444, 15%);
       }
-      
+
       a {
         color:white;
         font-weight:bold;
         text-decoration:none;
         font-size:12px;
-        
+
         &:hover {
           text-decoration:underline;
         }
       }
     }
   }
-  
+
   .card_right {
     -webkit-flex-grow:1;
     flex-grow:1;
     vertical-align:top;
     color:#222;
-    
+
     & > * {
       font-size:16px;
     }
-    
-    /* this entire section is basically a hack to keep things aligned properly 
+
+    /* this entire section is basically a hack to keep things aligned properly
      * chances are if you touch something here it will break, so don't do it */
-    
+
     @media screen and (min-width:769px) {
       .name_tag {
         height:@name_tag_height;
-        
+
         .item {
           line-height: @name_tag_height;
           font-size: @name_tag_height - (@name_tag_pad * 2);
@@ -305,11 +306,11 @@ td {
         }
       }
     }
-    
+
     @media screen and (max-width:768px) {
       .name_tag {
         height:@name_tag_height_sm;
-        
+
         .item {
           line-height: @name_tag_height_sm;
           font-size: @name_tag_height_sm - (@name_tag_pad_sm * 2);
@@ -323,10 +324,10 @@ td {
         }
       }
     }
-    
+
     .name_tag.force_small {
       height:@name_tag_height_sm;
-      
+
       .item {
         line-height: @name_tag_height_sm;
         font-size: @name_tag_height_sm - (@name_tag_pad_sm * 2);
@@ -340,27 +341,27 @@ td {
         border-bottom:(@name_tag_height_sm / 2) solid transparent;
       }
     }
-    
+
     .name_tag {
       color:white;
       font-size:0;
-      
+
       .item {
         display:inline-block;
         vertical-align:middle;
       }
-      
+
       .name::after {
         /* force all-latin text to align as jap text */
         content:"あ";
         color:transparent;
       }
-      
+
       .ext {
         vertical-align:middle;
         padding:0;
       }
-      
+
       &.Cute {
         background-color: @cute_colour;
         .title { background-color: darken(@cute_colour, 10%); }
@@ -378,14 +379,14 @@ td {
         .ext { border-top-color: lighten(@passion_colour, 10%); border-left-color: lighten(@passion_colour, 10%); }
       }
     }
-    
+
     .spread_view {
       height:350px;
       width:100%;
       background-position:center center;
       background-size:cover;
     }
-    
+
     .evolution_setter {
       font-size:80%;
       opacity:0.7;
@@ -394,24 +395,24 @@ td {
         opacity:1.0;
       }
     }
-    
+
     & > .content {
       padding:0 5px;
-      
+
       &.tight {
         padding:0;
       }
     }
-    
+
     td {
       padding:3px 6px;
     }
-    
+
     th {
       font-size:70%;
       text-transform:uppercase;
     }
-    
+
     .stats.box {
       width:100%;
       border-left:0;
@@ -420,7 +421,7 @@ td {
       margin:0;
       background-color:darken(white, 5%);
     }
-    
+
     .stats_table {
       text-align:center;
     }
@@ -439,18 +440,18 @@ span.var {
   display:inline-block;
   border: 1px solid;
   vertical-align:top;
-  
+
   &.col2 {
-    /* don't know why but it works 
+    /* don't know why but it works
      * TODO replace it with something sane */
     width:~"calc(50% - 13px)";
   }
-  
+
   & > .header {
     color:white;
     height:@box_header_height;
     font-size:0;
-    
+
     .item {
       display:inline-block;
       line-height: @box_header_height;
@@ -464,7 +465,7 @@ span.var {
       content:"あ";
       color:transparent;
     }
-    
+
     .ext {
       border-top:@box_header_height / 2 solid transparent;
       border-left:@box_header_height / 4 solid transparent;
@@ -474,10 +475,10 @@ span.var {
       padding:0;
     }
   }
-  
+
   &.Cute {
     border-color:darken(@cute_colour, 10%);
-    
+
     & > .header {
       background-color: @cute_colour;
       .left { background-color: darken(@cute_colour, 10%); }
@@ -486,7 +487,7 @@ span.var {
   }
   &.Cool {
     border-color:darken(@cool_colour, 10%);
-    
+
     & > .header {
       background-color: @cool_colour;
       .left { background-color: darken(@cool_colour, 10%); }
@@ -495,7 +496,7 @@ span.var {
   }
   &.Passion {
     border-color:lighten(@passion_colour, 10%);
-    
+
     & > .header {
       color:#222;
       background-color: @passion_colour;
@@ -503,10 +504,10 @@ span.var {
       .ext { border-top-color: lighten(@passion_colour, 10%); border-left-color: lighten(@passion_colour, 10%); }
     }
   }
-  
+
   & > .content {
     padding:5px;
-    
+
     & > * {
       vertical-align:middle;
     }
@@ -523,29 +524,29 @@ span.var {
   border:1px solid green;
   display:inline-block;
   line-height:normal;
-  
+
   input[type="text"] {
     padding:0;
     margin:0;
     border:none;
-    
+
     width:50px;
     line-height:18px;
     font-size:13px;
     text-align:center;
-    
+
     vertical-align:top;
   }
   button {
     padding:0;
     margin:0;
     border:none;
-    
+
     min-width:26px;
     line-height:18px;
     font-size:16px;
     font-weight:bold;
-    
+
     background:green;
     color:white;
   }

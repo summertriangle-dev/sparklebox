@@ -71,6 +71,7 @@ div.icon {
   width: 48px;
   height: 48px;
   display: inline-block;
+  background-image: url(../static/marker_missing_icon.png);
 }
 div.stdcon {
   /*padding:8px 16px*/
@@ -250,7 +251,7 @@ td.Passion a {
   flex-grow: 1;
   vertical-align: top;
   color: #222;
-  /* this entire section is basically a hack to keep things aligned properly 
+  /* this entire section is basically a hack to keep things aligned properly
      * chances are if you touch something here it will break, so don't do it */
 }
 .carcon .card_right > * {
@@ -402,7 +403,7 @@ span.var {
   vertical-align: top;
 }
 .box.col2 {
-  /* don't know why but it works 
+  /* don't know why but it works
      * TODO replace it with something sane */
   width: calc(50% - 13px);
 }
