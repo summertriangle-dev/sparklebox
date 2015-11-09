@@ -54,6 +54,11 @@ class TranslationSQL(object):
                 .as_scalar() == 1).all()
         return result
 
+    def all_for_key(self, key):
+        with self as s:
+            result = s.query(TranslationEntry).filter(TranslationEntry.key == key).order_by(TranslationEntry.submit_utc).all()
+        return result
+
     def translate(self, done, *key):
         with self as s:
             transient = aliased(TranslationEntry)

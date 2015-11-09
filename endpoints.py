@@ -259,6 +259,19 @@ class DebugViewTLs(tornado.web.RequestHandler):
         self.render("debug_view_database.html", data=gen,
                     fields=fields, **self.settings)
 
+@route(r"/tl_debug/(.+)")
+@dev_mode_only
+class DebugViewTLExtreme(tornado.web.RequestHandler):
+    def get(self, key):
+        #chara_id = int(chara_id)
+        gen = list((x.key, x.english, x.submitter, time.strftime("%c", time.gmtime(x.submit_utc)))
+            for x in self.settings["tle"].all_for_key(key))
+        fields = ("key", "english", "sender", "ts")
+
+        self.set_header("Content-Type", "text/html")
+        self.render("debug_view_database.html", data=gen,
+                    fields=fields, **self.settings)
+
 
 @route(r"/story_list")
 class ListScripts(tornado.web.RequestHandler):
