@@ -14,7 +14,8 @@ function load_translations(trans, cb) {
 }
 
 function submit_tl_string(node, text) {
-    var sub = prompt("What is the English translation of '" + text + "'?");
+    var sub = prompt("What is the English translation of '" + text + "'?\n\n" +
+        "* The string you submit may be released as part of a public data dump. These data dump(s) WILL NOT contain any metadata that can be used to identify you. If you are not okay with that, click Cancel.");
 
     if (sub === null) return
 
@@ -61,7 +62,7 @@ function tlinject_activate() {
         if (!node) {
             node = document.createElement("div");
             node.className = "container crowd_tl_notice";
-            node.setAttribute("style", "background-color:#444;font-size:13px;padding:6px 10px;color:white;");
+            node.setAttribute("style", "font-size:13px;padding:6px 10px;color:white;");
         }
         node.innerHTML = "Crowd-sourced translations are enabled (<a style='color:white;' href='javascript:;' onclick='tlinject_revert()'>disable</a>). Translatable text will highlight in grey when hovered upon; click to submit a translation.";
         document.body.insertBefore(node, document.body.childNodes[0]);
