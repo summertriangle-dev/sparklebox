@@ -158,6 +158,14 @@ class SpriteRedirect(tornado.web.RequestHandler):
             {"card_id": "({0}) {1} <{2}>".format(assoc_card.title, assoc_card.chara.conventional, card_id)})
 
 
+@route("/history")
+class History(tornado.web.RequestHandler):
+    """ Display all history entries. """
+    def get(self):
+        self.render("history.html", history=HISTORY, **self.settings)
+        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
+
+
 @route("/read_tl")
 class TranslateReadAPI(tornado.web.RequestHandler):
     """ Queries database for cs translation entries """
