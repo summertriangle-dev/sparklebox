@@ -49,7 +49,9 @@
 
         <table class="table" style="width:100%">
             <tr class="control_row">
-                <th colspan="2"></th>
+                <th></th>
+                <th class="hides_under_mobile"></th>
+                <th>{{ _("Overall Appeals") }}</th>
                 <th>{{ _("Skill Name") }}</th>
                 <th>{{ _("Effect") }}</th>
             </tr>
@@ -60,16 +62,19 @@
             {% if card.lead_skill %}
             <tr class="{{ enums.lskill_effective_target(card.lead_skill.target_attribute) }}
                        {{ enums.lskill_effective_param(card.lead_skill.target_param) }}">
-                <td class="{{ enums.attribute(card.attribute) }}" style="width:1%">
+                <td rowspan="2" class="{{ enums.attribute(card.attribute) }}" style="width:1%">
                     <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{% raw icon(card.id) %}</a>
                 </td>
-                <td class="{{ enums.attribute(card.attribute) }}">
+                <td rowspan="2" class="{{ enums.attribute(card.attribute) }} hides_under_mobile">
                     <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{{ tle.translate_name(card.name_only) }}</a><br>
                         {% if card.title %}({% raw tlable(card.title) %}){% end %}
                 </td>
-                <td>{% raw tlable(card.lead_skill.name) %}</td>
-                <td>{% raw starlight.en.describe_lead_skill_html(card.lead_skill) %}</td>
+                <!-- FIXME assumes there are always two cards in a chain -->
+                <td style="min-width:125px">R: {{ chain[0].overall_min }}..{{ chain[0].overall_max }}</td>
+                <td rowspan="2">{% raw tlable(card.lead_skill.name) %}</td>
+                <td rowspan="2">{% raw starlight.en.describe_lead_skill_html(card.lead_skill) %}</td>
             </tr>
+            <tr><td style="min-width:125px">T: {{ chain[1].overall_min }}..{{ chain[1].overall_max }}</td></tr>
             {% end %}
         {% end %}
         </table>

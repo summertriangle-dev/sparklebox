@@ -36,7 +36,9 @@
 
         <table class="table" style="width:100%">
             <tr class="control_row">
-                <th colspan="2"></th>
+                <th></th>
+                <th class="hides_under_mobile"></th>
+                <th>{{ _("Overall Appeals") }}</th>
                 <th>{{ _("Skill Name") }}</th>
                 <th>{{ _("Effect") }}</th>
             </tr>
@@ -46,16 +48,19 @@
 
             {% if card.skill %}
             <tr class="{{ enums.skill_class(card.skill.skill_type) }}">
-                <td class="{{ enums.attribute(card.attribute) }}" style="width:1%">
+                <td rowspan="2" class="{{ enums.attribute(card.attribute) }}" style="width:1%">
                     <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{% raw icon(card.id) %}</a>
                 </td>
-                <td class="{{ enums.attribute(card.attribute) }}">
+                <td rowspan="2" class="{{ enums.attribute(card.attribute) }} hides_under_mobile">
                     <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{{ tle.translate_name(card.name_only) }}</a><br>
                         {% if card.title %}({% raw tlable(card.title) %}){% end %}
                 </td>
-                <td>{% raw tlable(card.skill.skill_name) %}</td>
-                <td>{% raw starlight.en.describe_skill_html(card.skill) %}</td>
+                <!-- FIXME assumes there are always two cards in a chain -->
+                <td style="min-width:125px">R: {{ chain[0].overall_min }}..{{ chain[0].overall_max }}</td>
+                <td rowspan="2">{% raw tlable(card.skill.skill_name) %}</td>
+                <td rowspan="2">{% raw starlight.en.describe_skill_html(card.skill) %}</td>
             </tr>
+            <tr><td style="min-width:125px">T: {{ chain[1].overall_min }}..{{ chain[1].overall_max }}</td></tr>
             {% end %}
         {% end %}
         </table>
