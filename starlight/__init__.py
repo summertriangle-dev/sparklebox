@@ -60,6 +60,9 @@ NAME_ONLY_REGEX = r"^(?:［.+］)?(.+)$"
 # evolve_chains=evolutionary_chains,
 # card_evolve_chain=chains_by_card,
 
+card_comments = list(csvloader.load_db_file(ark_data_path("card_comments.txt")))
+card_va_by_object_id = lambda x: filter(lambda y: y.id == x, card_comments)
+
 names = cached_keyed_db(private_data_path("names.csv"))
 skills = csvloader.load_keyed_db_file(ark_data_path("skill_data.txt"))
 lead_skills = csvloader.load_keyed_db_file(ark_data_path("leader_skill_data.txt"))
@@ -76,5 +79,8 @@ card_db = csvloader.load_keyed_db_file(ark_data_path("card_data.txt"),
     title=lambda obj: re.match(TITLE_ONLY_REGEX, obj.name).group(1) if obj.title_flag else None,
     skill=lambda obj: skills.get(obj.skill_id),
     lead_skill=lambda obj: lead_skills.get(obj.leader_skill_id),
-    rarity_dep=lambda obj: rarity_dep.get(obj.rarity))
+    rarity_dep=lambda obj: rarity_dep.get(obj.rarity),
+    overall_min=lambda obj: obj.vocal_min + obj.dance_min + obj.visual_min,
+    overall_max=lambda obj: obj.vocal_max + obj.dance_max + obj.visual_max,
+    valist=lambda obj: list(card_va_by_object_id(obj.id)))
 evolutionary_chains, chains_by_card = discover_evolutionary_chains(card_db)

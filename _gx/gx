@@ -6,7 +6,7 @@ MANIFESTS="3d anime atlas banner bg campaign card cardsm chara comic dailybonus 
 # define this as an environment variable.
 # default is fairly outdated, use versioncheck.py to get the current version from the server.
 if [[ -z "$VERSION" ]]; then
-    VERSION=10008000
+    VERSION=10011200
 fi
 
 BASEURL="http://storage.game.starlight-stage.jp/dl/$VERSION/High/AssetBundles/Android"
@@ -31,7 +31,7 @@ download_new_file() {
         return
     fi
 
-    curl $CURLFLAGS $BASEURL/$FILE > $DESTINATION
+    curl $CURLFLAGS $FILE > $DESTINATION
     mkdir -p "$(dirname $DESTINATION)/.shadow"
     > "$(dirname $DESTINATION)/.shadow/$(basename $DESTINATION)" openssl md5 < $DESTINATION
 
@@ -51,6 +51,16 @@ check_file() {
     else
         return 1
     fi
+}
+
+check_file_wrapper() {
+    local STORE=$1; shift
+    local DECODED=$1; shift
+    local FILENAME=$1; shift
+    local MD5=$1; shift
+
+    local SCRUBBED_FILENAME=$(echo $FILENAME | sed 's|/|_|g')
+    check_file $STORE/$SCRUBBED_FILENAME $EXPECT_MD5 || download_new_file $BASEURL/$FILE $STORE/$SCRUBBED_FILENAME $DECODED
 }
 
 ### tab management
@@ -83,7 +93,7 @@ source_job() {
                 if [[ "x$FILE" != "x" ]]; then
 
                     for FILTER_NAME in $FILTERS; do
-                        $FILTER_NAME $FILE && ( check_file $STORE/$FILE $EXPECT_MD5 || download_new_file $FILE $STORE/$FILE $DECODED )
+                        $FILTER_NAME $FILE && ( check_file_wrapper $STORE $DECODED $FILE $EXPECT_MD5 )
                     done
                 fi
             done

@@ -1,11 +1,11 @@
 import csv
 from collections import namedtuple
 
-def try_int(val):
+def clean_value(val):
     try:
         return int(val)
     except ValueError:
-        return val
+        return val.replace("\\n", "\n")
 
 # Load a database file (equivalent of treasurebox arks)
 # For runtime-computed parameters, pass a function into kwargs
@@ -33,7 +33,7 @@ def load_db_file(file, **kwargs):
         the_type = namedtuple(class_name, fields)
 
         for val_list in reader:
-            temp_obj = the_raw_type(*map(try_int, val_list))
+            temp_obj = the_raw_type(*map(clean_value, val_list))
             try:
                 extvalues = tuple(kwargs[key](temp_obj) for key in keys)
             except Exception:

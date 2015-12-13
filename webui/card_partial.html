@@ -7,7 +7,7 @@
         <a class="image_switch" href="javascript:void(0);" onclick="toggle_transform_state(this, pn(this, 4))">{{ _("Swap costume") }}</a>
       </div>
     </div>
-    
+
     <p class="card_image_offlink"><a class="sprite_link" href="{{ image_host }}/chara/{{ card.chara.chara_id }}/{{ card.pose }}.png">{{ _("View sprite") }}</a></p>
     <p class="card_image_offlink"><a href="javascript:void(0);" onclick="document.getElementById('raw_card_{{ card.id }}').style.display = 'block';this.parentNode.parentNode.removeChild(this.parentNode)">
       {{ _("Expand raw data table") }}</a></p>
@@ -25,7 +25,7 @@
         <span style="font-size:70%">[{{ enums.rarity(card.rarity) }}]</span>
       </span>
     </div>
-    
+
     {% if card.has_spread %}
     <div class="spread_view rel" style="background-image:url({{ image_host }}/spread/{{ card.id }}.png)">
       <a class="spread_link" style="height:100%;width:100%;display:block" href="{{ image_host }}/spread/{{ card.id }}.png"></a>
@@ -72,11 +72,13 @@
               <th class="dance_ax">Dance</th>
               <th class="visual_ax">Visual</th></tr>
           </table>
-          
+
           <table class="stats_table" style="display:inline-table">
-            <tr><td class="kizuna">{{ _card.rarity_dep.max_love }}</td>
+            <tr><td class="vocal">{{ _card.overall_min }}..{{ _card.overall_max }}</td>
+              <td class="kizuna">{{ _card.rarity_dep.max_love }}</td>
               <td class="max_level">{{ _card.rarity_dep.base_max_level }}</td></tr>
-            <tr><th class="kizuna_ax">Max Bond</th>
+            <tr><th class="vocal_ax">Overall Appeal</th>
+              <th class="kizuna_ax">Max Bond</th>
               <th class="max_level_ax">Max Level</th></tr>
           </table>
         </div>
@@ -84,8 +86,6 @@
       {% end %}
     </div>
     <div class="content">
-      <p>I'd like to see some more stuff here soon (issue #1).</p>
-      
       {% if card.skill %}
       <div class="skill box {{ enums.attribute(card.attribute) }}">
         <div class="header">
@@ -105,7 +105,7 @@
         </div>
       </div>
       {% end %}
-      
+
       {% if card.leader_skill_id %}
       <div class="skill box {{ enums.attribute(card.attribute) }}">
         <div class="header">
@@ -119,8 +119,34 @@
       </div>
       {% end %}
     </div>
+
+    <div class="va unbordered box {{ enums.attribute(card.attribute) }}" style="width:100%">
+      <div class="header">
+        <span class="item left">{{ _("Lines") }}</span>
+        <span class="item ext"></span>
+      </div>
+      <div class="content">
+        <table style="height:100%" id="va_card_{{ card.id }}" class="table">
+          <tr>
+            <th class="hides_under_mobile">{{ _("Usage") }}</th>
+            <th colspan="2">{{ _("Text") }}</th>
+          </tr>
+          {% for id, usage, index, voice, text, nothing, nothing2 in card.valist %}
+          <tr>
+            <td class="hides_under_mobile">{% raw tlable("USE_TYPE__T_{0}".format(usage)) %}</td>
+            <td>{% raw tlable(text.format("[Producer]")) %}</td>
+            {% if voice %}
+            <td><a style="color:black" class="soundinliner-apply" href="{{ image_host }}/{{ audio(id, usage, index) }}">(listen)</a></td>
+            {% else %}
+            <td>🙁</td>
+            {% end %}
+          </tr>
+          {% end %}
+        </table>
+      </div>
+    </div>
   </div>
-  
+
   <table style="height:100%;display:none" id="raw_card_{{ card.id }}" class="table">
     {% for key, value in card.__dict__.items() %}
     <tr><td>{{ key }}</td><td>{{ value }}</td></tr>

@@ -40,6 +40,16 @@ def icon(css_class):
     return """<div class="icon icon_{0}"></div>""".format(css_class)
 
 
+def audio(object_id, use, index):
+    a = (object_id << 40) | ((use & 0xFF) << 24) | ((index & 0xFF) << 16) | 0x11AB
+    # make everything 8 bytes long for reasons
+    a &= 0xFFFFFFFFFFFFFFFF
+    a ^= 0x1042FC1040200700
+    basename = hex(a)[2:]
+
+    return "va2/{0}.mp3".format(basename)
+
+
 expose_static_json("/suggest",
                    {value.conventional.lower(): [value.conventional, key] for key, value in starlight.names.items()})
 
@@ -247,6 +257,18 @@ class DebugListDatabase(tornado.web.RequestHandler):
 class DebugViewDatabase(tornado.web.RequestHandler):
     def get(self, db):
         loaded = list(starlight.cached_db(starlight.ark_data_path(db)))
+        fields = loaded[0].__class__._fields
+
+        self.set_header("Content-Type", "text/html")
+        self.render("debug_view_database.html", data=loaded,
+                    fields=fields, **self.settings)
+
+
+@route(r"/dbgva/([^/]+)")
+@dev_mode_only
+class DebugViewVA(tornado.web.RequestHandler):
+    def get(self, db):
+        loaded = list(starlight.card_va_by_object_id(int(db)))
         fields = loaded[0].__class__._fields
 
         self.set_header("Content-Type", "text/html")

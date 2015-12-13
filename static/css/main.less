@@ -27,6 +27,7 @@
 
 @box_header_height: 24px;
 @box_header_pad: 4px;
+@hides_under_mobile_threshold: 600px;
 
 * {
   -webkit-font-smoothing: antialiased;
@@ -43,7 +44,7 @@ a:visited {
 }
 
 body {
-  @media screen and (max-width:600px) {
+  @media screen and (max-width:@hides_under_mobile_threshold) {
     margin:0;
   }
   background-color:@main_bg;
@@ -228,7 +229,7 @@ td {
   background-color: white;
   margin-bottom:10px;
 
-  @media screen and (max-width:600px) {
+  @media screen and (max-width:@hides_under_mobile_threshold) {
     -webkit-flex-direction:column;
     flex-direction:column;
   }
@@ -240,7 +241,7 @@ td {
     text-align:center;
     font-size:0;
 
-    @media screen and (max-width:600px) {
+    @media screen and (max-width:@hides_under_mobile_threshold) {
       width:100%;
     }
 
@@ -397,7 +398,7 @@ td {
     }
 
     & > .content {
-      padding:0 5px;
+      padding:10px 5px 0;
 
       &.tight {
         padding:0;
@@ -447,6 +448,15 @@ span.var {
     width:~"calc(50% - 13px)";
   }
 
+  &.unbordered {
+    .content {
+      padding:0;
+    }
+    margin:0;
+    border-left:none;
+    border-right:none
+  }
+
   & > .header {
     color:white;
     height:@box_header_height;
@@ -479,8 +489,9 @@ span.var {
   &.Cute {
     border-color:darken(@cute_colour, 10%);
 
-    & > .header {
+    & > .header, .table th {
       background-color: @cute_colour;
+      color:white;
       .left { background-color: darken(@cute_colour, 10%); }
       .ext { border-top-color: darken(@cute_colour, 10%); border-left-color: darken(@cute_colour, 10%); }
     }
@@ -488,8 +499,9 @@ span.var {
   &.Cool {
     border-color:darken(@cool_colour, 10%);
 
-    & > .header {
+    & > .header, .table th {
       background-color: @cool_colour;
+      color:white;
       .left { background-color: darken(@cool_colour, 10%); }
       .ext { border-top-color: darken(@cool_colour, 10%); border-left-color: darken(@cool_colour, 10%); }
     }
@@ -497,7 +509,7 @@ span.var {
   &.Passion {
     border-color:lighten(@passion_colour, 10%);
 
-    & > .header {
+    & > .header, .table th {
       color:#222;
       background-color: @passion_colour;
       .left { background-color: lighten(@passion_colour, 10%); }
@@ -595,4 +607,10 @@ span.var {
   font-size:13px;
   color:white;
   text-decoration:none;
+}
+
+@media screen and (max-width: @hides_under_mobile_threshold) {
+  .hides_under_mobile {
+    display:none;
+  }
 }

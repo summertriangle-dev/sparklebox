@@ -111,6 +111,7 @@ def main():
                                           starlight=starlight,
                                           tlable=endpoints.tlable,
                                           icon=endpoints.icon,
+                                          audio=endpoints.audio,
                                           analytics=analytics.Analytics(),
                                           version=version)
     http_server = tornado.httpserver.HTTPServer(application, xheaders=1)
