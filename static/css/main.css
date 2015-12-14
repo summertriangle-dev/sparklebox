@@ -109,6 +109,8 @@ div.stdcon {
   color: black;
   font-size: 16px;
   border-collapse: collapse;
+  height: 100%;
+  width: 100%;
 }
 .table td {
   border: 1px solid #ddd;
@@ -116,6 +118,10 @@ div.stdcon {
 }
 .table tr:nth-child(even) {
   background-color: #eee;
+}
+th {
+  font-size: 70%;
+  text-transform: uppercase;
 }
 td.vocal,
 td.vocal span {
@@ -374,10 +380,6 @@ td.Passion a {
 .carcon .card_right td {
   padding: 3px 6px;
 }
-.carcon .card_right th {
-  font-size: 70%;
-  text-transform: uppercase;
-}
 .carcon .card_right .stats.box {
   width: 100%;
   border-left: 0;
@@ -444,16 +446,16 @@ span.var {
   border-color: #cc035d;
 }
 .box.Cute > .header,
-.box.Cute .table th {
+.box.Cute th {
   background-color: #fb0774;
   color: white;
 }
 .box.Cute > .header .left,
-.box.Cute .table th .left {
+.box.Cute th .left {
   background-color: #cc035d;
 }
 .box.Cute > .header .ext,
-.box.Cute .table th .ext {
+.box.Cute th .ext {
   border-top-color: #cc035d;
   border-left-color: #cc035d;
 }
@@ -490,6 +492,23 @@ span.var {
 .box.Passion .table th .ext {
   border-top-color: #fdbd58;
   border-left-color: #fdbd58;
+}
+.box.black {
+  border-color: #5e5e5e;
+}
+.box.black > .header,
+.box.black .table th {
+  color: white;
+  background-color: #2b2b2b;
+}
+.box.black > .header .left,
+.box.black .table th .left {
+  background-color: #5e5e5e;
+}
+.box.black > .header .ext,
+.box.black .table th .ext {
+  border-top-color: #5e5e5e;
+  border-left-color: #5e5e5e;
 }
 .box > .content {
   padding: 5px;

@@ -10,8 +10,10 @@
     <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
     {% end %}
     <link rel="stylesheet" type="text/css" href="{{ image_host }}/icons2/icons.css" />
-    <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
+
     <script type="text/javascript" src="{{ handler.static_url("js/level.js") }}"></script>
+    <script type="text/javascript" src="{{ handler.static_url("js/soundinliner.js") }}"></script>
+    <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
 </head>
 
 <body>
@@ -26,7 +28,7 @@
         {% end %}
     </div>
     {% include footer.html %}
-    
-    <script>tlinject_activate()</script>
+
+    <script>tlinject_activate(); sound_inliner_init();</script>
 </body>
 </html>

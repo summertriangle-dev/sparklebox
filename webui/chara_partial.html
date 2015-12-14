@@ -5,7 +5,7 @@
             <rb>{{ kanji }}</rb> <rp>(</rp><rt>{{ furi }}</rt><rp>)</rp>
         </ruby>
         {% end %}
-    
+
         (<span class="english">{{ chara.conventional }}</span>)
     </div>
     <div class="infor_slab">
@@ -14,6 +14,31 @@
         and the
         <a href="https://hpt.moe/deresute/{{ chara.conventional.replace(" ", "_") }}">English Deresute Wiki</a>.
     </div>
+</div>
+<div class="va unbordered box black" style="width:100%">
+  <div class="header">
+    <span class="item left">{{ _("Lines") }}</span>
+    <span class="item ext"></span>
+  </div>
+  <div class="content">
+    <table style="height:100%" id="va_chara_{{ chara.chara_id }}" class="table">
+      <tr>
+        <th class="hides_under_mobile">{{ _("Usage") }}</th>
+        <th colspan="2">{{ _("Text") }}</th>
+      </tr>
+      {% for id, usage, index, voice, text, nothing, nothing2 in chara.valist %}
+      <tr>
+        <td class="hides_under_mobile">{% raw tlable("USE_TYPE__T_{0}".format(usage)) %}</td>
+        <td>{% raw tlable(text.format("[Producer]")) %}</td>
+        {% if voice %}
+        <td><a style="color:black" class="soundinliner-apply" href="{{ image_host }}/{{ audio(id, usage, index) }}">(listen)</a></td>
+        {% else %}
+        <td>🙁</td>
+        {% end %}
+      </tr>
+      {% end %}
+    </table>
+  </div>
 </div>
 <div id="raw_chara_{{ chara_id }}" style="display:none" class="stdcon table">
     <table style="height:100%">

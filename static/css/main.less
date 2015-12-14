@@ -153,6 +153,9 @@ div.stdcon {
   font-size:16px;
   border-collapse:collapse;
 
+  height:100%;
+  width:100%;
+
   td {
     border:1px solid #ddd;
     padding:3px 6px;
@@ -160,6 +163,11 @@ div.stdcon {
   tr:nth-child(even) {
     background-color:#eee;
   }
+}
+
+th {
+  font-size:70%;
+  text-transform:uppercase;
 }
 
 td {
@@ -409,11 +417,6 @@ td {
       padding:3px 6px;
     }
 
-    th {
-      font-size:70%;
-      text-transform:uppercase;
-    }
-
     .stats.box {
       width:100%;
       border-left:0;
@@ -489,7 +492,7 @@ span.var {
   &.Cute {
     border-color:darken(@cute_colour, 10%);
 
-    & > .header, .table th {
+    & > .header, th {
       background-color: @cute_colour;
       color:white;
       .left { background-color: darken(@cute_colour, 10%); }
@@ -514,6 +517,16 @@ span.var {
       background-color: @passion_colour;
       .left { background-color: lighten(@passion_colour, 10%); }
       .ext { border-top-color: lighten(@passion_colour, 10%); border-left-color: lighten(@passion_colour, 10%); }
+    }
+  }
+  &.black {
+    border-color:lighten(#444, 10%);
+
+    & > .header, .table th {
+      color:white;
+      background-color: darken(#444, 10%);;
+      .left { background-color: lighten(#444, 10%); }
+      .ext { border-top-color: lighten(#444, 10%); border-left-color: lighten(#444, 10%); }
     }
   }
 
