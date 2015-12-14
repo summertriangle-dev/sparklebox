@@ -1,0 +1,13 @@
+want "sound"
+filter_with "myfunc"
+
+myfunc() {
+    case $1 in
+    v/*)
+        return 0 ;;
+    *)
+        return 1 ;;
+    esac
+}
+
+flush
