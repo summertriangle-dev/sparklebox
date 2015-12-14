@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # name_finder uses ENAMDICT to split character names.
-# It is currently unsure about ~7% of names in the current StarlightStage 
+# It is currently unsure about ~7% of names in the current StarlightStage
 # ark (12 Oct 2015.)
 # Copyright 2015 The Holy Constituency of the Summer Triangle.
 # All rights reserved.
@@ -18,7 +18,7 @@ from pprint import pprint
 CLASS_FAMILY_NAME = set("sup")
 CLASS_GIVEN_NAME = set("mfgu")
 AX_PARSE = re.compile(r"/\(([a-z\,]+)\) (.+)/")
-FIX_PAT = re.compile(r"([みきりし][ゅょゃ])う")
+FIX_PAT = re.compile(r"([みきりしひ][ゅょゃ])う")
 Word = namedtuple("Word", ["kanji", "kana", "classifier", "roman"])
 _Search = namedtuple("Search", ["kanji", "kana", "real_kanji"])
 
@@ -48,12 +48,12 @@ def Search(kanji, kana):
 class EnamdictHandle(object):
     def __init__(self, file):
         self.filename = file
-    
+
     @staticmethod
     def parse_word(line):
         piv = line.index("/")
         assert piv > 0
-        
+
         content = line[:piv - 1]
         ax = line[piv:]
         if "[" in content:
@@ -62,11 +62,11 @@ class EnamdictHandle(object):
         else:
             kanji = content
             kana = content
-        
+
         ax_info = AX_PARSE.match(ax)
         if not ax_info:
             return None
-        
+
         classifier = set(ax_info.group(1).split(","))
         roman = ax_info.group(2)
         return Word(kanji, kana, classifier, roman)
@@ -88,7 +88,7 @@ class EnamdictHandle(object):
             t = iter(dictionary)
             # discard first line (header line)
             next(t)
-            
+
             has_seen = 0
             for line in t:
                 # make search faster by discarding unwanted result
@@ -100,7 +100,7 @@ class EnamdictHandle(object):
                 word = self.parse_word(line.strip())
                 if word and self.is_word_matching(word, search, CLASS_FAMILY_NAME):
                     positive_results.append(word)
-        
+
         # we should filter on exact kana, since we have it anyway
         really_positive_results = []
         for word in positive_results:
@@ -113,7 +113,7 @@ class EnamdictHandle(object):
             t = iter(dictionary)
             # discard first line (header line)
             next(t)
-        
+
             has_seen = 0
             has_result = 0
             for line in t:
@@ -127,7 +127,7 @@ class EnamdictHandle(object):
                 if word and kanji_str == word.kanji and (word.kana == kana_str or word.kanji == kana_str):
                     yield word._replace(kana=kana_str)
                     has_result = 1
-            
+
         if not has_result:
             #print("warning: no given names found! yielding inferred word...")
             yield Word(kanji_str, kana_str, set("i"), "")
@@ -154,22 +154,22 @@ if __name__ == '__main__':
     except IOError:
         have_names = {}
     charas = csvloader.load_keyed_db_file("_data/ark/chara_data.txt")
-    
+
     missing = set(charas.keys()) - set(have_names.keys())
-    
+
     f = open("_data/private/names.csv", "w")
     c = csv.writer(f, delimiter=",", quotechar="\"", quoting=csv.QUOTE_NONNUMERIC, lineterminator="\n")
     c.writerow(("chara_id", "kanji", "kanji_spaced", "kana_spaced", "conventional"))
-    
+
     for key in sorted(missing):
         chara = charas[key]
         print("---", chara.name, "----------")
         res = EnamdictHandle(sys.argv[1]).find_name(chara.name, chara.name_kana)
-        
+
         if not res:
             print("warning: No solution found at all")
             res = [(Word(chara.name, chara.name_kana, set(), ""),)]
-        
+
         try:
             # get rid of u vowel in certain conditions to stay in line with official romanization...
             roma = " ".join(to_roma.consume_hiragana(final_fixups(x.kana)) for x in res[0])
@@ -187,7 +187,7 @@ if __name__ == '__main__':
         print("ROMAJI:      ", roma.title())
         print("KANA_SPACED: ", " ".join(x.kana for x in res[0]))
         print("KANJI_SPACED:", " ".join(x.kanji for x in res[0]))
-        
+
         have_names[key] = (key, chara.name, " ".join(x.kanji for x in res[0]), " ".join(x.kana for x in res[0]), roma.title())
 
     for key in sorted(have_names.keys()):
