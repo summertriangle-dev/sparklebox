@@ -446,16 +446,16 @@ span.var {
   border-color: #cc035d;
 }
 .box.Cute > .header,
-.box.Cute th {
+.box.Cute .table th {
   background-color: #fb0774;
   color: white;
 }
 .box.Cute > .header .left,
-.box.Cute th .left {
+.box.Cute .table th .left {
   background-color: #cc035d;
 }
 .box.Cute > .header .ext,
-.box.Cute th .ext {
+.box.Cute .table th .ext {
   border-top-color: #cc035d;
   border-left-color: #cc035d;
 }
