@@ -126,12 +126,13 @@
         <span class="item ext"></span>
       </div>
       <div class="content">
-        <table style="height:100%" id="va_card_{{ card.id }}" class="table">
+        {% for _card in chain %}
+        <table style="height:100%" id="va_card_{{ _card.id }}" class="table">
           <tr>
             <th class="hides_under_mobile">{{ _("Usage") }}</th>
             <th colspan="2">{{ _("Text") }}</th>
           </tr>
-          {% for id, usage, index, voice, text, nothing, nothing2 in card.valist %}
+          {% for id, usage, index, voice, text, nothing, nothing2 in _card.valist %}
           <tr>
             <td class="hides_under_mobile">{% raw tlable("USE_TYPE__T_{0}".format(usage)) %}</td>
             <td>{% raw tlable(text.format("[Producer]")) %}</td>
@@ -143,6 +144,7 @@
           </tr>
           {% end %}
         </table>
+        {% end %}
       </div>
     </div>
   </div>

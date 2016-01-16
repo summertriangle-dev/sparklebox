@@ -32,6 +32,7 @@ def tlable_make_assr(text):
 
 
 def tlable(text):
+    text = text.replace("\n", " ")
     return """<span class="tlable" data-summertriangle-assr="{1}">{0}</span>""".format(
         tornado.escape.xhtml_escape(text), tlable_make_assr(text))
 
