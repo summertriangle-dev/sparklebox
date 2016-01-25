@@ -97,6 +97,29 @@ class Home(tornado.web.RequestHandler):
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 
+@route(r"/_evt")
+class EventD(tornado.web.RequestHandler):
+    def get(self):
+        self.set_header("Content-Type", "text/plain; charset=utf-8")
+
+        eda = starlight.cached_db(starlight.ark_data_path("event_data.txt"))
+        now = pytz.utc.localize(datetime.utcnow())
+        for event in eda:
+            if (now > JST.localize(datetime.strptime(event.event_start, "%Y-%m-%d %H:%M:%S")) and
+                now < JST.localize(datetime.strptime(event.event_end, "%Y-%m-%d %H:%M:%S"))):
+                break
+        else:
+            event = None
+
+        # FIXME this is ridiculous. i just want to convert a fucking timestamp to a fucking UTC timestamp.
+        if event:
+            evedt = JST.localize(datetime.strptime(event.event_end, "%Y-%m-%d %H:%M:%S"))
+            self.set_header("Content-Type", "text/plain; charset=utf-8")
+            self.write("{1}".format(event.name, time.strftime("%B %d, %Y %H:%M", evedt.timetuple())))
+        else:
+            self.write("None")
+
+
 @route(r"/skill_table")
 class SkillTable(tornado.web.RequestHandler):
     def get(self):
