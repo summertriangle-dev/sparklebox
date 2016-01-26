@@ -1,5 +1,6 @@
 #!/bin/bash
 shopt -s nullglob
+set -e
 
 MANIFESTS="3d anime atlas banner bg campaign card cardsm chara comic dailybonus gachaselect item jacket live loginbonus master musicscores room skill story tutorial"
 
@@ -9,15 +10,58 @@ if [[ -z "$VERSION" ]]; then
     VERSION=10011200
 fi
 
-BASEURL="http://storage.game.starlight-stage.jp/dl/$VERSION/High/AssetBundles/Android"
+DBMANIFEST="http://storage.game.starlight-stage.jp/dl/$VERSION/manifests"
+ASSETBBASEURL="http://storage.game.starlight-stage.jp/dl/$VERSION/High/AssetBundles/Android"
+SOUNDBASEURL="http://storage.game.starlight-stage.jp/dl/$VERSION/High/Sound/Common"
+SQLBASEURL="http://storage.game.starlight-stage.jp/dl/$VERSION/Generic/Blob"
 
 SCRIPT_PATH=`dirname "$0"`; SCRIPT_PATH=`eval "cd \"$SCRIPT_PATH\" && pwd"`
+LZ4ER="$SCRIPT_PATH/bin/lz4er"
 CURLFLAGS="-#"
 
+# We can reuse these.
+TMP_COMPRESSED=$(mktemp -t 'help')
+TMP_SQLITE3=$(mktemp -t 'ayylmao')
+touch "$TMP_COMPRESSED"
+touch "$TMP_SQLITE3"
+cleanup() {
+    rm "$TMP_SQLITE3" "$TMP_COMPRESSED"
+}
+trap cleanup EXIT
+
 get_manifest() {
-    local MANIFEST=$1; shift
-    >&2 echo "===> Downloading manifest for $MANIFEST."
-    curl $CURLFLAGS "$BASEURL/manifest/${MANIFEST}_assetmanifest" | cut -f 1-2 -d, | tr , " "
+    MANIFEST=$1; shift
+
+    if [ ! -s "$TMP_SQLITE3" ]; then
+        >&2 printf "===> Figuring out where the main manifest is... "
+        local FILENAME=$(curl --silent $DBMANIFEST/all_dbmanifest | egrep 'Android,High,High$' | cut -f 1 -d,)
+        >&2 echo $FILENAME.
+
+        >&2 echo "===> Downloading the main manifest."
+        curl $CURLFLAGS "$DBMANIFEST/$FILENAME" -o "$TMP_COMPRESSED"
+        $LZ4ER "$TMP_COMPRESSED" > "$TMP_SQLITE3"
+    else
+        >&2 echo "===> Using cached manifest from earlier."
+    fi
+
+    if [ "$MANIFEST" == "@" ]; then
+        sqlite3 "$TMP_SQLITE3" --separator " " "SELECT name, hash FROM manifests"
+    else
+        sqlite3 "$TMP_SQLITE3" --separator " " "SELECT name, hash FROM manifests WHERE name LIKE '${MANIFEST}\\_%' ESCAPE '\\'"
+    fi
+    # sqlite3 "$TMP_SQLITE3"
+}
+
+url() {
+    local FILE=$1; shift
+    case $FILE in
+    *.unity3d)
+        echo "$ASSETBBASEURL/$FILE.lz4" ;;
+    *.bdb)
+        echo "$SQLBASEURL/$FILE.lz4" ;;
+    *.acb)
+        echo "$SOUNDBASEURL/$FILE" ;;
+    esac
 }
 
 download_new_file() {
@@ -35,7 +79,7 @@ download_new_file() {
     mkdir -p "$(dirname $DESTINATION)/.shadow"
     > "$(dirname $DESTINATION)/.shadow/$(basename $DESTINATION)" openssl md5 < $DESTINATION
 
-    >&2 $SCRIPT_PATH/bin/ripper.sh $RIP_DIR $DESTINATION
+    >&2 $SCRIPT_PATH/bin/ripper.sh $RIP_DIR _static $DESTINATION
 
     echo $DESTINATION
 }
@@ -59,8 +103,9 @@ check_file_wrapper() {
     local FILENAME=$1; shift
     local MD5=$1; shift
 
-    local SCRUBBED_FILENAME=$(echo $FILENAME | sed 's|/|_|g')
-    check_file $STORE/$SCRUBBED_FILENAME $EXPECT_MD5 || download_new_file $BASEURL/$FILE $STORE/$SCRUBBED_FILENAME $DECODED
+    local URL=$(url $FILE)
+    local SCRUBBED_FILENAME=$(echo $(basename $URL) | sed 's|/|_|g')
+    check_file $STORE/$SCRUBBED_FILENAME $EXPECT_MD5 || download_new_file $URL $STORE/$SCRUBBED_FILENAME $DECODED
 }
 
 ### tab management
@@ -89,6 +134,7 @@ source_job() {
             local STORE=$1; shift
             local DECODED=$1; shift
 
+            echo "enter process_one"
             while read FILE EXPECT_MD5; do
                 if [[ "x$FILE" != "x" ]]; then
 
@@ -120,7 +166,7 @@ if [[ "$1" = "dry-run" ]]; then
     shift
 fi
 
->&2 echo ":: GX 1. at $(hostname) $(date) (dry run: $DRY_RUN)"
+>&2 echo ":: GX 2. at $(hostname) $(date) (dry run: $DRY_RUN)"
 
 if [[ "$#" == "0" ]]; then
     for TAB in *.job; do
