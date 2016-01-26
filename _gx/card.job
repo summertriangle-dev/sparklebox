@@ -31,6 +31,6 @@ want "chara"; filter_with "get_bases_only"
 
 flush
 
-want "cardsm master story"; filter_with "any"
+want "cardsm story"; filter_with "any"
 
 flush
