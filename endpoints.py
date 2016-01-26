@@ -70,13 +70,13 @@ def sieve_diff_contents(de):
             key = ["n", "n", "r", "r", "sr", "sr", "ssr", "ssr"][starlight.card_db[card_id].rarity - 1]
             ret[key].append(card_id)
     return {"date": de["date"], "cids": ret}
-event_cards = [x.reward_id for x in starlight.cached_db(starlight.ark_data_path("event_available.txt"))]
+event_cards = [x.reward_id for x in starlight.cached_db(starlight.ark_data_path("event_available.csv"))]
 HISTORY = [sieve_diff_contents(x) for x in reversed(starlight.jsonl(starlight.private_data_path("history.json")))]
 
 @route(r"/")
 class Home(tornado.web.RequestHandler):
     def get(self):
-        eda = starlight.cached_db(starlight.ark_data_path("event_data.txt"))
+        eda = starlight.cached_db(starlight.ark_data_path("event_data.csv"))
         now = pytz.utc.localize(datetime.utcnow())
         for event in eda:
             if (now > JST.localize(datetime.strptime(event.event_start, "%Y-%m-%d %H:%M:%S")) and
@@ -102,7 +102,7 @@ class EventD(tornado.web.RequestHandler):
     def get(self):
         self.set_header("Content-Type", "text/plain; charset=utf-8")
 
-        eda = starlight.cached_db(starlight.ark_data_path("event_data.txt"))
+        eda = starlight.cached_db(starlight.ark_data_path("event_data.csv"))
         now = pytz.utc.localize(datetime.utcnow())
         for event in eda:
             if (now > JST.localize(datetime.strptime(event.event_start, "%Y-%m-%d %H:%M:%S")) and
@@ -359,14 +359,14 @@ class ListScripts(tornado.web.RequestHandler):
 
     def story_exists(self, entry):
         absolute = starlight.story_data_path(
-            "storydata_{0}.txt".format(entry.dialog_id))
+            "storydata_{0}.csv".format(entry.dialog_id))
         if not os.path.exists(absolute):
             return 0
         return 1
 
     def get(self):
         gen = sorted(starlight.cached_db(starlight.ark_data_path(
-            "story_detail.txt")), key=lambda x: (x.story_detail_type, x.dialog_id))
+            "story_detail.csv")), key=lambda x: (x.story_detail_type, x.dialog_id))
 
         self.set_header("Content-Type", "text/html; charset=utf-8")
         self.write("<pre>")
@@ -395,7 +395,7 @@ class GetScript(tornado.web.RequestHandler):
             ap.NAME_MAP = {}
 
         absolute = starlight.story_data_path(
-            "storydata_{0}.txt".format(story_id))
+            "storydata_{0}.csv".format(story_id))
         if not os.path.exists(absolute):
             self.set_status(404)
             self.write("Script not found.")

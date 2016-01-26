@@ -23,6 +23,7 @@ def load_db_file(file, **kwargs):
     with open(file, "r") as cin:
         reader = csv.reader(cin)
         fields = next(reader)
+        raw_field_len = len(fields)
         # print(fields)
         the_raw_type = namedtuple("_" + class_name, fields)
 
@@ -32,7 +33,7 @@ def load_db_file(file, **kwargs):
 
         the_type = namedtuple(class_name, fields)
 
-        for val_list in reader:
+        for val_list in filter(lambda list: len(list) == raw_field_len, reader):
             temp_obj = the_raw_type(*map(clean_value, val_list))
             try:
                 extvalues = tuple(kwargs[key](temp_obj) for key in keys)

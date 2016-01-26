@@ -153,7 +153,7 @@ if __name__ == '__main__':
         have_names = csvloader.load_keyed_db_file("_data/private/names.csv")
     except IOError:
         have_names = {}
-    charas = csvloader.load_keyed_db_file("_data/ark/chara_data.txt")
+    charas = csvloader.load_keyed_db_file("_data/ark/chara_data.csv")
 
     missing = set(charas.keys()) - set(have_names.keys())
 

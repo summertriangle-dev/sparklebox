@@ -3,8 +3,8 @@ from .dataloader import *
 # redefined due to nested imports
 ark_data_path = functools.partial(os.path.join, "_data", "ark")
 dur_def = csvloader.load_keyed_db_file(
-    ark_data_path("available_time_type.txt"))
-prob_def = csvloader.load_keyed_db_file(ark_data_path("probability_type.txt"))
+    ark_data_path("available_time_type.csv"))
+prob_def = csvloader.load_keyed_db_file(ark_data_path("probability_type.csv"))
 
 # reverse engineered from uh, 1.2.0?
 def _real_scale_skill_value(max_, min_, lv):

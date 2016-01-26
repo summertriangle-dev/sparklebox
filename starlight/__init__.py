@@ -60,20 +60,20 @@ NAME_ONLY_REGEX = r"^(?:［.+］)?(.+)$"
 # evolve_chains=evolutionary_chains,
 # card_evolve_chain=chains_by_card,
 
-card_comments = list(csvloader.load_db_file(ark_data_path("card_comments.txt")))
+card_comments = list(csvloader.load_db_file(ark_data_path("card_comments.csv")))
 card_va_by_object_id = lambda x: filter(lambda y: y.id == x, card_comments)
 
 names = cached_keyed_db(private_data_path("names.csv"))
-skills = csvloader.load_keyed_db_file(ark_data_path("skill_data.txt"))
-lead_skills = csvloader.load_keyed_db_file(ark_data_path("leader_skill_data.txt"))
-rarity_dep = csvloader.load_keyed_db_file(ark_data_path("card_rarity.txt"))
+skills = csvloader.load_keyed_db_file(ark_data_path("skill_data.csv"))
+lead_skills = csvloader.load_keyed_db_file(ark_data_path("leader_skill_data.csv"))
+rarity_dep = csvloader.load_keyed_db_file(ark_data_path("card_rarity.csv"))
 
-chara_db = csvloader.load_keyed_db_file(ark_data_path("chara_data.txt"),
+chara_db = csvloader.load_keyed_db_file(ark_data_path("chara_data.csv"),
     kanji_spaced=lambda obj: names.get(obj.chara_id).kanji_spaced,
     kana_spaced=lambda obj: names.get(obj.chara_id).kana_spaced,
     conventional=lambda obj: names.get(obj.chara_id).conventional,
     valist=lambda obj: list(card_va_by_object_id(obj.chara_id)))
-card_db = csvloader.load_keyed_db_file(ark_data_path("card_data.txt"),
+card_db = csvloader.load_keyed_db_file(ark_data_path("card_data.csv"),
     chara=lambda obj: chara_db.get(obj.chara_id),
     has_spread=lambda obj: obj.rarity > 4,
     name_only=lambda obj: re.match(NAME_ONLY_REGEX, obj.name).group(1),
