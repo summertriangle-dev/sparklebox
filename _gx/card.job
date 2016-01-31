@@ -6,6 +6,9 @@ wanted_card_things() {
     card_*_xl*)
         return 0
         ;;
+    card_*_sm*)
+        return 0
+        ;;
     *)
         return 1
         ;;
@@ -31,6 +34,6 @@ want "chara"; filter_with "get_bases_only"
 
 flush
 
-want "cardsm story"; filter_with "any"
+want "story"; filter_with "any"
 
 flush
