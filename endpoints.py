@@ -9,10 +9,9 @@ import hashlib
 import base64
 import time
 import pytz
+import itertools
 from datetime import datetime
 from calendar import timegm
-
-JST = pytz.timezone("Asia/Tokyo")
 
 try:
     import ap
@@ -75,25 +74,40 @@ HISTORY = [sieve_diff_contents(x) for x in reversed(starlight.jsonl(starlight.pr
 
 @route(r"/")
 class Home(tornado.web.RequestHandler):
+    gachas = list(filter(lambda x: sum(y.limited_flag for y in x.clist), # note: gachas with limited cards
+                         starlight.cached_db(starlight.ark_data_path("gacha_data.csv"),
+                                             # gacha_available_t -> reward_id...
+                                             clist=lambda obj: list(filter(lambda x: obj.id == x.gacha_id and x.limited_flag,
+                                                 starlight.cached_db(starlight.ark_data_path("gacha_available.csv")))),
+                                             # int
+                                             end_t=lambda obj: timegm(starlight.JST(obj.end_date).timetuple()) )))
+
     def get(self):
         eda = starlight.cached_db(starlight.ark_data_path("event_data.csv"))
         now = pytz.utc.localize(datetime.utcnow())
         for event in eda:
-            if (now > JST.localize(datetime.strptime(event.event_start, "%Y-%m-%d %H:%M:%S")) and
-                now < JST.localize(datetime.strptime(event.event_end, "%Y-%m-%d %H:%M:%S"))):
+            if starlight.JST(event.event_start) < now < starlight.JST(event.event_end):
                 break
         else:
             event = None
 
         # FIXME this is ridiculous. i just want to convert a fucking timestamp to a fucking UTC timestamp.
         if event:
-            evedt = JST.localize(datetime.strptime(event.event_end, "%Y-%m-%d %H:%M:%S")).astimezone(pytz.utc)
-            delta = evedt - pytz.utc.localize(datetime.utcfromtimestamp(0))
+            evedt = starlight.JST(event.event_end)
             event_end = timegm(evedt.timetuple())
         else:
             event_end = None
 
-        self.render("main.html", history=HISTORY, has_event=bool(event), event=event, event_end=event_end, **self.settings)
+        local_gachas = list(filter(lambda x: starlight.JST(x.start_date) < now < starlight.JST(x.end_date), self.gachas))
+        card_ids = itertools.chain( * ([x.reward_id for x in llist] for llist in [x.clist for x in local_gachas]) )
+        s_cards = {idp: starlight.evolutionary_chains[x.series_id][0]
+                   for idp, x in filter(bool, [(x, starlight.card_db.get(x)) for x in card_ids])}
+
+        self.render("main.html", history=HISTORY,
+            has_event=bool(event),
+            event=event,
+            event_end=event_end,
+            gachas={"lg": local_gachas, "ci": s_cards}, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 
@@ -105,20 +119,25 @@ class EventD(tornado.web.RequestHandler):
         eda = starlight.cached_db(starlight.ark_data_path("event_data.csv"))
         now = pytz.utc.localize(datetime.utcnow())
         for event in eda:
-            if (now > JST.localize(datetime.strptime(event.event_start, "%Y-%m-%d %H:%M:%S")) and
-                now < JST.localize(datetime.strptime(event.event_end, "%Y-%m-%d %H:%M:%S"))):
+            if starlight.JST(event.event_start) < now < starlight.JST(event.event_end):
                 break
         else:
             event = None
 
         # FIXME this is ridiculous. i just want to convert a fucking timestamp to a fucking UTC timestamp.
         if event:
-            evedt = JST.localize(datetime.strptime(event.event_end, "%Y-%m-%d %H:%M:%S"))
+            evedt = starlight.JST(event.event_end, to_utc=0)
             self.set_header("Content-Type", "text/plain; charset=utf-8")
             self.write("{1}".format(event.name, time.strftime("%B %d, %Y %H:%M", evedt.timetuple())))
         else:
             self.write("None")
 
+
+@route(r"/gacha")
+class GachaTable(tornado.web.RequestHandler):
+    def get(self):
+        self.set_header("Content-Type", "text/plain; charset=utf-8")
+        self.write("Sorry, I'll get around to implementing this soon...")
 
 @route(r"/skill_table")
 class SkillTable(tornado.web.RequestHandler):
@@ -306,7 +325,7 @@ class DebugViewTLs(tornado.web.RequestHandler):
     def get(self):
         #chara_id = int(chara_id)
         gen = list((x.key, x.english, x.submitter, time.strftime("%c", time.gmtime(x.submit_utc)))
-            for x in self.settings["tle"].all())
+            for x in filter(lambda x: x.key != x.english, self.settings["tle"].all()))
         fields = ("key", "english", "sender", "ts")
 
         self.set_header("Content-Type", "text/html")

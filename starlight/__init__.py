@@ -3,6 +3,7 @@ from collections import defaultdict
 
 from .dataloader import *
 from . import en
+from .formulas import JST
 
 # chains
 def discover_evolutionary_chains(card_list):

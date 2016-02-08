@@ -67,25 +67,33 @@ function pad_digits(number, digits) {
     return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
 }
 
+function ec_count(that) {
+    var d = new Date()
+    var msLeft = (parseFloat(that.getAttribute("data-count-to")) * 1000) - d.getTime()
+    var seconds = msLeft / 1000
+    var secondsOnly = seconds % 60
+    var minutes = (seconds - secondsOnly) / 60
+    var minutesOnly = minutes % 60
+    var hours = (minutes - minutesOnly) / 60
+    var hoursOnly = hours % 24
+    var days = (hours - hoursOnly) / 24
+
+    var s = pad_digits(hoursOnly, 2) + ":" + pad_digits(minutesOnly, 2) + ":" + pad_digits(secondsOnly | 0, 2)
+    if (days) {
+        s = days + (days == 1? " day, " : " days, ") + s
+    }
+    that.textContent = s
+}
+
 function event_counter_init() {
-    document.getElementById("event_counter_container").style.display = "block"
-    var ec = document.getElementById("event_counter")
-    setInterval(function() {
-        var d = new Date()
-        var msLeft = (parseFloat(ec.getAttribute("data-event-end")) * 1000) - d.getTime()
-        var seconds = msLeft / 1000
-        var secondsOnly = seconds % 60
-        var minutes = (seconds - secondsOnly) / 60
-        var minutesOnly = minutes % 60
-        var hours = (minutes - minutesOnly) / 60
-        var hoursOnly = hours % 24
-        var days = (hours - hoursOnly) / 24
-
-        var s = pad_digits(hoursOnly, 2) + ":" + pad_digits(minutesOnly, 2) + ":" + pad_digits(secondsOnly | 0, 2)
-        if (days) {
-            s = days + (days == 1? " day, " : " days, ") + s
-        }
-        ec.textContent = s
-    }, 500)
-
+    if (document.getElementById("event_counter_container"))
+        document.getElementById("event_counter_container").style.display = "block"
+    var ec = document.querySelectorAll(".counter");
+    if (ec.length) {
+        setInterval(function() {
+            for (var i = 0; i < ec.length; i++) {
+                ec_count(ec[i]);
+            }
+        }, 500);
+    }
 }

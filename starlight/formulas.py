@@ -1,4 +1,7 @@
 from .dataloader import *
+from datetime import datetime
+from pytz import utc, timezone
+_JST = timezone("Asia/Tokyo")
 
 # redefined due to nested imports
 ark_data_path = functools.partial(os.path.join, "_data", "ark")
@@ -31,3 +34,11 @@ def skill_dur(typ):
         typ].available_time_min
     return "{0}..{1}".format(_scale_skill_value(maxv, minv, 0),
                              _scale_skill_value(maxv, minv, 9))
+
+
+def JST(date, to_utc=1):
+    time = _JST.localize(datetime.strptime(date, "%Y-%m-%d %H:%M:%S"))
+    if utc:
+        return time.astimezone(utc)
+    else:
+        return time

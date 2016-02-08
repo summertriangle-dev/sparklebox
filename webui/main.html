@@ -18,7 +18,7 @@
 <body>
   <div class="container" style="max-width:800px">
     <div class="welcome_spec" onclick="alert('mon dieu comment est-ce venu ici je ne suis pas compétent avec l\'ordinateur')">
-      <img class="chara_image" width="431" height="400" src="{{ image_host }}/special/kokomi.png" />
+      <img class="chara_image" width="308" height="416" src="{{ image_host }}/special/sakus.png" />
       <!-- div class="riinaface" style="background-image:url({{ image_host }}/special/dari{{ random.randint(1, 5) }}.png)"></div-->
     </div>
     <input type="text" id="search" placeholder="{{ _("Names") }}" onkeyup="suggest(this, this.value)">
@@ -27,21 +27,44 @@
 
   {% if has_event %}
   <div id="event_counter_container" class="container" style="max-width:800px;display:none">
-    <div class="box Cool" style="margin:0;width:100%">
+    <div class="box Cute" style="margin:0;width:100%">
       <div class="header">
         <span class="item left">Current event</span>
         <span class="item ext"></span>
       </div>
       <div class="content" style="background:#444;text-align:center;">
         <p style="margin:0;">"{% raw tlable(event.name) %}" ends in</p>
-        <p id="event_counter" style="font-size:200%;font-weight:bold;margin:6px 0" data-event-end="{{ event_end }}">
+        <p class="counter" style="font-size:200%;font-weight:bold;margin:6px 0" data-count_to="{{ event_end }}">
           Nothing to see here.
         </p>
         <p style="margin:0;">Better start spending.</p>
       </div>
     </div>
   </div>
-  <script> event_counter_init(); </script>
+  {% end %}
+
+  {% for gacha in gachas["lg"] %}
+  <div id="lim_gacha_container" class="container" style="max-width:800px">
+    <div class="box Cute" style="margin:0;width:100%">
+      <div class="header">
+        <span class="item left">Limited availability!</span>
+        <span class="item ext"></span>
+        <span class="item right">expires in <span class="counter" data-count-to="{{ gacha.end_t }}">ALLAH</span></span>
+      </div>
+      <div class="content" style="background:#444;text-align:left;">
+        <table>
+          {% for ent in gacha.clist %}
+          {% set the_card = gachas["ci"][ent.reward_id] %}
+          <tr><td><a href="/char/{{ the_card.chara_id }}#c_{{ the_card.id }}_head">{% raw icon(ent.reward_id) %}</a></td>
+              <td>[{{ enums.rarity(the_card.rarity) }}]
+                  <a href="/char/{{ the_card.chara_id }}#c_{{ the_card.id }}_head">{{ the_card.chara.conventional }}</a>
+                  {% if the_card.title_flag %} ({% raw tlable(the_card.title) %}) {% end %}</td></tr>
+          {% end %}
+        </table>
+        <center><a href="/gacha">Full availability list</a></center>
+      </div>
+    </div>
+  </div>
   {% end %}
 
   <div class="container" style="max-width:800px">
@@ -63,6 +86,7 @@
   </div>
 
   {% include footer.html %}
-  <script> tlinject_activate() </script>
+  <script> tlinject_activate(); </script>
+  <script> event_counter_init(); </script>
 </body>
 </html>
