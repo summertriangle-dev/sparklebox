@@ -17,8 +17,8 @@
 
 <body>
   <div class="container" style="max-width:800px">
-    <div class="welcome_spec" onclick="alert('mon dieu comment est-ce venu ici je ne suis pas compétent avec l\'ordinateur')">
-      <img class="chara_image" width="308" height="416" src="{{ image_host }}/special/sakus.png" />
+    <div class="welcome_spec" onclick="alert('Are YOU an aspiring artist? Do you want to show off your amazing new original character [do not steal] to the six (ten when new cards arrive) people that visit this page?! @ me on Twitter (below)!!!')">
+      <img class="chara_image" width="308" height="416" src="{{ image_host }}/special/buyit.png" title="https://store.steampowered.com/app/402620/"/>
       <!-- div class="riinaface" style="background-image:url({{ image_host }}/special/dari{{ random.randint(1, 5) }}.png)"></div-->
     </div>
     <input type="text" id="search" placeholder="{{ _("Names") }}" onkeyup="suggest(this, this.value)">
@@ -34,7 +34,7 @@
       </div>
       <div class="content" style="background:#444;text-align:center;">
         <p style="margin:0;">"{% raw tlable(event.name) %}" ends in</p>
-        <p class="counter" style="font-size:200%;font-weight:bold;margin:6px 0" data-count_to="{{ event_end }}">
+        <p class="counter" style="font-size:200%;font-weight:bold;margin:6px 0" data-count-to="{{ event_end }}">
           Nothing to see here.
         </p>
         <p style="margin:0;">Better start spending.</p>
