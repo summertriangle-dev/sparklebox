@@ -1,6 +1,8 @@
 from .dataloader import *
 from datetime import datetime
 from pytz import utc, timezone
+import re
+
 _JST = timezone("Asia/Tokyo")
 
 # redefined due to nested imports
@@ -37,7 +39,7 @@ def skill_dur(typ):
 
 
 def JST(date, to_utc=1):
-    time = _JST.localize(datetime.strptime(date, "%Y-%m-%d %H:%M:%S"))
+    time = _JST.localize(datetime.strptime(date.replace("-02-29 ", "-03-01 "), "%Y-%m-%d %H:%M:%S"))
     if to_utc:
         return time.astimezone(utc)
     else:

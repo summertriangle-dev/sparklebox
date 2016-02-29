@@ -10,7 +10,7 @@ import base64
 import time
 import pytz
 import itertools
-from datetime import datetime
+from datetime import datetime, timedelta
 from calendar import timegm
 
 try:
@@ -85,6 +85,9 @@ class Home(tornado.web.RequestHandler):
     def get(self):
         eda = starlight.cached_db(starlight.ark_data_path("event_data.csv"))
         now = pytz.utc.localize(datetime.utcnow())
+        if now.day == 29 and now.month == 2:
+            now += timedelta(days=1)
+
         for event in eda:
             if starlight.JST(event.event_start) < now < starlight.JST(event.event_end):
                 break
