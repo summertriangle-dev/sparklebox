@@ -50,8 +50,12 @@ def audio(object_id, use, index):
     return "va2/{0}.mp3".format(basename)
 
 
-expose_static_json("/suggest",
-                   {value.conventional.lower(): [value.conventional, key] for key, value in starlight.names.items()})
+def generate_completions():
+    names = {value.conventional.lower(): [value.conventional, key] for key, value in starlight.names.items()}
+    names.update({str(key): [value.conventional, key] for key, value in starlight.names.items()})
+    return names
+
+expose_static_json("/suggest", generate_completions())
 
 
 def sieve_diff_contents(de):

@@ -53,14 +53,6 @@ def pick_random_card_of_chara(self, chara):
 TITLE_ONLY_REGEX = r"^［(.+)］"
 NAME_ONLY_REGEX = r"^(?:［.+］)?(.+)$"
 
-# name_table=ntl_object,
-# chara_db=chara_db,
-# card_db=card_db,
-# card_db_by_id=cards_by_id,
-#
-# evolve_chains=evolutionary_chains,
-# card_evolve_chain=chains_by_card,
-
 card_comments = list(csvloader.load_db_file(ark_data_path("card_comments.csv")))
 card_va_by_object_id = lambda x: filter(lambda y: y.id == x, card_comments)
 
