@@ -128,7 +128,7 @@ class EventD(tornado.web.RequestHandler):
         if event:
             evedt = starlight.JST(event.event_end, to_utc=0)
             self.set_header("Content-Type", "text/plain; charset=utf-8")
-            self.write("{1}".format(event.name, time.strftime("%B %d, %Y %H:%M", evedt.timetuple())))
+            self.write("{1}".format(event.name, evedt.strftime("%B %d, %Y %H:%M")))
         else:
             self.write("None")
 

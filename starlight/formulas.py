@@ -38,7 +38,7 @@ def skill_dur(typ):
 
 def JST(date, to_utc=1):
     time = _JST.localize(datetime.strptime(date, "%Y-%m-%d %H:%M:%S"))
-    if utc:
+    if to_utc:
         return time.astimezone(utc)
     else:
         return time

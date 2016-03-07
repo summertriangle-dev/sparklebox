@@ -28,11 +28,15 @@ class TranslationEntry(Base):
 class TranslationSQL(object):
     def __init__(self, use_satellite):
         self.engine = create_engine(os.getenv("DATABASE_CONNECT"), echo=True)
-        Base.metadata.create_all(self.engine)
-        self.Session = sessionmaker(self.engine)
+        self.really_connected = 0
         self.session_nest = []
 
     def __enter__(self):
+        if not self.really_connected:
+            Base.metadata.create_all(self.engine)
+            self.Session = sessionmaker(self.engine)
+            self.really_connected = 1
+
         self.session_nest.append(self.Session())
         return self.session_nest[-1]
 
