@@ -72,9 +72,13 @@ sql_extract() {
     local FILE=$1; shift
 
     echo "[-] unpacking sql $FILE."
-    sqlite3 $FILE 'SELECT name FROM blobs' | while read fullname; do
+    sqlite3 $FILE 'SELECT name FROM sqlite_master WHERE type = "table"' | grep -v sqlite | while read fullname; do
         echo "[>] $fullname to $OUTPUT"
-        sqlite3 $FILE "SELECT data FROM blobs WHERE name = '$fullname'" > "$OUTPUT/$(basename $fullname)"
+        sqlite3 $FILE > "$OUTPUT/$(basename $fullname).csv" <<EOF
+.headers on
+.mode csv
+SELECT * FROM $fullname;
+EOF
     done
 }
 
@@ -99,7 +103,7 @@ disunity_extract() {
 extract() {
     case $2 in
         *.acb)      acb_extract    $@ ;;
-        *.bdb*)     sql_extract      $@ ;;
+        *.mdb*)     sql_extract      $@ ;;
         *.unity3d*) disunity_extract $@ ;;
         *)          echo "??? $2"       ;;
     esac

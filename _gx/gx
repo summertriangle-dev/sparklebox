@@ -11,13 +11,13 @@ if [[ -z "$VERSION" ]]; then
 fi
 
 DBMANIFEST="http://storage.game.starlight-stage.jp/dl/$VERSION/manifests"
-ASSETBBASEURL="http://storage.game.starlight-stage.jp/dl/$VERSION/High/AssetBundles/Android"
-SOUNDBASEURL="http://storage.game.starlight-stage.jp/dl/$VERSION/High/Sound/Common"
-SQLBASEURL="http://storage.game.starlight-stage.jp/dl/$VERSION/Generic/Blob"
+ASSETBBASEURL="http://storage.game.starlight-stage.jp/dl/resources/High/AssetBundles/Android"
+SOUNDBASEURL="http://storage.game.starlight-stage.jp/dl/resources/High/Sound/Common"
+SQLBASEURL="http://storage.game.starlight-stage.jp/dl/resources/Generic"
 
 SCRIPT_PATH=`dirname "$0"`; SCRIPT_PATH=`eval "cd \"$SCRIPT_PATH\" && pwd"`
 LZ4ER="$SCRIPT_PATH/bin/lz4er"
-CURLFLAGS="-#"
+CURLFLAGS="-# -f"
 
 # We can reuse these.
 TMP_COMPRESSED=$(mktemp -t 'help')
@@ -54,13 +54,28 @@ get_manifest() {
 
 url() {
     local FILE=$1; shift
+    local URL=$1; shift
     case $FILE in
     *.unity3d)
-        echo "$ASSETBBASEURL/$FILE.lz4" ;;
-    *.bdb)
-        echo "$SQLBASEURL/$FILE.lz4" ;;
+        echo "$ASSETBBASEURL/$URL" ;;
+    *.mdb)
+        echo "$SQLBASEURL/$URL" ;;
     *.acb)
-        echo "$SOUNDBASEURL/$FILE" ;;
+        echo "$SOUNDBASEURL/$(dirname $FILE)/$URL" ;;
+    esac
+}
+
+destfile() {
+    local FILE=$1; shift
+    case $FILE in
+    *.unity3d)
+        echo "$FILE.lz4" ;;
+    *.bdb)
+        echo "$FILE.lz4" ;;
+    *.mdb)
+        echo "$FILE.lz4" ;;
+    *)
+        echo "$FILE" ;;
     esac
 }
 
@@ -75,7 +90,7 @@ download_new_file() {
         return
     fi
 
-    curl $CURLFLAGS $FILE > $DESTINATION
+    curl $CURLFLAGS -o $DESTINATION $FILE || exit 0
     mkdir -p "$(dirname $DESTINATION)/.shadow"
     > "$(dirname $DESTINATION)/.shadow/$(basename $DESTINATION)" openssl md5 < $DESTINATION
 
@@ -103,9 +118,9 @@ check_file_wrapper() {
     local FILENAME=$1; shift
     local MD5=$1; shift
 
-    local URL=$(url $FILE)
-    local SCRUBBED_FILENAME=$(echo $(basename $URL) | sed 's|/|_|g')
-    check_file $STORE/$SCRUBBED_FILENAME $EXPECT_MD5 || download_new_file $URL $STORE/$SCRUBBED_FILENAME $DECODED
+    local URL=$(url $FILENAME $MD5)
+    local SCRUBBED_FILENAME=$(echo $(basename $FILENAME) | sed 's|/|_|g')
+    check_file $STORE/$(destfile $SCRUBBED_FILENAME) $EXPECT_MD5 || download_new_file $URL $STORE/$(destfile $SCRUBBED_FILENAME) $DECODED
 }
 
 ### tab management
