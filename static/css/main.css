@@ -85,7 +85,6 @@ div.stdcon {
   font-size: 24px;
   font-weight: normal;
   color: white;
-  margin-bottom: 10px;
   text-shadow: 1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000, 0px 0px 15px #000000;
 }
 .chara_header .name_slab .english {
@@ -569,6 +568,7 @@ span.var {
 /* image switcher */
 .rel {
   position: relative;
+  display: inline-block;
 }
 .hang_inside {
   position: absolute;

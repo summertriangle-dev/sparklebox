@@ -217,6 +217,18 @@ class SpriteRedirect(tornado.web.RequestHandler):
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
             {"card_id": "({0}) {1} <{2}>".format(assoc_card.title, assoc_card.chara.conventional, card_id)})
 
+@route(r"/sprite_go_ex/([0-9]+)")
+class SpriteViewerEX(tornado.web.RequestHandler):
+    def get(self, chara_id):
+        achar = starlight.chara_db.get(int(chara_id))
+        if achar:
+            self.render("spriteviewer.html",
+                load="{0}/chara/{1}".format(self.settings["image_host"], int(chara_id)),
+                chara=achar,
+                **self.settings)
+        else:
+            self.set_status(404)
+            self.write("Not found.")
 
 @route("/history")
 class History(tornado.web.RequestHandler):
