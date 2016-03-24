@@ -60,7 +60,7 @@
                 <td rowspan="2">{% raw tlable(card.skill.skill_name) %}</td>
                 <td rowspan="2">{% raw starlight.en.describe_skill_html(card.skill) %}</td>
             </tr>
-            <tr><td style="min-width:125px">T: {{ chain[1].overall_min }}..{{ chain[1].overall_max }}</td></tr>
+            <tr class="{{ enums.skill_class(card.skill.skill_type) }}"><td style="min-width:125px">T: {{ chain[1].overall_min }}..{{ chain[1].overall_max }}</td></tr>
             {% end %}
         {% end %}
         </table>

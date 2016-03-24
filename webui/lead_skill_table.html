@@ -74,7 +74,8 @@
                 <td rowspan="2">{% raw tlable(card.lead_skill.name) %}</td>
                 <td rowspan="2">{% raw starlight.en.describe_lead_skill_html(card.lead_skill) %}</td>
             </tr>
-            <tr><td style="min-width:125px">T: {{ chain[1].overall_min }}..{{ chain[1].overall_max }}</td></tr>
+            <tr class="{{ enums.lskill_effective_target(card.lead_skill.target_attribute) }}
+                       {{ enums.lskill_effective_param(card.lead_skill.target_param) }}"><td style="min-width:125px">T: {{ chain[1].overall_min }}..{{ chain[1].overall_max }}</td></tr>
             {% end %}
         {% end %}
         </table>
