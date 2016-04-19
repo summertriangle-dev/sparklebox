@@ -76,5 +76,6 @@ card_db = csvloader.load_keyed_db_file(ark_data_path("card_data.csv"),
     rarity_dep=lambda obj: rarity_dep.get(obj.rarity),
     overall_min=lambda obj: obj.vocal_min + obj.dance_min + obj.visual_min,
     overall_max=lambda obj: obj.vocal_max + obj.dance_max + obj.visual_max,
+    overall_bonus=lambda obj: obj.bonus_vocal + obj.bonus_dance + obj.bonus_visual,
     valist=lambda obj: list(card_va_by_object_id(obj.id)))
 evolutionary_chains, chains_by_card = discover_evolutionary_chains(card_db)
