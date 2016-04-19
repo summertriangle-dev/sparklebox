@@ -33,6 +33,7 @@ skill_type = enum([
     7, "Extreme Perfect Lock",
     9, "Combo Support",
     12, "Life Support",
+    14, "Overload",
     17, "Healer",
 ])
 
@@ -90,6 +91,7 @@ skill_class = enum([
     2, "s_scorebonus",
     6, "s_pl",
     12, "s_life",
+    14, "s_overload",
 ])
 
 # TODO need enum defs for

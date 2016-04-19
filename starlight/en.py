@@ -15,6 +15,7 @@ SKILL_DESCRIPTIONS = {
     7: """all Great, Nice, and Bad notes will become Perfect notes""",
     9: """Nice notes will not break combo""",
     12: """you will not lose health""",
+    14: """<span class="let">{1}</span> life will be consumed, then: all notes receive a <span class="let">{0}</span>% score bonus, and Nice/Bad notes will not break combo""",
     17: """all Perfect notes will restore <span class="let">{0}</span> health""" }
 
 
@@ -22,11 +23,11 @@ def describe_skill_html(skill):
     fire_interval = skill.condition
     effect_val = skill.value
     # TODO symbols
-    if skill.skill_type in [1, 2, 4]:
+    if skill.skill_type in [1, 2, 4, 14]:
         effect_val -= 100
 
     effect_clause = SKILL_DESCRIPTIONS.get(
-        skill.skill_type, "").format(effect_val)
+        skill.skill_type, "").format(effect_val, skill.skill_trigger_value)
     interval_clause = """Every <span class="let">{0}</span> seconds:""".format(
         fire_interval)
     probability_clause = """there is a <span class="var">{0}</span>% chance that""".format(
