@@ -46,20 +46,14 @@ def audio(object_id, use, index):
 
     return "va2/{0}.mp3".format(basename)
 
-def generate_completions():
-    names = {value.conventional.lower(): [value.conventional, key] for key, value in starlight.data.names.items()}
-    names.update({str(key): [value.conventional, key] for key, value in starlight.data.names.items()})
-    return names
-
-expose_static_json("/suggest", generate_completions())
-
 class HandlerSyncedWithMaster(tornado.web.RequestHandler):
     def prepare(self):
+        starlight.data.reset_statistics()
         starlight.check_version()
         super().prepare()
 
 @route(r"/([0-9]+-[0-9]+-[0-9]+)?")
-class Home(tornado.web.RequestHandler):
+class Home(HandlerSyncedWithMaster):
     def get(self, pretend_date):
         if pretend_date:
             now = pytz.utc.localize(datetime.strptime(pretend_date, "%Y-%m-%d"))
@@ -75,7 +69,7 @@ class Home(tornado.web.RequestHandler):
         gachas = starlight.data.gachas(now)
         gacha_limited = starlight.data.limited_availability_cards(gachas)
         real_ones = filter(lambda p: bool(p[1]), zip(gachas, gacha_limited))
-        
+
         recent_history = self.settings["tle"].get_history(5)
 
         self.render("main.html", history=recent_history,
@@ -83,9 +77,19 @@ class Home(tornado.web.RequestHandler):
             la_cards=real_ones, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
+@route("/suggest")
+class SuggestNames(HandlerSyncedWithMaster):
+    def get(self):
+        names = {value.conventional.lower(): [value.conventional, key] for key, value in starlight.data.names.items()}
+        names.update({str(key): [value.conventional, key] for key, value in starlight.data.names.items()})
+
+        self.set_header("Content-Type", "application/json")
+        self.set_header("Cache-Control", "no-cache")
+        self.set_header("Expires", "0")
+        self.write(names)
 
 @route(r"/_evt")
-class EventD(tornado.web.RequestHandler):
+class EventD(HandlerSyncedWithMaster):
     def get(self):
         self.set_header("Content-Type", "text/plain; charset=utf-8")
 
@@ -104,13 +108,13 @@ class EventD(tornado.web.RequestHandler):
 
 
 @route(r"/gacha")
-class GachaTable(tornado.web.RequestHandler):
+class GachaTable(HandlerSyncedWithMaster):
     def get(self):
         self.set_header("Content-Type", "text/plain; charset=utf-8")
         self.write("Sorry, I'll get around to implementing this soon...")
 
 @route(r"/skill_table")
-class SkillTable(tornado.web.RequestHandler):
+class SkillTable(HandlerSyncedWithMaster):
     def get(self):
         self.render("skill_table.html",
                     cards=starlight.data.cards(starlight.data.all_chain_ids()),
@@ -119,29 +123,26 @@ class SkillTable(tornado.web.RequestHandler):
 
 
 @route(r"/lead_skill_table")
-class LeadSkillTable(tornado.web.RequestHandler):
+class LeadSkillTable(HandlerSyncedWithMaster):
     def get(self):
         self.render("lead_skill_table.html",
                     cards=starlight.data.cards(starlight.data.all_chain_ids()),
                     **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
-
-@route(r"/char/([0-9]+)")
-class Character(tornado.web.RequestHandler):
-    def get(self, chara_id):
+@route(r"/char/([0-9]+)(/table)?")
+class Character(HandlerSyncedWithMaster):
+    def get(self, chara_id, use_table):
         chara_id = int(chara_id)
         achar = starlight.data.chara(chara_id)
 
         card_ids = starlight.data.cards_belonging_to_char(chara_id)
-        print(card_ids)
         chains = [starlight.data.chain(id) for id in card_ids]
         unique = []
         for c in chains:
             if c not in unique:
                 unique.append(c)
 
-        print(unique)
         acard = [starlight.data.cards(ch) for ch in unique]
 
         if achar:
@@ -158,10 +159,9 @@ class Character(tornado.web.RequestHandler):
             self.set_status(404)
             self.write("Not found.")
 
-
-@route(r"/card/([0-9\,]+)")
-class Card(tornado.web.RequestHandler):
-    def get(self, card_idlist):
+@route(r"/card/([0-9\,]+)(/table)?")
+class Card(HandlerSyncedWithMaster):
+    def get(self, card_idlist, use_table):
         card_ids = [int(x) for x in card_idlist.strip(",").split(",")]
 
         chains = [starlight.data.chain(id) for id in card_ids]
@@ -211,11 +211,11 @@ class SpriteViewerEX(tornado.web.RequestHandler):
             self.write("Not found.")
 
 @route("/history")
-class History(tornado.web.RequestHandler):
+class History(HandlerSyncedWithMaster):
     """ Display all history entries. """
     def get(self):
         all_history = self.settings["tle"].get_history(nent=None)
-        
+
         self.render("history.html", history=all_history, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
@@ -280,13 +280,18 @@ class TranslateWriteAPI(tornado.web.RequestHandler):
 
 
 @route(r"/api/v1/([a-z_]+)/(.+)")
-class ObjectAPI(tornado.web.RequestHandler):
+class ObjectAPI(HandlerSyncedWithMaster):
+    def expand_spec(spec):
+        comp = filter(bool, spec.split(","))
+        real_spec = []
+
+
     def get(self, objectid, spec):
-        pass
+        ids = self.expand_spec(spec)
 
 @route(r"/dbgva/([^/]+)")
 @dev_mode_only
-class DebugViewVA(tornado.web.RequestHandler):
+class DebugViewVA(HandlerSyncedWithMaster):
     def get(self, db):
         loaded = list(starlight.card_va_by_object_id(int(db)))
         fields = loaded[0].__class__._fields

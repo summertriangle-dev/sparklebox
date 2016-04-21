@@ -2,17 +2,22 @@ import re
 import sqlite3
 import pickle
 import os
+from time import time
 from datetime import datetime
 from pytz import timezone, utc
 from functools import lru_cache, partial
-from collections import defaultdict, namedtuple
+from collections import defaultdict, namedtuple, Counter
 
 from csvloader import clean_value, load_keyed_db_file
 from . import en
+from . import apiclient
+from . import acquisition
 
 ark_data_path = partial(os.path.join, "_data", "ark")
 private_data_path = partial(os.path.join, "_data", "private")
 story_data_path = partial(os.path.join, "_data", "stories")
+
+acquisition.CACHE = ark_data_path()
 
 _JST = timezone("Asia/Tokyo")
 def JST(date, to_utc=1):
@@ -52,8 +57,14 @@ NAME_ONLY_REGEX = r"^(?:［.+］)?(.+)$"
 class DataCache(object):
     def __init__(self, version):
         self.version = version
+        self.load_date = datetime.utcnow()
         self.hnd = sqlite3.connect(ark_data_path("{0}.mdb".format(version)))
         self.prime_caches()
+        self.reset_statistics()
+
+    def reset_statistics(self):
+        self.vc_this = 0
+        self.primed_this = Counter()
 
     @lru_cache(1)
     def gacha_ids(self):
@@ -62,6 +73,8 @@ class DataCache(object):
         for id, ss, es in self.hnd.execute("SELECT id, start_date, end_date FROM gacha_data"):
             ss, es = JST(ss), JST(es)
             gachas.append(gacha_stub_t(id, ss, es))
+
+        self.primed_this["sel_gacha"] += 1
         return sorted(gachas, key=lambda x: x.start_date)
 
     @lru_cache(1)
@@ -72,6 +85,8 @@ class DataCache(object):
         for id, na, ss, es in self.hnd.execute("SELECT id, name, event_start, event_end FROM event_data"):
             ss, es = JST(ss), JST(es)
             events.append(event_stub_t(id, na, ss, es))
+
+        self.primed_this["sel_event"] += 1
         return sorted(events, key=lambda x: x.start_date)
 
     def gachas(self, when):
@@ -86,6 +101,8 @@ class DataCache(object):
         query = "SELECT gacha_id, reward_id FROM gacha_available WHERE limited_flag == 1 AND gacha_id IN ({0})".format(",".join("?" * len(select)))
         tmp = defaultdict(lambda: [])
         [tmp[gid].append(reward) for gid, reward in self.hnd.execute(query, select)]
+
+        self.primed_this["sel_la"] += 1
         return [tmp[gacha.id] for gacha in gachas]
 
     def current_limited_availability(self):
@@ -104,6 +121,8 @@ class DataCache(object):
         query = "SELECT event_id, reward_id FROM event_available WHERE event_id IN ({0})".format(",".join("?" * len(select)))
         tmp = defaultdict(lambda: [])
         [tmp[event].append(reward) for event, reward in self.hnd.execute(query, select)]
+
+        self.primed_this["sel_evtreward"] += 1
         return [tmp[event.id] for event in events]
 
     def current_events(self):
@@ -173,6 +192,7 @@ class DataCache(object):
             conventional =lambda obj: self.names.get(obj.chara_id).conventional,
             valist=lambda obj: []):
             self.char_cache[p.chara_id] = p
+            self.primed_this["prm_char"] += 1
 
     def cache_cards(self, idl):
         normalized_idl = []
@@ -202,6 +222,7 @@ class DataCache(object):
 
         for p in selected:
             self.card_cache[p.id] = p
+            self.primed_this["prm_card"] += 1
 
     def card(self, id):
         if id not in self.card_cache:
@@ -228,6 +249,7 @@ class DataCache(object):
 
     def cards_belonging_to_char(self, id):
         idl = self.hnd.execute("SELECT id FROM card_data WHERE chara_id == ?", (id,))
+        self.primed_this["sel_cards_for_char"] += 1
         return [id[0] for id in idl]
 
     def chara(self, id):
@@ -264,13 +286,63 @@ class DataCache(object):
 
     def va_data(self, id):
         va_list = self.hnd.execute("SELECT * FROM card_comments WHERE id = ?", (id,))
+        self.primed_this["sel_valist"] += 1
         return self.prime_from_cursor("va_data_t", va_list)
 
-data = DataCache(10014700)
 is_updating_to_new_truth = 0
+last_version_check = 0
 
-def check_version(self):
-    global data, is_updating_to_new_truth
-    new_version = versionchecker.ping()
-    if new_version != data.version:
-        pass
+available_mdbs = sorted(list(filter(lambda x: x.endswith(".mdb"), os.listdir(ark_data_path()))), reverse=1)
+if available_mdbs:
+    print("Loading mdb:", available_mdbs[0])
+    data = DataCache(available_mdbs[0].split(".")[0])
+else:
+    print("No mdb, let's download one")
+    data = None
+    check_version()
+
+def update_to_res_ver(res_ver):
+    def ok_to_reload(path):
+        global data, last_version_check
+        if path:
+            data = DataCache(res_ver)
+
+        is_updating_to_new_truth = 0
+        last_version_check = time()
+
+    mdb_path = ark_data_path("{0}.mdb".format(res_ver))
+    if not os.path.exists(mdb_path):
+        acquisition.get_master(res_ver, ark_data_path("{0}.mdb".format(res_ver)), ok_to_reload)
+    else:
+        ok_to_reload(mdb_path)
+
+def check_version_api_recv(response, msg):
+    global is_updating_to_new_truth
+
+    if response.error:
+        is_updating_to_new_truth = 0
+        response.rethrow()
+        return
+
+    res_ver = msg.get(b"data_headers", {}).get(b"required_res_ver", b"-1").decode("utf8")
+    if res_ver != data.version or not data:
+        if res_ver != -1:
+            update_to_res_ver(res_ver)
+        else:
+            print("no required_res_ver, did the app get a forced update?")
+            is_updating_to_new_truth = 0
+    else:
+        print("we're on latest")
+        is_updating_to_new_truth = 0
+
+def check_version():
+    print("trace check_version")
+    global is_updating_to_new_truth, last_version_check
+
+    if not is_updating_to_new_truth and time() - last_version_check > 3600:
+        if data:
+            data.vc_this = 1
+
+        is_updating_to_new_truth = 1
+        last_version_check = time()
+        apiclient.versioncheck(check_version_api_recv)
