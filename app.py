@@ -99,21 +99,21 @@ def main():
     image_server = os.environ.get("IMAGE_HOST", "")
     version = get_ssdb_version()
     application = tornado.web.Application(dispatch.ROUTES,
-                                          template_path="webui",
-                                          static_path="static",
-                                          image_host=image_server,
-                                          autoreload=1 if in_dev_mode else 0,
-                                          is_dev=in_dev_mode,
+        template_path="webui",
+        static_path="static",
+        image_host=image_server,
+        autoreload=1 if in_dev_mode else 0,
+        is_dev=in_dev_mode,
 
-                                          tle=tl_models.TranslationEngine(starlight.data.names, use_satellite=1),
-                                          enums=enums,
-                                          starlight=starlight,
-                                          tlable=endpoints.tlable,
-                                          icon=endpoints.icon,
-                                          icon_ex=endpoints.icon_ex,
-                                          audio=endpoints.audio,
-                                          analytics=analytics.Analytics(),
-                                          version=version)
+        tle=tl_models.TranslationEngine(starlight.data.names, use_satellite=1),
+        enums=enums,
+        starlight=starlight,
+        tlable=endpoints.tlable,
+        icon=endpoints.icon,
+        icon_ex=endpoints.icon_ex,
+        audio=endpoints.audio,
+        analytics=analytics.Analytics(),
+        version=version)
     http_server = tornado.httpserver.HTTPServer(application, xheaders=1)
 
     addr = os.environ.get("ADDRESS", "0.0.0.0")

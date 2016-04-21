@@ -31,7 +31,10 @@ def icon(css_class):
 def icon_ex(card_id):
     rec = starlight.data.card(card_id)
     btext = "({0}) {1}".format(enums.rarity(rec.rarity), tlable(rec.title) if rec.title_flag else "")
-    ish = """<div class="profile"><div class="icon icon_{rec.id}"></div><div class="profile_text">{rec.chara.conventional}<br>{btext}</div></div>""".format(rec=rec, btext=btext)
+    ish = """<div class="profile">
+        <div class="icon icon_{rec.id}"></div>
+        <div class="profile_text"><b>{0}</b><br>{btext}</div>
+    </div>""".format(tornado.escape.xhtml_escape(rec.chara.conventional), rec=rec, btext=btext)
     return """<a href="/char/{rec.chara_id}#c_{rec.id}_head" class="noline">{ish}</a>""".format(rec=rec, ish=ish)
 
 def audio(object_id, use, index):
@@ -72,8 +75,10 @@ class Home(tornado.web.RequestHandler):
         gachas = starlight.data.gachas(now)
         gacha_limited = starlight.data.limited_availability_cards(gachas)
         real_ones = filter(lambda p: bool(p[1]), zip(gachas, gacha_limited))
+        
+        recent_history = self.settings["tle"].get_history(5)
 
-        self.render("main.html", history=[],
+        self.render("main.html", history=recent_history,
             events=zip(events, event_rewards),
             la_cards=real_ones, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
@@ -209,7 +214,9 @@ class SpriteViewerEX(tornado.web.RequestHandler):
 class History(tornado.web.RequestHandler):
     """ Display all history entries. """
     def get(self):
-        self.render("history.html", history=HISTORY, **self.settings)
+        all_history = self.settings["tle"].get_history(nent=None)
+        
+        self.render("history.html", history=all_history, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 

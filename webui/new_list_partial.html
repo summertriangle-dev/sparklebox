@@ -3,16 +3,17 @@
 <div class="container" style="max-width:800px">
   <div class="box Cute" style="margin-left:0;margin-right:0;width:100%">
     <div class="header">
-      <span class="item left">{{ new_list["date"] }}</span>
+      {% set cl = new_list.asdict() %}
+      <span class="item left">{{ new_list.dt_string() }}</span>
       <span class="item ext"></span>
-      <span class="item right"><a href="/card/{{ ",".join(map(str, itertools.chain(*(x for _, x in new_list["cids"].items())))) }}">Batch</a></span>
+      <span class="item right"><a href="/card/{{ ",".join(map(str, itertools.chain(*(x for _, x in cl.items())))) }}">Batch</a></span>
     </div>
     <div class="contents" style="background:#333;padding:10px">
       {% for key in ["event", "ssr", "sr", "r", "n"] %}
-      {% if new_list["cids"][key] %}
+      {% if cl[key] %}
       <div>
-        <a href="/card/{{ ",".join(map(str, new_list["cids"][key])) }}" ><img src="{{ handler.static_url("img/marker_" + key + ".png") }}" /></a>
-        {% for card in new_list["cids"][key] %}
+        <a href="/card/{{ ",".join(map(str, cl[key])) }}" ><img src="{{ handler.static_url("img/marker_" + key + ".png") }}" /></a>
+        {% for card in cl[key] %}
         {% raw icon_ex(card) %}
         {% end %}
       </div>

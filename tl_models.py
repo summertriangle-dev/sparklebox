@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime
 from time import time as _time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, UnicodeText, LargeBinary
@@ -32,6 +33,12 @@ class HistoryEntry(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     time = Column(Integer)
     payload = Column(LargeBinary)
+
+    def dt_string(self):
+        return self.datetime().strftime("%Y-%m-%d")
+
+    def datetime(self):
+        return datetime.fromtimestamp(self.time)
 
     def asdict(self):
         return json.loads(self.payload.decode("ascii"))
@@ -100,6 +107,14 @@ class TranslationSQL(object):
             pl = json.dumps(payload).encode("utf8")
             s.add(HistoryEntry(time=dt, payload=pl))
             s.commit()
+
+    def get_history(self, nent):
+        with self as s:
+            rows = s.query(HistoryEntry).order_by(HistoryEntry.time.desc())
+            
+            if nent:
+                rows = rows.limit(nent)
+        yield from rows.all()
 
 class TranslationEngine(TranslationSQL):
     def __init__(self, names_db, use_satellite):
