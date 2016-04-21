@@ -20,13 +20,13 @@
     <div class="container">
         {% include chara_partial.html %}
     </div>
+    {% for chain in cards %}
     <div class="container tight">
-        {% for chain in sorted(filter(lambda x: cards[x][0].chara_id == chara_id, cards), key=lambda x: cards[x][0].id) %}
-            {% set card = cards[chain][0] %}
-            {% set chain = cards[chain] %}
-            {% include card_partial.html %}
-        {% end %}
+        {% set card_id = chain[0].id %}
+        {% set card = chain[0] %}
+        {% include card_partial.html %}
     </div>
+    {% end %}
     {% include footer.html %}
 
     <script>tlinject_activate(); sound_inliner_init();</script>

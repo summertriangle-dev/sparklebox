@@ -25,55 +25,54 @@
     <div id="suggestions"></div>
   </div>
 
-  {% if has_event %}
+  {% for event, reward_list in events %}
   <div id="event_counter_container" class="container" style="max-width:800px;display:none">
     <div class="box Cute" style="margin:0;width:100%">
       <div class="header">
         <span class="item left">Current event</span>
         <span class="item ext"></span>
       </div>
-      <div class="content" style="background:#444;text-align:center;">
+      <div class="content" style="background:#333;text-align:center;">
         <p style="margin:0;">"{% raw tlable(event.name) %}" ends in</p>
-        <p class="counter" style="font-size:200%;font-weight:bold;margin:6px 0" data-count-to="{{ event_end }}">
+        <p class="counter" style="font-size:200%;font-weight:bold;margin:6px 0" data-count-to="{{ event.end_date.timestamp() }}">
           Nothing to see here.
         </p>
-        <p style="margin:0;">Better start spending.</p>
+
+        <p style="margin-top:0;">Better start spending. Event rewards:</p>
+        <div>
+          {% for cid in reward_list %}
+          {% raw icon_ex(cid) %}
+          {% end %}
+        </div>
       </div>
     </div>
   </div>
   {% end %}
 
-  {% for gacha in gachas["lg"] %}
+  {% for gacha, available in la_cards %}
   <div id="lim_gacha_container" class="container" style="max-width:800px">
     <div class="box Cute" style="margin:0;width:100%">
       <div class="header">
         <span class="item left">Limited availability!</span>
         <span class="item ext"></span>
-        <span class="item right">expires in <span class="counter" data-count-to="{{ gacha.end_t }}">ALLAH</span></span>
+        <span class="item right">expires in <span class="counter" data-count-to="{{ gacha.end_date.timestamp() }}">meme</span></span>
       </div>
-      <div class="content" style="background:#444;text-align:left;">
-        <table>
-          {% for ent in gacha.clist %}
-          {% set the_card = gachas["ci"][ent.reward_id] %}
-          <tr><td><a href="/char/{{ the_card.chara_id }}#c_{{ the_card.id }}_head">{% raw icon(ent.reward_id) %}</a></td>
-              <td>[{{ enums.rarity(the_card.rarity) }}]
-                  <a href="/char/{{ the_card.chara_id }}#c_{{ the_card.id }}_head">{{ the_card.chara.conventional }}</a>
-                  {% if the_card.title_flag %} ({% raw tlable(the_card.title) %}) {% end %}</td></tr>
-          {% end %}
-        </table>
-        <center><a href="/gacha">Full availability list</a></center>
+      <div class="content" style="background:#333;text-align:left;">
+        {% for ent in available %}
+        {% raw icon_ex(ent) %}
+        {% end %}
       </div>
     </div>
   </div>
   {% end %}
 
   <div class="container" style="max-width:800px">
-    <p>This is temporary while I sort stuff out...</p>
+    <p><s>This is temporary while I sort stuff out...</s> There is nothing more permanent than temporary.</p>
     <ul>
       <li><a href="/skill_table">Skills table</a></li>
       <li><a href="/lead_skill_table">Lead skills table</a></li>
-      <li>Use the search field above to get limited card data...</li>
       <li><a href="https://twitter.com/n_triangle_dev">Follow the Holy Constituency on Twitter</a></li>
+      <li><a href="/static/api.html">Developers who don't want to maintain their own data should check out the API.</a></li>
     </ul>
   </div>
 

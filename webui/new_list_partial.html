@@ -13,7 +13,7 @@
       <div>
         <a href="/card/{{ ",".join(map(str, new_list["cids"][key])) }}" ><img src="{{ handler.static_url("img/marker_" + key + ".png") }}" /></a>
         {% for card in new_list["cids"][key] %}
-        <a href="/card/{{ card }}">{% raw icon(card) %}</a>
+        {% raw icon_ex(card) %}
         {% end %}
       </div>
       {% end %}

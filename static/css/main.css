@@ -588,6 +588,21 @@ span.var {
   color: white;
   text-decoration: none;
 }
+.noline {
+  text-decoration: none;
+}
+.profile {
+  display: inline-flex;
+  align-items: center;
+  background: #444;
+  border-radius: 4px;
+}
+.profile .profile_text {
+  color: white;
+  text-align: left;
+  font-size: 80%;
+  padding: 0 5px;
+}
 @media screen and (max-width: 600px) {
   .hides_under_mobile {
     display: none;

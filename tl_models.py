@@ -1,7 +1,8 @@
 import os
+import json
 from time import time as _time
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, UnicodeText
+from sqlalchemy import Column, Integer, String, UnicodeText, LargeBinary
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, aliased
 from sqlalchemy import func
@@ -25,6 +26,17 @@ class TranslationEntry(Base):
         return "<TL entry {x.id} '{x.english}' by {x.submitter} @{x.submit_utc}>".format(x=self)
 
 
+class HistoryEntry(Base):
+    __tablename__ = "ss_history"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    time = Column(Integer)
+    payload = Column(LargeBinary)
+
+    def asdict(self):
+        return json.loads(self.payload.decode("ascii"))
+
+
 class TranslationSQL(object):
     def __init__(self, use_satellite):
         self.really_connected = 0
@@ -32,7 +44,8 @@ class TranslationSQL(object):
 
     def __enter__(self):
         if not self.really_connected:
-            self.engine = create_engine(os.getenv("DATABASE_CONNECT"), echo=True)
+            self.engine = create_engine(os.getenv("DATABASE_CONNECT"), echo=False,
+                connect_args={"ssl": {"dummy": "yes"}})
 
             Base.metadata.create_all(self.engine)
             self.Session = sessionmaker(self.engine)
@@ -82,28 +95,11 @@ class TranslationSQL(object):
                                    submitter=sender, submit_utc=time()))
             s.commit()
 
-# this doesn't work. see TranslationSQL
-class TranslationSQLServer(object):
-    def __init__(self, use_satellite):
-        self.use_satellite = use_satellite
-        if use_satellite:
-            self.pool = multiprocessing.Pool(1)
-        self.sql = TranslationSQL()
-
-    def translate(self, done, *key):
-        if self.use_satellite:
-            def _finish(result):
-                IOLoop.instance().add_callback(lambda: done(result))
-            self.pool.apply_async(self.sql.translate, key, callback=_finish)
-        else:
-            IOLoop.instance().add_callback(lambda: done(self.sql.translate(*key)))
-
-    def set_translation(self, key, eng, sender):
-        if self.use_satellite:
-            self.pool.apply_async(self.sql.set_translation, key, eng, sender)
-        else:
-            self.sql.set_translation(key, eng, sender)
-
+    def push_history(self, dt, payload):
+        with self as s:
+            pl = json.dumps(payload).encode("utf8")
+            s.add(HistoryEntry(time=dt, payload=pl))
+            s.commit()
 
 class TranslationEngine(TranslationSQL):
     def __init__(self, names_db, use_satellite):

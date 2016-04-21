@@ -2,7 +2,6 @@ import csvloader
 import functools
 import os
 import enums
-from .formulas import *
 
 # skill describer
 
@@ -31,9 +30,9 @@ def describe_skill_html(skill):
     interval_clause = """Every <span class="let">{0}</span> seconds:""".format(
         fire_interval)
     probability_clause = """there is a <span class="var">{0}</span>% chance that""".format(
-        skill_chance(skill.probability_type))
+        skill.chance())
     length_clause = """for <span class="var">{0}</span> seconds.""".format(
-        skill_dur(skill.available_time_type))
+        skill.dur())
 
     return " ".join((interval_clause, probability_clause, effect_clause, length_clause))
 

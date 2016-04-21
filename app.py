@@ -14,7 +14,7 @@ import endpoints
 import enums
 import starlight
 import analytics
-from starlight import private_data_path, cached_keyed_db
+from starlight import private_data_path
 
 version_t = namedtuple("version_t", ["git_ref", "masters_version"])
 
@@ -105,12 +105,12 @@ def main():
                                           autoreload=1 if in_dev_mode else 0,
                                           is_dev=in_dev_mode,
 
-                                          tle=tl_models.TranslationEngine(cached_keyed_db(
-                                              private_data_path("names.csv")), use_satellite=1),
+                                          tle=tl_models.TranslationEngine(starlight.data.names, use_satellite=1),
                                           enums=enums,
                                           starlight=starlight,
                                           tlable=endpoints.tlable,
                                           icon=endpoints.icon,
+                                          icon_ex=endpoints.icon_ex,
                                           audio=endpoints.audio,
                                           analytics=analytics.Analytics(),
                                           version=version)

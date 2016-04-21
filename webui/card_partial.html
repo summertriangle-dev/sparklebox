@@ -127,13 +127,13 @@
         <span class="item ext"></span>
       </div>
       <div class="content">
-        {% for _card in chain %}
         <table style="height:100%" id="va_card_{{ _card.id }}" class="table">
           <tr>
             <th class="hides_under_mobile">{{ _("Usage") }}</th>
             <th colspan="2">{{ _("Text") }}</th>
           </tr>
-          {% for id, usage, index, voice, text, nothing, nothing2 in _card.valist %}
+          {% for _card in chain %}
+          {% for id, usage, index, voice, text, nothing, nothing2 in starlight.data.va_data(_card.id) %}
           <tr>
             <td class="hides_under_mobile">{% raw tlable("USE_TYPE__T_{0}".format(usage)) %}</td>
             <td>{% raw tlable(text.format("[Producer]")) %}</td>
@@ -144,8 +144,8 @@
             {% end %}
           </tr>
           {% end %}
+          {% end %}
         </table>
-        {% end %}
       </div>
     </div>
   </div>

@@ -1,81 +1,276 @@
 import re
-from collections import defaultdict
+import sqlite3
+import pickle
+import os
+from datetime import datetime
+from pytz import timezone, utc
+from functools import lru_cache, partial
+from collections import defaultdict, namedtuple
 
-from .dataloader import *
+from csvloader import clean_value, load_keyed_db_file
 from . import en
-from .formulas import JST
 
-# chains
-def discover_evolutionary_chains(card_list):
-    chains = bucketize(lambda x: x.series_id, [
-                       card_list[key] for key in card_list])
+ark_data_path = partial(os.path.join, "_data", "ark")
+private_data_path = partial(os.path.join, "_data", "private")
+story_data_path = partial(os.path.join, "_data", "stories")
 
-    chain_by_card = {}
-    for chain in chains:
-        for card in chains[chain]:
-            chain_by_card[card.id] = chain
-        chains[chain] = order_chain(chains[chain])
+_JST = timezone("Asia/Tokyo")
+def JST(date, to_utc=1):
+    time = _JST.localize(datetime.strptime(date.replace("-02-29 ", "-03-01 "), "%Y-%m-%d %H:%M:%S"))
+    if to_utc:
+        return time.astimezone(utc)
+    else:
+        return time
 
-    return chains, chain_by_card
+def TODAY():
+    return utc.localize(datetime.utcnow())
 
+def _real_scale_skill_value(max_, min_, lv):
+    return (min_ + ((max_ - min_) / 9) * lv) / 100.0
 
-def bucketize(key, a_list):
-    ret = defaultdict(lambda: [])
+def _scale_skill_value(max_, min_, lv):
+    val = _real_scale_skill_value(max_, min_, lv)
+    # if the decimal part is too small, just remove it
+    if val - int(val) < 0.01:
+        return int(val)
+    else:
+        return val
 
-    for item in a_list:
-        ret[key(item)].append(item)
+def skill_chance(prob_def, ptype):
+    maxv, minv = prob_def[ptype].probability_max, prob_def[ptype].probability_min
+    return "{0}..{1}".format(_scale_skill_value(maxv, minv, 0),
+                             _scale_skill_value(maxv, minv, 9))
 
-    return ret
+def skill_dur(dur_def, ttype):
+    maxv, minv = dur_def[ttype].available_time_max, dur_def[ttype].available_time_min
+    return "{0}..{1}".format(_scale_skill_value(maxv, minv, 0),
+                             _scale_skill_value(maxv, minv, 9))
 
-
-def order_chain(chain):
-    new_chain = [next(filter(lambda x: x.evolution_id == 0, chain))]
-    chain.remove(new_chain[0])
-
-    while chain:
-        for card in chain:
-            if card.evolution_id == new_chain[-1].id:
-                break
-        else:
-            raise ValueError(
-                "Invalid chain group: could not find a card with evolution_id of {0}".format(new_chain[-1].id))
-        chain.remove(card)
-        new_chain.append(card)
-
-    new_chain.reverse()
-    return new_chain
-
-
-def pick_random_card_of_chara(self, chara):
-    return random.choice(list(filter(lambda x: card_db[x].chara_id == chara, card_db)))
-
-# needed arks
 TITLE_ONLY_REGEX = r"^［(.+)］"
 NAME_ONLY_REGEX = r"^(?:［.+］)?(.+)$"
 
-card_comments = list(csvloader.load_db_file(ark_data_path("card_comments.csv")))
-card_va_by_object_id = lambda x: filter(lambda y: y.id == x, card_comments)
+class DataCache(object):
+    def __init__(self, version):
+        self.version = version
+        self.hnd = sqlite3.connect(ark_data_path("{0}.mdb".format(version)))
+        self.prime_caches()
 
-names = cached_keyed_db(private_data_path("names.csv"))
-skills = csvloader.load_keyed_db_file(ark_data_path("skill_data.csv"))
-lead_skills = csvloader.load_keyed_db_file(ark_data_path("leader_skill_data.csv"))
-rarity_dep = csvloader.load_keyed_db_file(ark_data_path("card_rarity.csv"))
+    @lru_cache(1)
+    def gacha_ids(self):
+        gachas = []
+        gacha_stub_t = namedtuple("gacha_stub_t", ("id", "start_date", "end_date"))
+        for id, ss, es in self.hnd.execute("SELECT id, start_date, end_date FROM gacha_data"):
+            ss, es = JST(ss), JST(es)
+            gachas.append(gacha_stub_t(id, ss, es))
+        return sorted(gachas, key=lambda x: x.start_date)
 
-chara_db = csvloader.load_keyed_db_file(ark_data_path("chara_data.csv"),
-    kanji_spaced=lambda obj: names.get(obj.chara_id).kanji_spaced,
-    kana_spaced=lambda obj: names.get(obj.chara_id).kana_spaced,
-    conventional=lambda obj: names.get(obj.chara_id).conventional,
-    valist=lambda obj: list(card_va_by_object_id(obj.chara_id)))
-card_db = csvloader.load_keyed_db_file(ark_data_path("card_data.csv"),
-    chara=lambda obj: chara_db.get(obj.chara_id),
-    has_spread=lambda obj: obj.rarity > 4,
-    name_only=lambda obj: re.match(NAME_ONLY_REGEX, obj.name).group(1),
-    title=lambda obj: re.match(TITLE_ONLY_REGEX, obj.name).group(1) if obj.title_flag else None,
-    skill=lambda obj: skills.get(obj.skill_id),
-    lead_skill=lambda obj: lead_skills.get(obj.leader_skill_id),
-    rarity_dep=lambda obj: rarity_dep.get(obj.rarity),
-    overall_min=lambda obj: obj.vocal_min + obj.dance_min + obj.visual_min,
-    overall_max=lambda obj: obj.vocal_max + obj.dance_max + obj.visual_max,
-    overall_bonus=lambda obj: obj.bonus_vocal + obj.bonus_dance + obj.bonus_visual,
-    valist=lambda obj: list(card_va_by_object_id(obj.id)))
-evolutionary_chains, chains_by_card = discover_evolutionary_chains(card_db)
+    @lru_cache(1)
+    def event_ids(self):
+        events = []
+        event_stub_t = namedtuple("event_stub_t", ("id", "name", "start_date", "end_date"))
+
+        for id, na, ss, es in self.hnd.execute("SELECT id, name, event_start, event_end FROM event_data"):
+            ss, es = JST(ss), JST(es)
+            events.append(event_stub_t(id, na, ss, es))
+        return sorted(events, key=lambda x: x.start_date)
+
+    def gachas(self, when):
+        select = []
+        for stub in reversed(self.gacha_ids()):
+            if stub.start_date <= when < stub.end_date:
+                select.append(stub)
+        return select
+
+    def limited_availability_cards(self, gachas):
+        select = [gacha.id for gacha in gachas]
+        query = "SELECT gacha_id, reward_id FROM gacha_available WHERE limited_flag == 1 AND gacha_id IN ({0})".format(",".join("?" * len(select)))
+        tmp = defaultdict(lambda: [])
+        [tmp[gid].append(reward) for gid, reward in self.hnd.execute(query, select)]
+        return [tmp[gacha.id] for gacha in gachas]
+
+    def current_limited_availability(self):
+        return self.limited_availability(TODAY())
+
+    def events(self, when):
+        select = []
+        for stub in reversed(self.event_ids()):
+            if stub.start_date <= when < stub.end_date:
+                select.append(stub)
+
+        return select
+
+    def event_rewards(self, events):
+        select = [event.id for event in events]
+        query = "SELECT event_id, reward_id FROM event_available WHERE event_id IN ({0})".format(",".join("?" * len(select)))
+        tmp = defaultdict(lambda: [])
+        [tmp[event].append(reward) for event, reward in self.hnd.execute(query, select)]
+        return [tmp[event.id] for event in events]
+
+    def current_events(self):
+        return self.events(TODAY())
+
+    def prime_caches(self):
+        self.names = load_keyed_db_file(private_data_path("names.csv"))
+
+        prob_def = self.keyed_prime_from_table("probability_type")
+        time_def = self.keyed_prime_from_table("available_time_type")
+
+        self.skills = self.keyed_prime_from_table("skill_data",
+            chance=lambda obj: partial(skill_chance, prob_def, obj.probability_type),
+            dur=lambda obj: partial(skill_dur, time_def, obj.available_time_type))
+        self.lead_skills = self.keyed_prime_from_table("leader_skill_data")
+        self.rarity_dep = self.keyed_prime_from_table("card_rarity")
+
+        self.chain_id = {}
+        self.id_chain = defaultdict(lambda: [])
+        chain_cur = self.hnd.execute("SELECT id, series_id FROM card_data")
+        for p in self.prime_from_cursor("chain_id_t", chain_cur):
+            self.chain_id[p.id] = p.series_id
+            self.id_chain[p.series_id].append(p.id)
+
+        self.char_cache = {}
+        self.card_cache = {}
+
+    def prime_from_table(self, table, **kwargs):
+        rows = self.hnd.execute("SELECT * FROM {0}".format(table))
+        class_name = table + "_t"
+
+        return self.prime_from_cursor(class_name, rows, **kwargs)
+
+    def prime_from_cursor(self, typename, cursor, **kwargs):
+        fields = [x[0] for x in cursor.description]
+        raw_field_len = len(fields)
+        the_raw_type = namedtuple("_" + typename, fields)
+
+        keys = list(kwargs.keys())
+        for key in keys:
+            fields.append(key)
+
+        the_type = namedtuple(typename, fields)
+
+        for val_list in cursor:
+            temp_obj = the_raw_type(*map(clean_value, val_list))
+            try:
+                extvalues = tuple(kwargs[key](temp_obj) for key in keys)
+            except Exception:
+                raise RuntimeError(
+                    "Uncaught exception while filling stage2 data for {0}. Are you missing data?".format(temp_obj))
+            yield the_type(*temp_obj + extvalues)
+
+    def keyed_prime_from_table(self, table, **kwargs):
+        ret = {}
+        for t in self.prime_from_table(table, **kwargs):
+            ret[t[0]] = t
+        return ret
+
+    def cache_chars(self, idl):
+        query = "SELECT * FROM chara_data WHERE chara_id IN ({0})".format(",".join("?" * len(idl)))
+        cur = self.hnd.execute(query, idl)
+
+        for p in self.prime_from_cursor("chara_data_t", cur,
+            kanji_spaced = lambda obj: self.names.get(obj.chara_id).kanji_spaced,
+            kana_spaced = lambda obj:  self.names.get(obj.chara_id).kana_spaced,
+            conventional =lambda obj: self.names.get(obj.chara_id).conventional,
+            valist=lambda obj: []):
+            self.char_cache[p.chara_id] = p
+
+    def cache_cards(self, idl):
+        normalized_idl = []
+        for id in idl:
+            a = self.chain_id.get(id)
+            if a:
+                normalized_idl.append(a)
+
+        query_preload_chars = "SELECT DISTINCT chara_id FROM card_data WHERE id IN ({0})".format(",".join("?" * len(idl)))
+        self.cache_chars(list(map(lambda x: x[0], self.hnd.execute(query_preload_chars, idl))))
+
+        query = "SELECT * FROM card_data WHERE series_id IN ({0})".format(",".join("?" * len(idl)))
+        cur = self.hnd.execute(query, idl)
+
+        selected = self.prime_from_cursor("card_data_t", cur,
+            chara=lambda obj: self.char_cache.get(obj.chara_id),
+            has_spread=lambda obj: obj.rarity > 4,
+            name_only=lambda obj: re.match(NAME_ONLY_REGEX, obj.name).group(1),
+            title=lambda obj: re.match(TITLE_ONLY_REGEX, obj.name).group(1) if obj.title_flag else None,
+            skill=lambda obj: self.skills.get(obj.skill_id),
+            lead_skill=lambda obj: self.lead_skills.get(obj.leader_skill_id),
+            rarity_dep=lambda obj: self.rarity_dep.get(obj.rarity),
+            overall_min=lambda obj: obj.vocal_min + obj.dance_min + obj.visual_min,
+            overall_max=lambda obj: obj.vocal_max + obj.dance_max + obj.visual_max,
+            overall_bonus=lambda obj: obj.bonus_vocal + obj.bonus_dance + obj.bonus_visual,
+            valist=lambda obj: [])
+
+        for p in selected:
+            self.card_cache[p.id] = p
+
+    def card(self, id):
+        if id not in self.card_cache:
+            self.cache_cards([id])
+
+        return self.card_cache.get(id)
+
+    def cards(self, ids):
+        ret = []
+        need = []
+
+        for id in ids:
+            ret.append(self.card_cache.get(id, id))
+            if isinstance(ret[-1], int):
+                need.append(id)
+
+        self.cache_cards(need)
+
+        for idx in range(len(ret)):
+            if isinstance(ret[idx], int):
+                ret[idx] = self.card_cache.get(ret[idx])
+
+        return ret
+
+    def cards_belonging_to_char(self, id):
+        idl = self.hnd.execute("SELECT id FROM card_data WHERE chara_id == ?", (id,))
+        return [id[0] for id in idl]
+
+    def chara(self, id):
+        if id not in self.char_cache:
+            self.cache_chars([id])
+
+        return self.char_cache.get(id)
+
+    def charas(self, ids):
+        ret = []
+        need = []
+
+        for id in ids:
+            ret.append(self.char_cache.get(id, id))
+            if isinstance(ret[-1], int):
+                need.append(id)
+
+        self.cache_chars(need)
+
+        for idx in range(len(ret)):
+            if isinstance(ret[idx], int):
+                ret[idx] = self.char_cache.get(ret[idx])
+
+        return ret
+
+    def chain(self, id):
+        series_id = self.chain_id.get(id)
+        if not series_id:
+            return None
+        return self.id_chain[series_id]
+
+    def all_chain_ids(self):
+        return sorted(self.id_chain.keys())
+
+    def va_data(self, id):
+        va_list = self.hnd.execute("SELECT * FROM card_comments WHERE id = ?", (id,))
+        return self.prime_from_cursor("va_data_t", va_list)
+
+data = DataCache(10014700)
+is_updating_to_new_truth = 0
+
+def check_version(self):
+    global data, is_updating_to_new_truth
+    new_version = versionchecker.ping()
+    if new_version != data.version:
+        pass

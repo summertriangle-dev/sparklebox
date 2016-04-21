@@ -1,6 +1,6 @@
 function load_translations(trans, cb) {
     var xhr = new XMLHttpRequest()
-    xhr.open("POST", "/read_tl", true)
+    xhr.open("POST", "/api/v1/read_tl", true)
     xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
     xhr.setRequestHeader("X-Blessing",
         "This request bears the blessing of an Ascended Constituent of the Summer Triangle, granting it the entitlement of safe passage.")
@@ -20,7 +20,7 @@ function submit_tl_string(node, text) {
     if (sub === null) return
 
     var xhr = new XMLHttpRequest()
-    xhr.open("POST", "/send_tl", true)
+    xhr.open("POST", "/api/v1/send_tl", true)
     xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
     xhr.setRequestHeader("X-Blessing",
         "This request bears the blessing of an Ascended Constituent of the Summer Triangle, granting it the entitlement of safe passage.")
@@ -55,7 +55,6 @@ function tlinject_activate() {
 
     load_translations(tls, function(tls2) {
         for (var i = 0; i < strings.length; i++) {
-            console.log(strings[i].textContent)
             strings[i].textContent = tls2[strings[i].textContent] || strings[i].textContent;
         }
         var node = document.body.querySelector(".crowd_tl_notice");
