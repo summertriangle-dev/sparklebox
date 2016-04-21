@@ -7,6 +7,7 @@ from datetime import datetime
 from pytz import timezone, utc
 from functools import lru_cache, partial
 from collections import defaultdict, namedtuple, Counter
+from tornado import ioloop
 
 from csvloader import clean_value, load_keyed_db_file
 from . import en
@@ -289,18 +290,6 @@ class DataCache(object):
         self.primed_this["sel_valist"] += 1
         return self.prime_from_cursor("va_data_t", va_list)
 
-is_updating_to_new_truth = 0
-last_version_check = 0
-
-available_mdbs = sorted(list(filter(lambda x: x.endswith(".mdb"), os.listdir(ark_data_path()))), reverse=1)
-if available_mdbs:
-    print("Loading mdb:", available_mdbs[0])
-    data = DataCache(available_mdbs[0].split(".")[0])
-else:
-    print("No mdb, let's download one")
-    data = None
-    check_version()
-
 def update_to_res_ver(res_ver):
     def ok_to_reload(path):
         global data, last_version_check
@@ -325,12 +314,13 @@ def check_version_api_recv(response, msg):
         return
 
     res_ver = msg.get(b"data_headers", {}).get(b"required_res_ver", b"-1").decode("utf8")
-    if res_ver != data.version or not data:
+    if not data or res_ver != data.version:
         if res_ver != -1:
             update_to_res_ver(res_ver)
         else:
             print("no required_res_ver, did the app get a forced update?")
             is_updating_to_new_truth = 0
+            # FIXME if data is none, we'll get stuck after this
     else:
         print("we're on latest")
         is_updating_to_new_truth = 0
@@ -346,3 +336,29 @@ def check_version():
         is_updating_to_new_truth = 1
         last_version_check = time()
         apiclient.versioncheck(check_version_api_recv)
+
+def are_we_there_yet():
+    if data:
+        ioloop.IOLoop.instance().stop()
+    else:
+        print("not done yet")
+
+is_updating_to_new_truth = 0
+last_version_check = 0
+
+available_mdbs = sorted(list(filter(lambda x: x.endswith(".mdb"), os.listdir(ark_data_path()))), reverse=1)
+if available_mdbs:
+    print("Loading mdb:", available_mdbs[0])
+    data = DataCache(available_mdbs[0].split(".")[0])
+else:
+    print("No mdb, let's download one")
+    data = None
+
+    loop = ioloop.IOLoop.instance()
+    check_version()
+    check = ioloop.PeriodicCallback(are_we_there_yet, 250, loop)
+    check.start()
+    loop.start()
+    check.stop()
+    loop.close()
+    ioloop.IOLoop.clear_instance()
