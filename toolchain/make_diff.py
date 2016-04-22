@@ -1,71 +1,32 @@
-import csvloader
+#!/usr/bin/env python3
 import sys
 import os
 import json
-from datetime import date
+import sqlite3
 
-def values_changed(a, b):
-    for field in a.__class__._fields:
-        if getattr(a, field) != getattr(b, field):
-            yield "{0}: {1} -> {2}".format(field, getattr(a, field), getattr(b, field))
+import locale
+locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
 
-def main(file1, file2, title_key):
-    loc = os.path.basename(file2)
-    if "." in loc:
-        loc = loc[:loc.rfind(".")]
+def load_sql(f):
+    a = sqlite3.connect(f)
+    c = a.execute("SELECT id, rarity, event_available.reward_id FROM card_data LEFT JOIN event_available ON (id == event_available.reward_id)")
 
-    data_a = csvloader.load_keyed_db_file(file1)
-    data_b = csvloader.load_keyed_db_file(file2)
-    
-    #assert schema_b == schema_a, "Schema mismatch."
-    
-    ksa, ksb = map(lambda x: set(x.keys()), (data_a, data_b))
-    added = ksb - ksa
-    removed = ksa - ksb
-    changed = set()
-        
-    maybe_changed = ksb & ksa
-    for key in maybe_changed:
-        if data_a[key] != data_b[key]:
-            changed.add(key)
-    
-    diff = []
-    
-    for key in removed:
-        diff.append({
-            "_k": key,
-            "change_type": "Removed",
-            "where": "{0}:{1}".format(loc, key),
-            "title": getattr(data_a[key], title_key)
-        })
-    for key in added:
-        diff.append({
-            "_k": key,
-            "change_type": "Added",
-            "where": "{0}:{1}".format(loc, key),
-            "title": getattr(data_b[key], title_key)
-        })
-    for key in changed:
-        diff.append({
-            "_k": key,
-            "change_type": "Changed",
-            "where": "{0}:{1}".format(loc, key),
-            "title": getattr(data_b[key], title_key),
-            "extra": "\n".join(values_changed(data_a[key], data_b[key]))
-        })
-    
-    diff.sort(key=lambda x: x["_k"])
-    for x in diff:
-        print(json.dumps(x, sort_keys=1))
+    lut = ["n", "n", "r", "r", "sr", "sr", "ssr", "ssr"]
+    ret = {r[0]: "event" if r[2] else lut[r[1] - 1] for r in c}
+    a.close()
+    return ret
 
 def main(file1, file2):
-    data_a = csvloader.load_keyed_db_file(file1)
-    data_b = csvloader.load_keyed_db_file(file2)
+    data_a = load_sql(file1)
+    data_b = load_sql(file2)
+
     ksa, ksb = map(lambda x: set(x.keys()), (data_a, data_b))
     added = ksb - ksa
-    
+
     if added:
-        diff_obj = {"date": str(date.today()), "cids": sorted(added)}
+        diff_obj = {"n": [], "r": [], "sr": [], "ssr": [], "event": []}
+        for key in added:
+            diff_obj[data_b[key]].append(key)
         print(json.dumps(diff_obj))
 
 if __name__ == '__main__':

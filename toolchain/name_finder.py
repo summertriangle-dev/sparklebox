@@ -7,6 +7,9 @@
 # Copyright 2015 The Holy Constituency of the Summer Triangle.
 # All rights reserved.
 
+import locale
+locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
+
 from collections import namedtuple, Counter
 import re
 import sys

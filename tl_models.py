@@ -69,7 +69,12 @@ class TranslationSQL(object):
             self.engine = create_engine(os.getenv("DATABASE_CONNECT"), echo=False,
                 connect_args={"ssl": {"dummy": "yes"}})
 
-            Base.metadata.create_all(self.engine)
+            try:
+                Base.metadata.create_all(self.engine)
+            except TypeError:
+                self.engine = create_engine(os.getenv("DATABASE_CONNECT"), echo=False)
+                Base.metadata.create_all(self.engine)
+
             self.Session = sessionmaker(self.engine)
             self.really_connected = 1
 
