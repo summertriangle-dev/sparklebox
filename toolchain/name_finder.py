@@ -13,12 +13,13 @@ import sys
 import csvloader
 import csv
 import to_roma
+import sqlite3
 from pprint import pprint
 
 CLASS_FAMILY_NAME = set("sup")
 CLASS_GIVEN_NAME = set("mfgu")
 AX_PARSE = re.compile(r"/\(([a-z\,]+)\) (.+)/")
-FIX_PAT = re.compile(r"([みきりしひ][ゅょゃ])う")
+FIX_PAT = re.compile(r"([きぎしじずずちぢひびぴみにゆり][ゅょゃ]|[おこごそぞとどほぼぽものよろゆ])う")
 Word = namedtuple("Word", ["kanji", "kana", "classifier", "roman"])
 _Search = namedtuple("Search", ["kanji", "kana", "real_kanji"])
 
@@ -148,16 +149,30 @@ class EnamdictHandle(object):
 def final_fixups(string):
     return FIX_PAT.sub(lambda match: match.group(1), string)
 
+chara_stub_t = namedtuple("chara_stub_t", ("name", "name_kana"))
+def load_from_db(new_db):
+    a = sqlite3.connect(new_db)
+    c = a.execute("SELECT chara_id, name, name_kana FROM chara_data")
+    ret = {}
+    for r in c:
+        ret[r[0]] = chara_stub_t(*r[1:])
+    a.close()
+    return ret
+
 if __name__ == '__main__':
+    new_db = sys.argv[2]
+    name_tab = sys.argv[3]
+
+    charas = load_from_db(new_db)
+
     try:
-        have_names = csvloader.load_keyed_db_file("_data/private/names.csv")
+        have_names = csvloader.load_keyed_db_file(name_tab)
     except IOError:
         have_names = {}
-    charas = csvloader.load_keyed_db_file("_data/ark/chara_data.csv")
 
     missing = set(charas.keys()) - set(have_names.keys())
 
-    f = open("_data/private/names.csv", "w")
+    f = open(name_tab, "w")
     c = csv.writer(f, delimiter=",", quotechar="\"", quoting=csv.QUOTE_NONNUMERIC, lineterminator="\n")
     c.writerow(("chara_id", "kanji", "kanji_spaced", "kana_spaced", "conventional"))
 

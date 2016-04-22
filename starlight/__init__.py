@@ -2,6 +2,8 @@ import re
 import sqlite3
 import pickle
 import os
+import tl_models
+import subprocess
 from time import time
 from datetime import datetime
 from pytz import timezone, utc
@@ -17,6 +19,7 @@ from . import acquisition
 ark_data_path = partial(os.path.join, "_data", "ark")
 private_data_path = partial(os.path.join, "_data", "private")
 story_data_path = partial(os.path.join, "_data", "stories")
+transient_data_path = partial(os.path.join, os.getenv(os.getenv("TRANSIENT_DIR_POINTER", ""), "_data/transient"))
 
 acquisition.CACHE = ark_data_path()
 
@@ -129,8 +132,14 @@ class DataCache(object):
     def current_events(self):
         return self.events(TODAY())
 
+    def load_names(self):
+        overrides = load_keyed_db_file(private_data_path("overrides.csv"))
+        names = load_keyed_db_file(transient_data_path("names.csv"))
+        names.update(overrides)
+        return names
+
     def prime_caches(self):
-        self.names = load_keyed_db_file(private_data_path("names.csv"))
+        self.names = self.load_names()
 
         prob_def = self.keyed_prime_from_table("probability_type")
         time_def = self.keyed_prime_from_table("available_time_type")
@@ -290,10 +299,19 @@ class DataCache(object):
         self.primed_this["sel_valist"] += 1
         return self.prime_from_cursor("va_data_t", va_list)
 
+def do_preswitch_tasks(new_db_path, old_db_path):
+    print("trace do_preswitch_tasks", new_db_path, old_db_path)
+    subprocess.call(["toolchain/name_finder.py",
+        private_data_path("enamdictu"),
+        new_db_path,
+        transient_data_path("names.csv")])
+    #tl_models.TranslationSQL(use_satellite=1).push_history()
+
 def update_to_res_ver(res_ver):
     def ok_to_reload(path):
         global data, last_version_check
         if path:
+            do_preswitch_tasks(path, ark_data_path("{0}.mdb".format(data.version)) if data else None)
             data = DataCache(res_ver)
 
         is_updating_to_new_truth = 0
