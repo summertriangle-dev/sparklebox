@@ -2,6 +2,7 @@ import os
 import json
 from datetime import datetime
 from time import time as _time
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, UnicodeText, LargeBinary
 from sqlalchemy import create_engine
@@ -9,10 +10,24 @@ from sqlalchemy.orm import sessionmaker, aliased
 from sqlalchemy import func
 import multiprocessing
 from tornado.ioloop import IOLoop
+from functools import partial
 
 time = lambda: int(_time())
 Base = declarative_base()
 
+def retry(n):
+    def _wrapper(f):
+        def __wrapper(*args):
+            for _ in range(n):
+                try:
+                    return f(*args)
+                except OperationalError as e:
+                    if "lost connection" in str(e).lower():
+                        continue
+                    else:
+                        raise
+        return __wrapper
+    return _wrapper
 
 class TranslationEntry(Base):
     __tablename__ = "ss_translation"
@@ -67,6 +82,7 @@ class TranslationSQL(object):
         self.session_nest[-1].close()
         self.session_nest.pop()
 
+    @retry(5)
     def all(self):
         with self as s:
             transient = aliased(TranslationEntry)
@@ -79,11 +95,13 @@ class TranslationSQL(object):
                 .as_scalar() == 1).all()
         return result
 
+    @retry(5)
     def all_for_key(self, key):
         with self as s:
             result = s.query(TranslationEntry).filter(TranslationEntry.key == key).order_by(TranslationEntry.submit_utc).all()
         return result
 
+    @retry(5)
     def translate(self, done, *key):
         with self as s:
             transient = aliased(TranslationEntry)
@@ -96,22 +114,25 @@ class TranslationSQL(object):
                 .as_scalar() == 1).filter(TranslationEntry.key.in_(key)).all()
         done(result)
 
+    @retry(5)
     def set_translation(self, key, eng, sender):
         with self as s:
             s.add(TranslationEntry(key=key, english=eng,
                                    submitter=sender, submit_utc=time()))
             s.commit()
 
+    @retry(5)
     def push_history(self, dt, payload):
         with self as s:
             pl = json.dumps(payload).encode("utf8")
             s.add(HistoryEntry(time=dt, payload=pl))
             s.commit()
 
+    @retry(5)
     def get_history(self, nent):
         with self as s:
             rows = s.query(HistoryEntry).order_by(HistoryEntry.time.desc())
-            
+
             if nent:
                 rows = rows.limit(nent)
         yield from rows.all()
