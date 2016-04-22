@@ -124,8 +124,7 @@ class TranslationSQL(object):
     @retry(5)
     def push_history(self, dt, payload):
         with self as s:
-            pl = json.dumps(payload).encode("utf8")
-            s.add(HistoryEntry(time=dt, payload=pl))
+            s.add(HistoryEntry(time=dt, payload=payload))
             s.commit()
 
     @retry(5)

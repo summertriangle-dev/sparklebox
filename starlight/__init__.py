@@ -305,14 +305,23 @@ def do_preswitch_tasks(new_db_path, old_db_path):
         private_data_path("enamdictu"),
         new_db_path,
         transient_data_path("names.csv")])
-    #tl_models.TranslationSQL(use_satellite=1).push_history()
+
+    if old_db_path:
+        history_json = subprocess.check_output(["toolchain/make_diff.py",
+            new_db_path,
+            old_db_path]).decode("utf8")
+        tl_models.TranslationSQL(use_satellite=1).push_history(os.getmtime(old_db_path), history_json)
 
 def update_to_res_ver(res_ver):
     def ok_to_reload(path):
         global data, last_version_check
         if path:
-            do_preswitch_tasks(path, ark_data_path("{0}.mdb".format(data.version)) if data else None)
-            data = DataCache(res_ver)
+            try:
+                do_preswitch_tasks(path, ark_data_path("{0}.mdb".format(data.version)) if data else None)
+                data = DataCache(res_ver)
+            except Exception as e:
+                print("do_preswitch_tasks croaked, update aborted.")
+                pass
 
         is_updating_to_new_truth = 0
         last_version_check = time()
@@ -353,7 +362,8 @@ def check_version():
 
         is_updating_to_new_truth = 1
         last_version_check = time()
-        apiclient.versioncheck(check_version_api_recv)
+        update_to_res_ver(10014700)
+        # apiclient.versioncheck(check_version_api_recv)
 
 def are_we_there_yet():
     if data:
@@ -373,7 +383,8 @@ else:
     data = None
 
     loop = ioloop.IOLoop.instance()
-    check_version()
+    update_to_res_ver(10014700)
+    #check_version()
     check = ioloop.PeriodicCallback(are_we_there_yet, 250, loop)
     check.start()
     loop.start()

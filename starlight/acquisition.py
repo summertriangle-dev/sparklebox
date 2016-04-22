@@ -3,6 +3,8 @@ import os
 import sqlite3
 import lz4
 import io
+from time import time
+from email.utils import mktime_tz, parsedate_tz
 from collections import namedtuple
 from tornado import httpclient
 
@@ -94,6 +96,14 @@ def get_master(res_ver, to_path, done):
         data = lz4.loads(bio.getvalue())
         with open(to_path, "wb") as write_db:
             write_db.write(data)
+
+        mdate = response.headers.get("Last-Modified")
+        if mdate:
+            tt = parsedate_tz(mdate)
+            mtime = mktime_tz(tt) if tt else int(time())
+        else:
+            mtime = int(time.time())
+        os.utime(to_path, (-1, mtime))
         done(to_path)
 
     def got_manifest(connection):
