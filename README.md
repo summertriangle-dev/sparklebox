@@ -2,19 +2,15 @@
 
 https://starlight.kirara.ca/
 
-To get started, you need to put data in `_data`. The recommended order:
-- Download and extract truth to `_data/ark`
-- Download and extract storydata to `_data/stories`
-- Write the current truth version to `_data/private/masters_version.txt`
-- Use `name_finder` to romanize names to `_data/private/names.csv`
-- `touch _data/private/history.json`
-
-Then start a virtualenv (the app is actively used with Python 3.2 and 3.5):
+Start a virtualenv (the app is actively used with Python 3.3 and 3.5):
 - `virtualenv .env`
 - `source .env/bin/activate`
 - `pip install -r requirements.txt`
 
 Then configure the environment (see below) and `python3 app.py`.
+Set the `VC_ACCOUNT`, `VC_AES_KEY` and `VC_SID_SALT` environment variables
+and the server will download the current truth automatically. (It may then
+crash. Just start it again.)
 
 ##### Configuration
 
@@ -39,12 +35,15 @@ $IMAGE_HOST - Prepended to all static content, discussed below.
 $ADDRESS - IP address to bind to. Usually you want 0.0.0.0 to bind all interfaces.
 
 $PORT - Port to listen on (for HTTP/HTTPS). Defaults to 5000.
+
+$VC_ACCOUNT - Credentials for automatic updating, in the form user_id:viewer_id:udid.
+
+$VC_SID_SALT, $VC_AES_KEY - Client secrets used for automatic updating.
 ```
 
 For the `IMAGE_HOST` environment variable, you should use one of these
 in most cases:
 
-- `/static/xxx`, where xxx is a symlink to GX's _static directory
 - `https://hoshimoriuta.kirara.ca` (the public image server for starlight.kirara.ca)
 
 The styles are written in Less. If the environment variable DEV is set,
@@ -53,4 +52,4 @@ you don't need to run lessc until you're done changing things.
 
 ##### Build static directory
 
-... something ...
+GX is no longer part of this repo. Use SBJK to push deltas to cdn going forward.
