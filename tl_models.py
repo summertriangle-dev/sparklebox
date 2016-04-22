@@ -17,10 +17,10 @@ Base = declarative_base()
 
 def retry(n):
     def _wrapper(f):
-        def __wrapper(*args):
+        def __wrapper(*args, **kwargs):
             for _ in range(n):
                 try:
-                    return f(*args)
+                    return f(*args, **kwargs)
                 except OperationalError as e:
                     if "lost connection" in str(e).lower():
                         continue
