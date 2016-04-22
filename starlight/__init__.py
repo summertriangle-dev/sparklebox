@@ -62,7 +62,7 @@ class DataCache(object):
     def __init__(self, version):
         self.version = version
         self.load_date = datetime.utcnow()
-        self.hnd = sqlite3.connect(ark_data_path("{0}.mdb".format(version)))
+        self.hnd = sqlite3.connect(transient_data_path("{0}.mdb".format(version)))
         self.prime_caches()
         self.reset_statistics()
 
@@ -322,7 +322,7 @@ def update_to_res_ver(res_ver):
 
         if path:
             try:
-                do_preswitch_tasks(path, ark_data_path("{0}.mdb".format(data.version)) if data else None)
+                do_preswitch_tasks(path, transient_data_path("{0}.mdb".format(data.version)) if data else None)
                 data = DataCache(res_ver)
             except Exception as e:
                 print("do_preswitch_tasks croaked, update aborted.")
@@ -330,7 +330,7 @@ def update_to_res_ver(res_ver):
 
     mdb_path = ark_data_path("{0}.mdb".format(res_ver))
     if not os.path.exists(mdb_path):
-        acquisition.get_master(res_ver, ark_data_path("{0}.mdb".format(res_ver)), ok_to_reload)
+        acquisition.get_master(res_ver, transient_data_path("{0}.mdb".format(res_ver)), ok_to_reload)
     else:
         ok_to_reload(mdb_path)
 
@@ -376,7 +376,7 @@ def are_we_there_yet():
 is_updating_to_new_truth = 0
 last_version_check = 0
 
-available_mdbs = sorted(list(filter(lambda x: x.endswith(".mdb"), os.listdir(ark_data_path()))), reverse=1)
+available_mdbs = sorted(list(filter(lambda x: x.endswith(".mdb"), os.listdir(transient_data_path()))), reverse=1)
 if available_mdbs:
     print("Loading mdb:", available_mdbs[0])
     data = DataCache(available_mdbs[0].split(".")[0])
