@@ -1,6 +1,7 @@
 import tornado.web
 import json
 import os
+import starlight
 
 ROUTES = []
 
@@ -45,3 +46,10 @@ def dev_mode_only(wrapped):
                 "The requested endpoint is only available in development mode.")
 
     return not_dev_error
+
+
+class HandlerSyncedWithMaster(tornado.web.RequestHandler):
+    def prepare(self):
+        starlight.data.reset_statistics()
+        starlight.check_version()
+        super().prepare()

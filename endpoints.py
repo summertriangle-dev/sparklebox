@@ -5,25 +5,14 @@ from dispatch import *
 import os
 import json
 import starlight
-import hashlib
-import base64
 import time
 import pytz
 import itertools
 import enums
 from datetime import datetime, timedelta
 
-def tlable_make_assr(text):
-    if not text:
-        return "@!@!"
-    else:
-        salt = os.getenv("TLABLE_SALT").encode("utf8")
-        return base64.b64encode(hashlib.sha256(text.encode("utf8") + salt).digest()).decode("utf8")
-
-def tlable(text):
-    text = text.replace("\n", " ")
-    return """<span class="tlable" data-summertriangle-assr="{1}">{0}</span>""".format(
-        tornado.escape.xhtml_escape(text), tlable_make_assr(text))
+import api_endpoints
+tlable = api_endpoints.tlable
 
 def icon(css_class):
     return """<div class="icon icon_{0}"></div>""".format(css_class)
@@ -45,12 +34,6 @@ def audio(object_id, use, index):
     basename = hex(a)[2:]
 
     return "va2/{0}.mp3".format(basename)
-
-class HandlerSyncedWithMaster(tornado.web.RequestHandler):
-    def prepare(self):
-        starlight.data.reset_statistics()
-        starlight.check_version()
-        super().prepare()
 
 @route(r"/([0-9]+-[0-9]+-[0-9]+)?")
 class Home(HandlerSyncedWithMaster):
@@ -218,76 +201,6 @@ class History(HandlerSyncedWithMaster):
 
         self.render("history.html", history=all_history, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
-
-
-@route("/api/v1/read_tl")
-class TranslateReadAPI(tornado.web.RequestHandler):
-    """ Queries database for cs translation entries """
-
-    @tornado.web.asynchronous
-    def post(self):
-        try:
-            load = json.loads(self.request.body.decode("utf8"))
-        except ValueError:
-            self.set_status(400)
-            return
-        else:
-            if not isinstance(load, list):
-                self.set_status(400)
-                return
-
-        unique = list(set(load))
-
-        if not unique:
-            self.set_header("Content-Type", "application/json; charset=utf-8")
-            self.write("{}")
-            self.finish()
-
-        self.settings["tle"].translate(self.complete, *unique)
-
-    def complete(self, ret):
-        from_db = {tlo.key: tlo.english for tlo in ret if tlo.english != tlo.key}
-        self.set_header("Content-Type", "application/json; charset=utf-8")
-        self.write(json.dumps(from_db))
-        self.finish()
-
-
-@route("/api/v1/send_tl")
-class TranslateWriteAPI(tornado.web.RequestHandler):
-    """ Save a contributed string to database.
-        A security token is present to prevent spamming of random keys,
-        but otherwise all strings will be accepted. """
-
-    def post(self):
-        try:
-            load = json.loads(self.request.body.decode("utf8"))
-        except ValueError:
-            self.set_status(400)
-            return
-
-        key = load.get("key", "")
-        s = load.get("tled", "").strip() or key
-        assr = load.get("security")
-        print(key, s, assr)
-        if not (key and s and assr) or tlable_make_assr(key) != assr:
-            self.set_status(400)
-            return
-
-        self.settings["tle"].set_translation(
-            load.get("key"), s, self.request.remote_ip)
-        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
-                                                   {"key": key, "value": s})
-
-
-@route(r"/api/v1/([a-z_]+)/(.+)")
-class ObjectAPI(HandlerSyncedWithMaster):
-    def expand_spec(spec):
-        comp = filter(bool, spec.split(","))
-        real_spec = []
-
-
-    def get(self, objectid, spec):
-        ids = self.expand_spec(spec)
 
 @route(r"/dbgva/([^/]+)")
 @dev_mode_only

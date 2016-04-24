@@ -144,10 +144,10 @@ class DataCache(object):
         prob_def = self.keyed_prime_from_table("probability_type")
         time_def = self.keyed_prime_from_table("available_time_type")
 
-        self.skills = self.keyed_prime_from_table("skill_data",
+        self._skills = self.keyed_prime_from_table("skill_data",
             chance=lambda obj: partial(skill_chance, prob_def, obj.probability_type),
             dur=lambda obj: partial(skill_dur, time_def, obj.available_time_type))
-        self.lead_skills = self.keyed_prime_from_table("leader_skill_data")
+        self._lead_skills = self.keyed_prime_from_table("leader_skill_data")
         self.rarity_dep = self.keyed_prime_from_table("card_rarity")
 
         self.chain_id = {}
@@ -222,8 +222,8 @@ class DataCache(object):
             has_spread=lambda obj: obj.rarity > 4,
             name_only=lambda obj: re.match(NAME_ONLY_REGEX, obj.name).group(1),
             title=lambda obj: re.match(TITLE_ONLY_REGEX, obj.name).group(1) if obj.title_flag else None,
-            skill=lambda obj: self.skills.get(obj.skill_id),
-            lead_skill=lambda obj: self.lead_skills.get(obj.leader_skill_id),
+            skill=lambda obj: self._skills.get(obj.skill_id),
+            lead_skill=lambda obj: self._lead_skills.get(obj.leader_skill_id),
             rarity_dep=lambda obj: self.rarity_dep.get(obj.rarity),
             overall_min=lambda obj: obj.vocal_min + obj.dance_min + obj.visual_min,
             overall_max=lambda obj: obj.vocal_max + obj.dance_max + obj.visual_max,
@@ -294,6 +294,12 @@ class DataCache(object):
     def all_chain_ids(self):
         return sorted(self.id_chain.keys())
 
+    def skills(self, ids):
+        return [self._skills.get(id) for id in ids]
+
+    def lead_skills(self, ids):
+        return [self._lead_skills.get(id) for id in ids]
+
     def va_data(self, id):
         va_list = self.hnd.execute("SELECT * FROM card_comments WHERE id = ?", (id,))
         self.primed_this["sel_valist"] += 1
@@ -306,7 +312,7 @@ def do_preswitch_tasks(new_db_path, old_db_path):
         new_db_path,
         transient_data_path("names.csv")])
 
-    if old_db_path:
+    if old_db_path and not os.getenv("DEV", None):
         history_json = subprocess.check_output(["toolchain/make_diff.py",
             old_db_path,
             new_db_path])
@@ -356,6 +362,8 @@ def check_version_api_recv(response, msg):
 
 def check_version():
     print("trace check_version")
+    return
+
     global is_updating_to_new_truth, last_version_check
 
     if not is_updating_to_new_truth and time() - last_version_check > 3600:
@@ -384,12 +392,11 @@ else:
     print("No mdb, let's download one")
     data = None
 
-    loop = ioloop.IOLoop.instance()
+    loop = ioloop.IOLoop.current()
     # update_to_res_ver(10014350)
     check_version()
     check = ioloop.PeriodicCallback(are_we_there_yet, 250, loop)
     check.start()
     loop.start()
     check.stop()
-    loop.close()
     ioloop.IOLoop.clear_instance()

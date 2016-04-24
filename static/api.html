@@ -6,54 +6,134 @@
     <link rel="stylesheet/less" type="text/css" href="css/main.less" />
     <script type="text/javascript" src="js/less.js"></script>
     <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <style>
+      pre, code { font-family:monospace; font-size:16px; }
+      pre { background-color:#444; padding:8px 5px; }
+    </style>
 </head>
 <body>
   <div class="container">
+    <h1 id="toc_0">Starlight API</h1>
 
-    <h1>Starlight API</h1>
+    <p>The API exports data from the game&#39;s internal databases in a nice, webdev friendly JSON format. </p>
 
-    <p>The API exports data from the game’s internal databases in a nice, webdev friendly JSON format. </p>
+    <h2 id="toc_1">Endpoints</h2>
 
-    <h2>Endpoints</h2>
+    <h3 id="toc_2">Object Type</h3>
 
-    <pre><code>/api/v1/(object type)/(spec)?...
-    </code></pre>
+    <div><pre><code class="language-none">GET /api/v1/(object type)/(spec)?...</code></pre></div>
 
-    <p>Query the API for the objects matching spec.</p>
+    <p>Query the API for the objects of <code>object type</code> matching <code>spec</code>.</p>
 
-    <h2>Supported object types</h2>
+    <h4 id="toc_3">Supported object types</h4>
 
     <ul>
-    <li>skill_t: Card skill info.</li>
-    <li>card_t: Card info.</li>
-    <li>leader_skill_t: Centre skill info.</li>
-    <li>char_t: Character info.</li>
+    <li><code>skill_t</code>: Card skill info.</li>
+    <li><code>card_t</code>: Card info.</li>
+    <li><code>leader_skill_t</code>: Centre skill info.</li>
+    <li><code>char_t</code>: Character info.</li>
     </ul>
 
-    <h2>Specs</h2>
+    <h4 id="toc_4">Specs</h4>
 
-    <p>A spec is a list of IDs separated by commas. IDs are not sequential, and are only valid for their object type. Typically, an ID is an integer, but there are some super-IDs that you can use:</p>
+    <p>A spec is a list of IDs separated by commas. IDs are not sequential, and are only valid for their object type. Typically, an ID is an integer.</p>
+
+    <h4 id="toc_5">Return value</h4>
+
+    <p>Success:</p>
+
+    <div><pre><code class="language-none">{
+  &quot;result&quot;: [
+    ; an array containing each object in the order they
+    ; were requested, or null if it doesn&#39;t exist
+    ; for detailed object contents, read the <a href="https://github.com/summertriangle-dev/sparklebox/wiki">wiki</a>.
+  ]
+}</code></pre></div>
+
+    <p>Error: (see Errors under Misc.)</p>
+
+    <h4 id="toc_6">Query Parameters</h4>
 
     <ul>
-    <li>Range ID: id1-id5 Matches all valid objects with an ID in the (inclusive) range.</li>
-    <li>All ID: all Matches every object of its type. If you pass it as part of a multi-ID spec, an error is returned.</li>
-    <li>Random ID: random Matches a random valid object. Duplication is not checked, so the spec random,random might return the same object twice.</li>
-    </ul>
-
-    <h2>Query Parameters</h2>
-
-    <ul>
-    <li><p>stubs=yes|no When stubs is present, linked objects (such as card_t.skill) are replaced with an {“ref”: url} object, where url is a valid API URL to retrieve the object that would normally be embedded. <strong>Returned URLs only contain the path and query portion, so you should add the scheme/domain yourself.</strong></p>
-    {“ref”: “/api/v1/skill_t/123?stubs=yes”}</li>
-    <li>datetime=unix|iso8601 The format for timestamps returned by the API.
+    <li>stubs=yes|no<br>
+    When stubs is present, linked objects (such as <code>card_t.skill</code>) are replaced with a <code>{&quot;ref&quot;: url}</code> object, where url is a valid API URL to retrieve the object that would normally be embedded.
+      <code>{“ref”: “/api/v1/skill_t/123”}</code></li>
+    <li>datetime=unix|iso8601<br>
+    The format for timestamps returned by the API.
 
     <ul>
-    <li>unix: Seconds since Jan 1, 1970 at midnight UTC as an integer.</li>
-    <li>iso8601: An ISO 8601 string: “1970–01–01T00:00:00.000Z”</li>
+    <li>unix: Unix time, i.e. seconds since the epoch as an integer.</li>
+    <li>iso8601: An ISO 8601 string: “1970-01-01T00:00:00.000Z”</li>
     </ul></li>
     </ul>
 
-    <h2>Bugs and Feature Requests</h2>
+    <hr>
+
+    <h3 id="toc_7">Crowd Translations</h3>
+
+    <div><pre><code class="language-none">POST /api/v1/read_tl
+
+[&quot;string1&quot;, &quot;string2&quot;, ..., &quot;stringN&quot;]</code></pre></div>
+
+    <p>Query translations for the given strings. This is the same API used by tlinject.js on starlight.kirara.ca.</p>
+
+    <h4 id="toc_8">Return value</h4>
+
+    <p>The value returned is a JSON dict mapping the original strings to their translated counterparts if available:</p>
+
+    <div><pre><code class="language-none">{&quot;つぼみ&quot;: &quot;Tsubomi&quot;}</code></pre></div>
+
+    <h4 id="toc_9">Errors</h4>
+
+    <ul>
+    <li>5xx - try again.</li>
+    <li>400 - the given string list was not valid JSON, or didn&#39;t decode into a list</li>
+    </ul>
+
+    <hr>
+
+    <h3 id="toc_10">Time</h3>
+
+    <div><pre><code class="language-none">GET /api/v1/happening/now
+GET /api/v1/happening/(timestamp)</code></pre></div>
+
+    <p>Get time-sensitive information.</p>
+
+    <h2 id="toc_11">Misc.</h2>
+
+    <h3 id="toc_12">URLs</h3>
+
+    <p>All URLs returned in API responses should be interpreted as relative to the URL that the response came from.</p>
+
+    <p>From an API call to <code>/api/v1/card_t/123</code>...</p>
+
+    <ul>
+    <li>We might return relative paths like <code>../../images/blah.png</code>, which you would expand to <code>/api/v1/images/blah.png</code></li>
+    <li>We might return an absolute path like <code>/static/hoshimoriuta/card/123.png</code></li>
+    <li>We might return a fully-qualified URL to another domain like <code>https://static.com/card/123.png</code></li>
+    </ul>
+
+    <h3 id="toc_13">Images</h3>
+
+    <p>Some objects will have image URLs embedded in them. As a general rule, you can hotlink any image returned in an API response. However, if you expect a lot of traffic, you may want to mirror the images to your own server.</p>
+
+    <h3 id="toc_14">Errors</h3>
+
+    <p>If there is an error processing the request, we will return the JSON object</p>
+
+    <div><pre><code class="language-none">{&quot;error&quot;: &quot;Some error message&quot;}</code></pre></div>
+
+    <p>and the appropriate HTTP status.</p>
+
+    <h3 id="toc_15">Rate limiting</h3>
+
+    <p>There is none. If it does exist in the future, we will return an HTTP 429 status with the error object.</p>
+
+    <h3 id="toc_16">Attribution</h3>
+
+    <p>You don&#39;t have to credit data that comes from the API because it reads from game truth anyway. But if you&#39;d like to, credit the <q><a href="https://starlight.kirara.ca/">Starlight Database</a></q>.</p>
+
+    <h2 id="toc_17">Bugs and Feature Requests</h2>
 
     <p><a href="https://github.com/summertriangle-dev/sparklebox/issues">File an issue here</a> if you have any problems with using the API.</p>
   </div>

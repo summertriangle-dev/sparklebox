@@ -2,6 +2,7 @@ import csvloader
 import functools
 import os
 import enums
+import re
 
 # skill describer
 
@@ -17,6 +18,13 @@ SKILL_DESCRIPTIONS = {
     14: """<span class="let">{1}</span> life will be consumed, then: all notes receive a <span class="let">{0}</span>% score bonus, and Nice/Bad notes will not break combo""",
     17: """all Perfect notes will restore <span class="let">{0}</span> health""" }
 
+REMOVE_HTML = re.compile(r"</?span[^>]*>")
+
+def describe_skill(skill):
+    return REMOVE_HTML.sub("", describe_skill_html(skill))
+
+def describe_lead_skill(lskill):
+    return REMOVE_HTML.sub("", describe_lead_skill_html(lskill))
 
 def describe_skill_html(skill):
     fire_interval = skill.condition

@@ -81,6 +81,29 @@ lskill_effective_param = enum([
     6, "ce_skill",
 ])
 
+api_char_type = enum([
+    1, "cute",
+    2, "cool",
+    3, "passion",
+    4, "office"
+])
+
+lskill_target_attr = enum([
+    1, "cute",
+    2, "cool",
+    3, "passion",
+    4, "all",
+])
+
+lskill_target_param = enum([
+    1, "vocal",
+    2, "visual",
+    3, "dance",
+    4, "all",
+    5, "life",
+    6, "skill_probability",
+])
+
 skill_class = enum([
     1, "s_scorebonus",
     17, "s_heal",
