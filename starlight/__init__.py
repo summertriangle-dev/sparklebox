@@ -362,7 +362,9 @@ def check_version_api_recv(response, msg):
 
 def check_version():
     print("trace check_version")
-    return
+
+    if os.getenv("DEV", None):
+        return
 
     global is_updating_to_new_truth, last_version_check
 
