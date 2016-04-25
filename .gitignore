@@ -4,7 +4,6 @@ __pycache__/
 
 _gx
 static/sync
-_data
 devmode
 analytics.py
 toolchain/messy_finder.py
