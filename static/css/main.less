@@ -491,7 +491,7 @@ span.var {
   &.Cute {
     border-color:darken(@cute_colour, 10%);
 
-    & > .header, .table th {
+    & > .header, .table th, .table_stub {
       background-color: @cute_colour;
       color:white;
       .left { background-color: darken(@cute_colour, 10%); }
@@ -501,7 +501,7 @@ span.var {
   &.Cool {
     border-color:darken(@cool_colour, 10%);
 
-    & > .header, .table th {
+    & > .header, .table th, .table_stub {
       background-color: @cool_colour;
       color:white;
       .left { background-color: darken(@cool_colour, 10%); }
@@ -511,7 +511,7 @@ span.var {
   &.Passion {
     border-color:lighten(@passion_colour, 10%);
 
-    & > .header, .table th {
+    & > .header, .table th, .table_stub {
       color:#222;
       background-color: @passion_colour;
       .left { background-color: lighten(@passion_colour, 10%); }
@@ -521,7 +521,7 @@ span.var {
   &.black {
     border-color:lighten(#444, 10%);
 
-    & > .header, .table th {
+    & > .header, .table th, .table_stub {
       color:white;
       background-color: darken(#444, 10%);;
       .left { background-color: lighten(#444, 10%); }
@@ -535,6 +535,11 @@ span.var {
     & > * {
       vertical-align:middle;
     }
+  }
+
+  .table_stub {
+    padding:0 10px 10px;
+    text-align:center;
   }
 }
 

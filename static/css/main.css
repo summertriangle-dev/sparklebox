@@ -445,16 +445,19 @@ span.var {
   border-color: #cc035d;
 }
 .box.Cute > .header,
-.box.Cute .table th {
+.box.Cute .table th,
+.box.Cute .table_stub {
   background-color: #fb0774;
   color: white;
 }
 .box.Cute > .header .left,
-.box.Cute .table th .left {
+.box.Cute .table th .left,
+.box.Cute .table_stub .left {
   background-color: #cc035d;
 }
 .box.Cute > .header .ext,
-.box.Cute .table th .ext {
+.box.Cute .table th .ext,
+.box.Cute .table_stub .ext {
   border-top-color: #cc035d;
   border-left-color: #cc035d;
 }
@@ -462,16 +465,19 @@ span.var {
   border-color: #0452e7;
 }
 .box.Cool > .header,
-.box.Cool .table th {
+.box.Cool .table th,
+.box.Cool .table_stub {
   background-color: #236dfb;
   color: white;
 }
 .box.Cool > .header .left,
-.box.Cool .table th .left {
+.box.Cool .table th .left,
+.box.Cool .table_stub .left {
   background-color: #0452e7;
 }
 .box.Cool > .header .ext,
-.box.Cool .table th .ext {
+.box.Cool .table th .ext,
+.box.Cool .table_stub .ext {
   border-top-color: #0452e7;
   border-left-color: #0452e7;
 }
@@ -479,16 +485,19 @@ span.var {
   border-color: #fdbd58;
 }
 .box.Passion > .header,
-.box.Passion .table th {
+.box.Passion .table th,
+.box.Passion .table_stub {
   color: #222;
   background-color: #fca926;
 }
 .box.Passion > .header .left,
-.box.Passion .table th .left {
+.box.Passion .table th .left,
+.box.Passion .table_stub .left {
   background-color: #fdbd58;
 }
 .box.Passion > .header .ext,
-.box.Passion .table th .ext {
+.box.Passion .table th .ext,
+.box.Passion .table_stub .ext {
   border-top-color: #fdbd58;
   border-left-color: #fdbd58;
 }
@@ -496,16 +505,19 @@ span.var {
   border-color: #5e5e5e;
 }
 .box.black > .header,
-.box.black .table th {
+.box.black .table th,
+.box.black .table_stub {
   color: white;
   background-color: #2b2b2b;
 }
 .box.black > .header .left,
-.box.black .table th .left {
+.box.black .table th .left,
+.box.black .table_stub .left {
   background-color: #5e5e5e;
 }
 .box.black > .header .ext,
-.box.black .table th .ext {
+.box.black .table th .ext,
+.box.black .table_stub .ext {
   border-top-color: #5e5e5e;
   border-left-color: #5e5e5e;
 }
@@ -514,6 +526,10 @@ span.var {
 }
 .box > .content > * {
   vertical-align: middle;
+}
+.box .table_stub {
+  padding: 0 10px 10px;
+  text-align: center;
 }
 .tlable:hover {
   background-color: #666!important;

@@ -9,12 +9,15 @@
     {% else %}
     <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
     {% end %}
-    <link rel="stylesheet" type="text/css" href="{{ image_host }}/icons2/icons.css?c={{ version.masters_version }}" />
+    <link rel="stylesheet" type="text/css" href="{{ image_host }}/icons2/icons.css?c={{ starlight.data.version }}" />
     <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
     <script type="text/javascript" src="{{ handler.static_url("js/skills.js") }}"></script>
 </head>
 
 <body>
+  <div class="container donate_notice" style="font-size:13px;padding:6px 10px;color:white;">
+    Hosting this used to be free, but now it's not. :/ <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KK2MLB7FGES32">If you find this useful, please consider a donation</a>. (It costs about ~$5 per month to host everything, plus ~$12 per year for the domain.)
+  </div>
     <div class="container">
         <table class="stats_table control_table">
             <tr class="toggles_row control_row">

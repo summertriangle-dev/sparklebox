@@ -1,11 +1,16 @@
+autopep8==1.2.1
 cffi==1.4.2
 lz4==0.7.0
 msgpack-python==0.4.6
+pep8==1.6.2
+plac==0.9.1
 pycparser==2.14
+pyflakes==1.0.0
 PyMySQL==0.6.7
 PyNaCl==0.3.0
 pytz==2015.7
 requests==2.8.1
+setproctitle==1.1.9
 six==1.10.0
 SQLAlchemy==1.0.8
 tornado==4.2.1

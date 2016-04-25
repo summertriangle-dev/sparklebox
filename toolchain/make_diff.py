@@ -9,7 +9,7 @@ locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
 
 def load_sql(f):
     a = sqlite3.connect(f)
-    c = a.execute("SELECT id, rarity, event_available.reward_id FROM card_data LEFT JOIN event_available ON (id == event_available.reward_id)")
+    c = a.execute("SELECT id, rarity, event_available.reward_id FROM card_data LEFT JOIN event_available ON (id == event_available.reward_id) WHERE evolution_id != 0")
 
     lut = ["n", "n", "r", "r", "sr", "sr", "ssr", "ssr"]
     ret = {r[0]: "event" if r[2] else lut[r[1] - 1] for r in c}

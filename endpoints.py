@@ -113,6 +113,7 @@ class LeadSkillTable(HandlerSyncedWithMaster):
                     **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
+
 @route(r"/char/([0-9]+)(/table)?")
 class Character(HandlerSyncedWithMaster):
     def get(self, chara_id, use_table):
@@ -142,6 +143,7 @@ class Character(HandlerSyncedWithMaster):
             self.set_status(404)
             self.write("Not found.")
 
+
 @route(r"/card/([0-9\,]+)(/table)?")
 class Card(HandlerSyncedWithMaster):
     def get(self, card_idlist, use_table):
@@ -157,7 +159,7 @@ class Card(HandlerSyncedWithMaster):
 
         if acard:
             self.set_header("Content-Type", "text/html")
-            self.render("card.html", cards=acard, **self.settings)
+            self.render("card.html", cards=acard, use_table=use_table, **self.settings)
             self.settings["analytics"].analyze_request(
                 self.request, self.__class__.__name__, {"card_id": card_idlist})
         else:
@@ -179,6 +181,7 @@ class SpriteRedirect(tornado.web.RequestHandler):
                                                      assoc_char, assoc_pose))
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
             {"card_id": "({0}) {1} <{2}>".format(assoc_card.title, assoc_card.chara.conventional, card_id)})
+
 
 @route(r"/sprite_go_ex/([0-9]+)")
 class SpriteViewerEX(tornado.web.RequestHandler):

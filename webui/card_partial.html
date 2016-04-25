@@ -1,4 +1,5 @@
 <div class="carcon" data-chain="{{ " ".join(map(str, (_card.id for _card in chain))) }}" data-showing-id="{{ card.id }}">
+  {% if not use_table %}
   {% if not card.has_spread %}
   <div class="card_left">
     <div class="rel">
@@ -9,8 +10,8 @@
     </div>
 
     <p class="card_image_offlink"><a class="sprite_link" href="{{ image_host }}/chara/{{ card.chara.chara_id }}/{{ card.pose }}.png">{{ _("View sprite") }}</a></p>
-    <p class="card_image_offlink"><a href="javascript:void(0);" onclick="document.getElementById('raw_card_{{ card.id }}').style.display = 'block';this.parentNode.parentNode.removeChild(this.parentNode)">
-      {{ _("Expand raw data table") }}</a></p>
+    <p class="card_image_offlink"><a class="petit_link" href="{{ image_host }}/puchi/{{ card.id }}.png">{{ _("Petit sprite") }}</a></p>
+    <p class="card_image_offlink"><a class="sprite_link" href="/card/{{ card.id }}/table">{{ _("Raw data table") }}</a></p>
   </div>
   {% end %}
 
@@ -32,7 +33,8 @@
       <div class="hang_inside">
         <a class="image_switch" href="javascript:void(0);" onclick="toggle_transform_state(this, pn(this, 4))">{{ _("Swap costume") }}</a>
         <a class="image_switch sprite_link" href="{{ image_host }}/chara/{{ card.chara.chara_id }}/{{ card.pose }}.png">{{ _("View sprite") }}</a>
-        <a class="image_switch" href="javascript:void(0);" onclick="document.getElementById('raw_card_{{ card.id }}').style.display = 'block';this.parentNode.removeChild(this)">{{ _("Expand raw data table") }}</a>
+        <a class="image_switch petit_link" href="{{ image_host }}/puchi/{{ card.id }}.png">{{ _("Petit sprite") }}</a>
+        <a class="image_switch sprite_link" href="/card/{{ card.id }}/table">{{ _("Raw data table") }}</a>
       </div>
     </div>
     {% end %}
@@ -127,7 +129,8 @@
         <span class="item ext"></span>
       </div>
       <div class="content">
-        <table style="height:100%" id="va_card_{{ _card.id }}" class="table">
+        <div class="table_stub"><a class="image_switch" onclick="table('va_card_{{ card.id }}', this.parentNode)">Expand</a></div>
+        <table id="va_card_{{ card.id }}" class="table" style="display:none">
           <tr>
             <th class="hides_under_mobile">{{ _("Usage") }}</th>
             <th colspan="2">{{ _("Text") }}</th>
@@ -149,10 +152,11 @@
       </div>
     </div>
   </div>
-
-  <table style="height:100%;display:none" id="raw_card_{{ card.id }}" class="table">
+  {% else %}
+  <table id="raw_card_{{ card.id }}" class="table">
     {% for key, value in card.__dict__.items() %}
     <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
     {% end %}
   </table>
+  {% end %}
 </div>

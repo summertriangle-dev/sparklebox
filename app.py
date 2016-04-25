@@ -1,3 +1,6 @@
+import locale
+locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
@@ -15,35 +18,6 @@ import enums
 import starlight
 import analytics
 from starlight import private_data_path
-
-version_t = namedtuple("version_t", ["git_ref", "masters_version"])
-
-def executable(name, *args):
-    for p in os.getenv("PATH").split(":"):
-        maybe_exec = os.path.join(p, name)
-        if os.path.exists(maybe_exec):
-            which = maybe_exec
-            break
-    else:
-        return None
-
-    try:
-        return subprocess.check_output((which,) + args).decode("utf8").strip()
-    except subprocess.CalledProcessError:
-        return None
-
-git = functools.partial(executable, "git")
-
-def get_ssdb_version():
-    gr = git("rev-list", "-n", "1", "HEAD")
-    if not gr:
-        gr = os.environ.get("DEP_VERSION", "???")
-
-    with open(os.path.join("_data", "private", "masters_version.txt"), "r") as mv_f:
-        masters_version = mv_f.read().strip()
-
-    return version_t(gr, masters_version)
-
 
 def early_init():
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -97,7 +71,6 @@ def main():
     early_init()
     in_dev_mode = os.environ.get("DEV")
     image_server = os.environ.get("IMAGE_HOST", "")
-    version = get_ssdb_version()
     application = tornado.web.Application(dispatch.ROUTES,
         template_path="webui",
         static_path="static",
@@ -112,8 +85,7 @@ def main():
         icon=endpoints.icon,
         icon_ex=endpoints.icon_ex,
         audio=endpoints.audio,
-        analytics=analytics.Analytics(),
-        version=version)
+        analytics=analytics.Analytics())
     http_server = tornado.httpserver.HTTPServer(application, xheaders=1)
 
     addr = os.environ.get("ADDRESS", "0.0.0.0")

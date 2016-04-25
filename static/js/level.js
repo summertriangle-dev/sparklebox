@@ -126,6 +126,12 @@ function set_stats_visible(that, cid) {
         sprite.href = "/sprite_go/" + cid + ".png"
     }
 
+    var puchi = root.querySelector(".petit_link");
+    if (puchi) {
+        link = puchi.href.substring(0, puchi.href.lastIndexOf("/"));
+        puchi.href = link + "/" + cid + ".png"
+    }
+
     var spread = root.querySelector(".spread_link");
     if (spread) {
         link = spread.href.substring(0, spread.href.lastIndexOf("/"));
@@ -133,4 +139,9 @@ function set_stats_visible(that, cid) {
     }
 
     root.setAttribute("data-showing-id", cid)
+}
+
+function table(id, kill) {
+    document.getElementById(id).style.display = 'table';
+    kill.parentNode.removeChild(kill);
 }
