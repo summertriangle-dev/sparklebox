@@ -29,12 +29,19 @@ def retry(n):
         return __wrapper
     return _wrapper
 
+def utext():
+    # hack
+    if os.getenv("DATABASE_CONNECT").startswith("sqlite:"):
+        return UnicodeText()
+    else:
+        return UnicodeText(collation="utf8_bin")
+
 class TranslationEntry(Base):
     __tablename__ = "ss_translation"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    key = Column(UnicodeText(collation="utf8_bin"))
-    english = Column(UnicodeText(collation="utf8_bin"))
+    key = Column(utext())
+    english = Column(utext())
     submitter = Column(String(50))
     submit_utc = Column(Integer)
 
