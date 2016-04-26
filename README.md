@@ -1,16 +1,47 @@
-# sparklebox
+# sparklebox (2.0!)
 
 https://starlight.kirara.ca/
 
-Start a virtualenv (the app is actively used with Python 3.3 and 3.5):
-- `virtualenv .env`
-- `source .env/bin/activate`
-- `pip install -r requirements.txt`
+##### Getting started
 
-Then configure the environment (see below) and `python3 app.py`.
-Set the `VC_ACCOUNT`, `VC_AES_KEY` and `VC_SID_SALT` environment variables
-and the server will download the current truth automatically. (It may then
-crash. Just start it again.)
+Make a virtualenv (the app is actively used with Python 3.3 and 3.5):
+
+    virtualenv --python=python3 .env
+    source .env/bin/activate
+    pip install -r requirements.txt
+
+Then configure the environment variables (I suggest saving these to a file as
+you go, so you can restore them later).
+
+    # Development mode disables Tornado's internal caching as well as
+    # HTTPS enforcement.
+    export DEV=1
+    export TRANSIENT_DATA_DIR="_data/transient"
+
+    mkdir -p $TRANSIENT_DATA_DIR
+    # Note the lack of $. This is the name of the variable that has
+    # the transient data dir.
+    export TRANSIENT_DIR_POINTER=TRANSIENT_DATA_DIR
+    export DATABASE_CONNECT='sqlite:///'$TRANSIENT_DATA_DIR'/ss.sqlite3'
+    export TLABLE_SALT='bang on the keyboard for a random string'
+    export IMAGE_HOST='https://static.myderesutesite.com'
+
+If you do not know values for `VC_ACCOUNT`, `VC_AES_KEY`, and `VC_SID_SALT`,
+start the app with a version number as the first argument.
+
+    python3 app.py [59234863]
+
+That's obviously not the correct version number, but you can find it on
+[any](https://starlight.kirara.ca/) of the [sites](http://usamin.info/) which
+have [them](https://boards.4chan.org/vg/catalog#s=idolm@ster). Alternatively,
+you can sniff network traffic using a proxy like Charles.
+
+Otherwise, set those environment variables and run.
+
+    python3 app.py
+
+The server will download the current truth automatically, then exit.
+You will then be able to run the app.
 
 ##### Configuration
 
@@ -39,6 +70,8 @@ $PORT - Port to listen on (for HTTP/HTTPS). Defaults to 5000.
 $VC_ACCOUNT - Credentials for automatic updating, in the form user_id:viewer_id:udid.
 
 $VC_SID_SALT, $VC_AES_KEY - Client secrets used for automatic updating.
+
+$DISABLE_AUTO_UPDATES - Disables the automatic updater even if VC_* are set.
 ```
 
 For the `IMAGE_HOST` environment variable, you should use one of these
