@@ -19,12 +19,20 @@ def icon(css_class):
 
 def icon_ex(card_id):
     rec = starlight.data.card(card_id)
-    btext = "({0}) {1}".format(enums.rarity(rec.rarity), tlable(rec.title) if rec.title_flag else "")
-    ish = """<div class="profile">
-        <div class="icon icon_{rec.id}"></div>
-        <div class="profile_text"><b>{0}</b><br>{btext}</div>
-    </div>""".format(tornado.escape.xhtml_escape(rec.chara.conventional), rec=rec, btext=btext)
-    return """<a href="/char/{rec.chara_id}#c_{rec.id}_head" class="noline">{ish}</a>""".format(rec=rec, ish=ish)
+    if not rec:
+        btext = "(?) bug:{0}".format(card_id)
+        ish = """<div class="profile">
+            <div class="icon icon_unknown"></div>
+            <div class="profile_text"><b>Mysterious Kashikoi Person</b><br>{btext}</div>
+        </div>""".format(btext=btext)
+        return """<a class="noline">{ish}</a>""".format(ish=ish)
+    else:
+        btext = "({0}) {1}".format(enums.rarity(rec.rarity), tlable(rec.title) if rec.title_flag else "")
+        ish = """<div class="profile">
+            <div class="icon icon_{rec.id}"></div>
+            <div class="profile_text"><b>{0}</b><br>{btext}</div>
+        </div>""".format(tornado.escape.xhtml_escape(rec.chara.conventional), rec=rec, btext=btext)
+        return """<a href="/char/{rec.chara_id}#c_{rec.id}_head" class="noline">{ish}</a>""".format(rec=rec, ish=ish)
 
 def audio(object_id, use, index):
     a = (object_id << 40) | ((use & 0xFF) << 24) | ((index & 0xFF) << 16) | 0x11AB
