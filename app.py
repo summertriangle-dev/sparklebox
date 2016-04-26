@@ -68,6 +68,7 @@ def early_init():
 
 
 def main():
+    starlight.init()
     early_init()
     in_dev_mode = os.environ.get("DEV")
     image_server = os.environ.get("IMAGE_HOST", "")

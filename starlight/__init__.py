@@ -4,6 +4,7 @@ import pickle
 import os
 import tl_models
 import subprocess
+import sys
 from time import time
 from datetime import datetime
 from pytz import timezone, utc
@@ -21,7 +22,7 @@ private_data_path = partial(os.path.join, "_data", "private")
 story_data_path = partial(os.path.join, "_data", "stories")
 transient_data_path = partial(os.path.join, os.getenv(os.getenv("TRANSIENT_DIR_POINTER", ""), "_data/transient"))
 
-acquisition.CACHE = ark_data_path()
+acquisition.CACHE = transient_data_path()
 
 _JST = timezone("Asia/Tokyo")
 def JST(date, to_utc=1):
@@ -320,6 +321,8 @@ def do_preswitch_tasks(new_db_path, old_db_path):
             tl_models.TranslationSQL(use_satellite=1).push_history(os.path.getmtime(old_db_path), history_json)
 
 def update_to_res_ver(res_ver):
+    global is_updating_to_new_truth
+
     def ok_to_reload(path):
         global data, last_version_check
 
@@ -334,6 +337,7 @@ def update_to_res_ver(res_ver):
                 print("do_preswitch_tasks croaked, update aborted.")
                 raise
 
+    is_updating_to_new_truth = 1
     mdb_path = ark_data_path("{0}.mdb".format(res_ver))
     if not os.path.exists(mdb_path):
         acquisition.get_master(res_ver, transient_data_path("{0}.mdb".format(res_ver)), ok_to_reload)
@@ -360,15 +364,18 @@ def check_version_api_recv(response, msg):
         print("we're on latest")
         is_updating_to_new_truth = 0
 
+def can_check_version():
+    return all([x in os.environ for x in ["VC_ACCOUNT", "VC_AES_KEY", "VC_SID_SALT"]]) \
+        and not os.getenv("DISABLE_AUTO_UPDATES", None)
+
 def check_version():
-    print("trace check_version")
-
-    if os.getenv("DEV", None):
-        return
-
     global is_updating_to_new_truth, last_version_check
 
     if not is_updating_to_new_truth and time() - last_version_check > 3600:
+        if not can_check_version():
+            return
+
+        print("trace check_version")
         if data:
             data.vc_this = 1
 
@@ -377,28 +384,43 @@ def check_version():
         # update_to_res_ver(10014700)
         apiclient.versioncheck(check_version_api_recv)
 
+is_updating_to_new_truth = 0
+last_version_check = 0
+data = None
+
+def init():
+    global data
+    available_mdbs = sorted(list(filter(lambda x: x.endswith(".mdb"), os.listdir(transient_data_path()))), reverse=1)
+    if available_mdbs:
+        print("Loading mdb:", available_mdbs[0])
+        data = DataCache(available_mdbs[0].split(".")[0])
+    else:
+        print("No mdb, let's download one")
+
+        loop = ioloop.IOLoop.current()
+        if can_check_version():
+            print("We have enough secrets to do an automatic version check")
+            check_version()
+        else:
+            try:
+                vers = int(sys.argv[1])
+            except (ValueError, IndexError):
+                print("No data installed and we can't get it automatically. Crashing.")
+                print("Hint: Try running this again with a version number.")
+                print("    {0} 100xxxxx".format(sys.argv[0]))
+                sys.exit(1)
+
+            update_to_res_ver(vers)
+
+        check = ioloop.PeriodicCallback(are_we_there_yet, 250, loop)
+        check.start()
+        loop.start()
+        check.stop()
+        ioloop.IOLoop.clear_instance()
+        print("Initial download complete. Please restart the server...")
+
 def are_we_there_yet():
     if data:
         ioloop.IOLoop.instance().stop()
     else:
         print("not done yet")
-
-is_updating_to_new_truth = 0
-last_version_check = 0
-
-available_mdbs = sorted(list(filter(lambda x: x.endswith(".mdb"), os.listdir(transient_data_path()))), reverse=1)
-if available_mdbs:
-    print("Loading mdb:", available_mdbs[0])
-    data = DataCache(available_mdbs[0].split(".")[0])
-else:
-    print("No mdb, let's download one")
-    data = None
-
-    loop = ioloop.IOLoop.current()
-    # update_to_res_ver(10014350)
-    check_version()
-    check = ioloop.PeriodicCallback(are_we_there_yet, 250, loop)
-    check.start()
-    loop.start()
-    check.stop()
-    ioloop.IOLoop.clear_instance()
