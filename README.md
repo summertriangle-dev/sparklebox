@@ -10,6 +10,11 @@ Make a virtualenv (the app is actively used with Python 3.3 and 3.5):
     source .env/bin/activate
     pip install -r requirements.txt
 
+Grab a copy of ENAMDICT from http://www.csse.monash.edu.au/~jwb/enamdict_doc.html ,
+then convert it to UTF-8 so name_finder can use it:
+
+    zcat enamdict.gz | iconv -f eucjp -t utf8 > _data/private/enamdictu
+
 Then configure the environment variables (I suggest saving these to a file as
 you go, so you can restore them later).
 
