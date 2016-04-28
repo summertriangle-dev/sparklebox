@@ -263,6 +263,15 @@ class DataCache(object):
         self.primed_this["sel_cards_for_char"] += 1
         return [id[0] for id in idl]
 
+    @lru_cache(1)
+    def all_chara_id_to_cards(self):
+        print("all_chara_id_to_cards")
+        ret = defaultdict(lambda: [])
+        idl = self.hnd.execute("SELECT chara_id, id FROM card_data WHERE evolution_id != 0")
+        for cid, card in idl:
+            ret[cid].append(card)
+        return ret
+
     def chara(self, id):
         if id not in self.char_cache:
             self.cache_chars([id])
@@ -371,7 +380,8 @@ def can_check_version():
 def check_version():
     global is_updating_to_new_truth, last_version_check
 
-    if not is_updating_to_new_truth and time() - last_version_check > 3600:
+    if not is_updating_to_new_truth and (time() - last_version_check >= 3600
+                                         or time() < last_version_check):
         if not can_check_version():
             return
 
@@ -380,8 +390,10 @@ def check_version():
             data.vc_this = 1
 
         is_updating_to_new_truth = 1
-        last_version_check = time()
-        # update_to_res_ver(10014700)
+        # usually updates happen on the hour so this keeps our
+        # schedule on the hour too
+        t = time()
+        last_version_check = t - (t % 3600)
         apiclient.versioncheck(check_version_api_recv)
 
 is_updating_to_new_truth = 0
