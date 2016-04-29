@@ -54,27 +54,29 @@ def early_init():
             for line in cf:
                 cloudflare_ranges.append(ipaddress.ip_network(line.strip()))
 
-        _super_RequestHandler_prepare = tornado.web.RequestHandler.prepare
+        _super_RequestHandler_prepare2 = tornado.web.RequestHandler.prepare
 
-        def _swizzle_RequestHandler_prepare(self):
+        def _swizzle_RequestHandler_prepare2(self):
             for net in cloudflare_ranges:
                 if ipaddress.ip_address(self.request.remote_ip) in net:
                     if "CF-Connecting-IP" in self.request.headers:
                         self.request.remote_ip = self.request.headers[
                             "CF-Connecting-IP"]
                     break
-            _super_RequestHandler_prepare(self)
+            _super_RequestHandler_prepare2(self)
 
-        tornado.web.RequestHandler.prepare = _swizzle_RequestHandler_prepare
+        tornado.web.RequestHandler.prepare = _swizzle_RequestHandler_prepare2
 
-    _super_RequestHandler_prepare = tornado.web.RequestHandler.prepare
-    def _swizzle_RequestHandler_prepare(self):
+    _super_RequestHandler_prepare3 = tornado.web.RequestHandler.prepare
+    def _swizzle_RequestHandler_prepare3(self):
         self.request.is_low_bandwidth = 0
         if "User-Agent" in self.request.headers:
             ua = user_agents.parse(self.request.headers["User-Agent"])
             if ua.is_mobile or ua.is_tablet:
                 self.request.is_low_bandwidth = 1
-    tornado.web.RequestHandler.prepare = _swizzle_RequestHandler_prepare
+
+        _super_RequestHandler_prepare3(self)
+    tornado.web.RequestHandler.prepare = _swizzle_RequestHandler_prepare3
 
 def main():
     starlight.init()
