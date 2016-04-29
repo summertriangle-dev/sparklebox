@@ -23,6 +23,11 @@ footer {
   text-align: center;
   padding: 10px;
 }
+@media screen and (max-width: 600px) {
+  footer {
+    margin-bottom: 40px;
+  }
+}
 .container {
   margin: 0 auto;
   max-width: 1280px;
@@ -40,18 +45,16 @@ footer {
   padding: 10px 20px;
 }
 #suggestions {
-  margin: 15px 0;
+  margin: 4px 0;
 }
 #suggestions > a {
-  display: block;
-  background-color: #333;
-  color: white;
-  font-size: 18px;
-  padding: 10px 20px;
+  margin: 2px 0;
+  display: inline-flex;
+  width: 50%;
 }
-#suggestions .highlight {
-  background-color: yellow;
-  color: #000;
+#suggestions > a .profile {
+  width: 100%;
+  display: flex;
 }
 .welcome_spec {
   font-size: 0;
@@ -264,7 +267,7 @@ td.Passion a {
 }
 @media screen and (min-width: 769px) {
   .carcon .card_right .name_tag {
-    height: 40px;
+    min-height: 40px;
   }
   .carcon .card_right .name_tag .item {
     line-height: 40px;
@@ -280,7 +283,7 @@ td.Passion a {
 }
 @media screen and (max-width: 768px) {
   .carcon .card_right .name_tag {
-    height: 30px;
+    min-height: 30px;
   }
   .carcon .card_right .name_tag .item {
     line-height: 30px;
@@ -418,7 +421,7 @@ span.var {
 }
 .box > .header {
   color: white;
-  height: 24px;
+  min-height: 24px;
   font-size: 0;
 }
 .box > .header .item {
@@ -607,6 +610,14 @@ span.var {
 .noline {
   text-decoration: none;
 }
+.iconex_row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.iconex_row > * {
+  padding: 0 2px;
+}
 .profile {
   display: inline-flex;
   align-items: center;
@@ -618,6 +629,18 @@ span.var {
   text-align: left;
   font-size: 80%;
   padding: 0 5px;
+}
+.crowd_tl_notice {
+  font-size: 13px;
+  padding: 6px 10px;
+  color: #eeeeee;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(17, 17, 17, 0.7);
+}
+.crowd_tl_notice a {
+  color: #eeeeee;
 }
 @media screen and (max-width: 600px) {
   .hides_under_mobile {

@@ -150,7 +150,7 @@ function load_table(id, htc, va_id, kill) {
     kill.parentNode.removeChild(kill);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/internal/va_table", true);
+    xhr.open("POST", "/api/private/va_table", true);
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             var tab = document.getElementById(id);

@@ -22,10 +22,7 @@ def retry(n):
                 try:
                     return f(*args, **kwargs)
                 except OperationalError as e:
-                    if "lost connection" in str(e).lower():
-                        continue
-                    else:
-                        raise
+                    continue
         return __wrapper
     return _wrapper
 
@@ -146,7 +143,8 @@ class TranslationSQL(object):
 
             if nent:
                 rows = rows.limit(nent)
-        yield from rows.all()
+            gv = rows.all()
+        yield from gv
 
 class TranslationEngine(TranslationSQL):
     def __init__(self, names_db, use_satellite):

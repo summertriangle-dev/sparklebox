@@ -11,47 +11,34 @@
   <link rel="stylesheet" type="text/css" href="{{ image_host }}/icons2/icons.css?c={{ starlight.data.version }}" />
   <script type="text/javascript" src="{{ handler.static_url("js/home.js") }}"></script>
   <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
+  <style>.container { max-width:800px; } .box { margin:0; width:100%; }</style>
 </head>
 
 {% import random %}
 
 <body>
-  <div class="container" style="max-width:800px">
-    <div class="welcome_spec" onclick="alert('Are YOU an aspiring artist? Do you want to show off your amazing new original character [do not steal] to the six (ten when new cards arrive) people that visit this page?! @ me on Twitter (below)!!!')">
-      <img class="chara_image" width="308" height="416" src="{{ image_host }}/special/buyit.png" title="https://store.steampowered.com/app/402620/"/>
-      <!-- div class="riinaface" style="background-image:url({{ image_host }}/special/dari{{ random.randint(1, 5) }}.png)"></div-->
-    </div>
-    <input type="text" id="search" placeholder="{{ _("Names") }}" onkeyup="suggest(this, this.value)">
-    <div id="suggestions"></div>
-  </div>
+  <div class="container">
+    {% set events_ = list(events) %}
+    {% set la_cards_ = list(la_cards) %}
 
-  {% for event, reward_list in events %}
-  <div id="event_counter_container" class="container" style="max-width:800px;display:none">
-    <div class="box Cute" style="margin:0;width:100%">
+    {% if any((events_, la_cards_)) %}
+    <div class="box black">
+      {% for event, reward_list in events_ %}
       <div class="header">
-        <span class="item left">Current event</span>
+        <span class="item left">Event: <b>{% raw tlable(event.name) %}</b></span>
         <span class="item ext"></span>
+        <span class="item right">ends in <span class="counter" data-count-to="{{ event.end_date.timestamp() }}">meme</span></span>
       </div>
-      <div class="content" style="background:#333;text-align:center;">
-        <p style="margin:0;">"{% raw tlable(event.name) %}" ends in</p>
-        <p class="counter" style="font-size:200%;font-weight:bold;margin:6px 0" data-count-to="{{ event.end_date.timestamp() }}">
-          Nothing to see here.
-        </p>
-
-        <p style="margin-top:0;">Better start spending. Event rewards:</p>
-        <div>
+      <div class="content" style="background:#333;">
+        <div class="iconex_row">
+          <span>You'd better start spending. <br> Event rewards:</span>
           {% for cid in reward_list %}
-          {% raw icon_ex(cid) %}
+          {% raw icon_ex(cid, request.is_low_bandwidth) %}
           {% end %}
         </div>
       </div>
-    </div>
-  </div>
-  {% end %}
-
-  {% for gacha, available in la_cards %}
-  <div id="lim_gacha_container" class="container" style="max-width:800px">
-    <div class="box Cute" style="margin:0;width:100%">
+      {% end %}
+      {% for gacha, available in la_cards_ %}
       <div class="header">
         <span class="item left">Limited availability!</span>
         <span class="item ext"></span>
@@ -59,14 +46,50 @@
       </div>
       <div class="content" style="background:#333;text-align:left;">
         {% for ent in available %}
-        {% raw icon_ex(ent) %}
+        {% raw icon_ex(ent, request.is_low_bandwidth) %}
         {% end %}
+      </div>
+      {% end %}
+    </div>
+    {% end %}
+  </div>
+
+  <div class="container">
+    <input type="text" id="search" placeholder="{{ _("Search for names and card titles") }}" onkeyup="suggest(this, this.value)">
+    <div id="suggestions"></div>
+  </div>
+
+  <div class="container" style="max-width:1280px; display:none">
+    <div class="box black">
+      <div class="contents">
+        <center id="splash"><p>This is your working space.<br>
+                   Card stats can be compared by searching for them above.</p>
+        </center>
+        <table id="workspace_table" class="table">
+          <tr>
+            <th colspan="2">Idol</th>
+            <th>Life</th>
+            <th>Vo</th>
+            <th>Vi</th>
+            <th>Da</th>
+            <th>Skill</th>
+          </tr>
+          <tr id="compare_idol_template" style="display:none">
+            <td id="ci_icon" style="width:1%">{% raw icon(0) %}</td>
+            <td id="ci_name" style="width:180px"></td>
+
+            <td class="life"   id="ci_li">Li</td>
+            <td class="vocal"  id="ci_vo">Vo</td>
+            <td class="visual" id="ci_vi">Vi</td>
+            <td class="dance"  id="ci_da">Da</td>
+            <td id="ci_sk" style="font-size:70%">Sk</td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
-  {% end %}
 
-  <div class="container" style="max-width:800px">
+  <div class="container">
     <p><s>This is temporary while I sort stuff out...</s> There is nothing more permanent than temporary.</p>
     <ul>
       <li><a href="/skill_table">Skills table</a></li>
@@ -76,11 +99,15 @@
     </ul>
   </div>
 
-  {% for new_list in history %}
-  {% include new_list_partial.html %}
-  {% end %}
+  <div class="container">
+    <div class="box black">
+    {% for new_list in history %}
+    {% include new_list_partial.html %}
+    {% end %}
+    </div>
+  </div>
 
-  <div class="container" style="max-width:800px">
+  <div class="container">
     <p><a href="/history">&gt; Previous additions</a></p>
   </div>
 

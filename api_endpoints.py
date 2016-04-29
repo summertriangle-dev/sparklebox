@@ -314,7 +314,7 @@ class HappeningAPI(HandlerSyncedWithMaster, APIUtilMixin):
         else:
             json.dump(payload, self, default=self.fix_datetime)
 
-@route(r"/api/internal/va_table")
+@route(r"/api/private/va_table")
 class VATable(HandlerSyncedWithMaster):
     def post(self):
         try:

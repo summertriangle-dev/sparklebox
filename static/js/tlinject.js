@@ -1,3 +1,8 @@
+TL_ENABLED_TEXT = "<a href='javascript:;' onclick='tlinject_revert()'>Disable TLs</a> " +
+                  "(<a href='javascript:;' onclick='tlinject_about()'>What's this?</a>)"
+TL_DISABLED_TEXT = "<a href='javascript:;' onclick='tlinject_activate()'>Enable TLs</a> " +
+                   "(<a href='javascript:;' onclick='tlinject_about()'>What's this?</a>)"
+
 function load_translations(trans, cb) {
     var xhr = new XMLHttpRequest()
     xhr.open("POST", "/api/v1/read_tl", true)
@@ -62,11 +67,10 @@ function tlinject_activate() {
         var node = document.body.querySelector(".crowd_tl_notice");
         if (!node) {
             node = document.createElement("div");
-            node.className = "container crowd_tl_notice";
-            node.setAttribute("style", "font-size:13px;padding:6px 10px;color:white;");
+            node.className = "crowd_tl_notice";
             insert = 1;
         }
-        node.innerHTML = "Crowd-sourced translations are enabled (<a style='color:white;' href='javascript:;' onclick='tlinject_revert()'>disable</a>). Translatable text will highlight in grey when hovered upon; click to submit a translation.";
+        node.innerHTML = TL_ENABLED_TEXT;
         if (insert) document.body.insertBefore(node, document.body.childNodes[0]);
     })
 }
@@ -76,5 +80,10 @@ function tlinject_revert() {
     for (var i = 0; i < strings.length; i++) {
         strings[i].textContent = strings[i].getAttribute("data-original-string");
     }
-    document.body.querySelector(".crowd_tl_notice").innerHTML = "Crowd-sourced translations are disabled (<a style='color:white;' href='javascript:;' onclick='tlinject_activate()'>re-enable</a>).";
+    document.body.querySelector(".crowd_tl_notice").innerHTML = TL_DISABLED_TEXT;
+}
+
+function tlinject_about() {
+    var banner = "This site uses crowd-sourced translations. If a phrase highlights in grey when you hover over it, you can click to submit a translation.";
+    alert(banner);
 }
