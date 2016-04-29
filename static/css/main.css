@@ -46,15 +46,22 @@ footer {
 }
 #suggestions {
   margin: 4px 0;
+  /*  & > a {
+    margin:2px 0;
+    display:inline-flex;
+    width:50%;
+    .profile {
+      width:100%;
+      display:flex;
+    }
+  }*/
 }
 #suggestions > a {
-  margin: 2px 0;
-  display: inline-flex;
-  width: 50%;
-}
-#suggestions > a .profile {
   width: 100%;
-  display: flex;
+  padding: 8px 10px;
+  background-color: #333;
+  display: block;
+  color: #eeeeee;
 }
 .welcome_spec {
   font-size: 0;

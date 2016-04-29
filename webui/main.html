@@ -18,6 +18,11 @@
 
 <body>
   <div class="container">
+    <input type="text" id="search" placeholder="{{ _("Search for idols") }}" onkeyup="suggest(this, this.value)">
+    <div id="suggestions"></div>
+  </div>
+
+  <div class="container">
     {% set events_ = list(events) %}
     {% set la_cards_ = list(la_cards) %}
 
@@ -52,11 +57,6 @@
       {% end %}
     </div>
     {% end %}
-  </div>
-
-  <div class="container">
-    <input type="text" id="search" placeholder="{{ _("Search for names and card titles") }}" onkeyup="suggest(this, this.value)">
-    <div id="suggestions"></div>
   </div>
 
   <div class="container" style="max-width:1280px; display:none">
