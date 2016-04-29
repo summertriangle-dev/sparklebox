@@ -145,3 +145,25 @@ function table(id, kill) {
     document.getElementById(id).style.display = 'table';
     kill.parentNode.removeChild(kill);
 }
+
+function load_table(id, htc, va_id, kill) {
+    kill.parentNode.removeChild(kill);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/internal/va_table", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var tab = document.getElementById(id);
+            tab.innerHTML = xhr.responseText;
+            tab.style.display = 'table';
+
+            if (window.tlinject_activate !== undefined) {
+                tlinject_activate();
+            }
+        }
+    }
+    xhr.send(JSON.stringify({
+        has_title_call: htc,
+        va_ids: va_id,
+    }))
+}

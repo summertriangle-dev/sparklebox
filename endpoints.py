@@ -17,7 +17,7 @@ tlable = api_endpoints.tlable
 def icon(css_class):
     return """<div class="icon icon_{0}"></div>""".format(css_class)
 
-def icon_ex(card_id):
+def icon_ex(card_id, is_lowbw=0):
     rec = starlight.data.card(card_id)
     if not rec:
         btext = "(?) bug:{0}".format(card_id)
@@ -27,12 +27,17 @@ def icon_ex(card_id):
         </div>""".format(btext=btext)
         return """<a class="noline">{ish}</a>""".format(ish=ish)
     else:
-        btext = "({0}) {1}".format(enums.rarity(rec.rarity), tlable(rec.title) if rec.title_flag else "")
+        if not is_lowbw:
+            link = "/char/{rec.chara_id}#c_{rec.id}_head".format(rec=rec)
+        else:
+            link = "/card/{rec.id}".format(rec=rec)
+
+        btext = "({0}) {1}".format(enums.rarity(rec.rarity), tlable(rec.title, write=0) if rec.title_flag else "")
         ish = """<div class="profile">
             <div class="icon icon_{rec.id}"></div>
             <div class="profile_text"><b>{0}</b><br>{btext}</div>
         </div>""".format(tornado.escape.xhtml_escape(rec.chara.conventional), rec=rec, btext=btext)
-        return """<a href="/char/{rec.chara_id}#c_{rec.id}_head" class="noline">{ish}</a>""".format(rec=rec, ish=ish)
+        return """<a href="{link}" class="noline">{ish}</a>""".format(rec=rec, ish=ish, link=link)
 
 def audio(object_id, use, index):
     a = (object_id << 40) | ((use & 0xFF) << 24) | ((index & 0xFF) << 16) | 0x11AB

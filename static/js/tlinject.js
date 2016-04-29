@@ -50,21 +50,24 @@ function tlinject_activate() {
         if (tls.indexOf(strings[i].textContent) == -1)
             tls.push(strings[i].textContent);
         strings[i].setAttribute("data-original-string", strings[i].textContent);
-        strings[i].setAttribute("onclick", "submit_tl_string(this, this.getAttribute('data-original-string'))")
+        if (strings[i].hasAttribute("data-summertriangle-assr"))
+            strings[i].setAttribute("onclick", "event.preventDefault(); submit_tl_string(this, this.getAttribute('data-original-string'))")
     }
 
     load_translations(tls, function(tls2) {
         for (var i = 0; i < strings.length; i++) {
             strings[i].textContent = tls2[strings[i].textContent] || strings[i].textContent;
         }
+        var insert = 0;
         var node = document.body.querySelector(".crowd_tl_notice");
         if (!node) {
             node = document.createElement("div");
             node.className = "container crowd_tl_notice";
             node.setAttribute("style", "font-size:13px;padding:6px 10px;color:white;");
+            insert = 1;
         }
         node.innerHTML = "Crowd-sourced translations are enabled (<a style='color:white;' href='javascript:;' onclick='tlinject_revert()'>disable</a>). Translatable text will highlight in grey when hovered upon; click to submit a translation.";
-        document.body.insertBefore(node, document.body.childNodes[0]);
+        if (insert) document.body.insertBefore(node, document.body.childNodes[0]);
     })
 }
 

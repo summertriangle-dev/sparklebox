@@ -129,24 +129,18 @@
         <span class="item ext"></span>
       </div>
       <div class="content">
-        <div class="table_stub"><a class="image_switch" onclick="table('va_card_{{ card.id }}', this.parentNode)">Expand</a></div>
-        <table id="va_card_{{ card.id }}" class="table" style="display:none">
-          <tr>
-            <th class="hides_under_mobile">{{ _("Usage") }}</th>
-            <th colspan="2">{{ _("Text") }}</th>
-          </tr>
-          {% for _card in chain %}
-          {% for id, usage, index, voice, text, nothing, nothing2 in starlight.data.va_data(_card.id) %}
-          <tr>
-            <td class="hides_under_mobile">{% raw tlable("USE_TYPE__T_{0}".format(usage)) %}</td>
-            <td>{% raw tlable(text.format("[Producer]")) %}</td>
-            {% if voice %}
-            <td><a style="color:black" class="soundinliner-apply" href="{{ image_host }}/{{ audio(id, usage, index) }}">(listen)</a></td>
-            {% else %}
-            <td>🙁</td>
-            {% end %}
-          </tr>
+        <div class="table_stub">
+          {% if not request.is_low_bandwidth %}
+          <a class="image_switch" onclick="table('va_card_{{ card.id }}', this.parentNode)">Expand</a>
+          {% else %}
+          <a class="image_switch" onclick="load_table('va_card_{{ card.id }}', 0, {{ [_card.id for _card in chain] }}, this)">Expand</a>
           {% end %}
+        </div>
+        <table style="display:none" id="va_card_{{ card.id }}" class="table">
+          {% if not request.is_low_bandwidth %}
+          {% set va_id = [_card.id for _card in chain] %}
+          {% set include_title_call = 0 %}
+          {% include va_table_partial.html %}
           {% end %}
         </table>
       </div>

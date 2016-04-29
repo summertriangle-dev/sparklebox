@@ -9,6 +9,7 @@ import json
 import ipaddress
 import functools
 import subprocess
+import user_agents
 from collections import namedtuple
 
 import tl_models
@@ -66,6 +67,14 @@ def early_init():
 
         tornado.web.RequestHandler.prepare = _swizzle_RequestHandler_prepare
 
+    _super_RequestHandler_prepare = tornado.web.RequestHandler.prepare
+    def _swizzle_RequestHandler_prepare(self):
+        self.request.is_low_bandwidth = 0
+        if "User-Agent" in self.request.headers:
+            ua = user_agents.parse(self.request.headers["User-Agent"])
+            if ua.is_mobile or ua.is_tablet:
+                self.request.is_low_bandwidth = 1
+    tornado.web.RequestHandler.prepare = _swizzle_RequestHandler_prepare
 
 def main():
     starlight.init()

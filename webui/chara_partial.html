@@ -15,30 +15,19 @@
     <div class="table_stub" style="padding-top:10px">
       <a class="image_switch" href="http://cgdex.project-imas.com/?v=idols&o=Name%20LIKE%20%22{{ chara.conventional }}%22">CGdex</a>
       <a class="image_switch" href="/sprite_go_ex/{{ chara.chara_id }}">Many faces</a>
+      {% if not request.is_low_bandwidth %}
       <a class="image_switch" onclick="table('va_chara_{{ chara.chara_id }}', this)">Show character lines</a>
+      {% else %}
+      <a class="image_switch" onclick="load_table('va_chara_{{ chara.chara_id }}', 1, [{{ chara.chara_id }}], this)">Show character lines</a>
+      {% end %}
     </div>
     <table style="display:none" id="va_chara_{{ chara.chara_id }}" class="table">
-      <tr>
-        <th class="hides_under_mobile">{{ _("Usage") }}</th>
-        <th colspan="2">{{ _("Text") }}</th>
-      </tr>
+      {% if not request.is_low_bandwidth %}
+      {% set va_id = [chara.chara_id] %}
       {% if chara.voice %}
-      <tr>
-        <td class="hides_under_mobile">{{ _("Title call") }}</td>
-        <td> ... </td>
-        <td><a style="color:black" class="soundinliner-apply" href="{{ image_host }}/{{ audio(chara.chara_id, 4, 13) }}">(listen)</a></td>
-      </tr>
+        {% set include_title_call = 1 %}
       {% end %}
-      {% for id, usage, index, voice, text, nothing, nothing2 in starlight.data.va_data(chara.chara_id) %}
-      <tr>
-        <td class="hides_under_mobile">{% raw tlable("USE_TYPE__T_{0}".format(usage)) %}</td>
-        <td>{% raw tlable(text.format("[Producer]")) %}</td>
-        {% if voice %}
-        <td><a style="color:black" class="soundinliner-apply" href="{{ image_host }}/{{ audio(id, usage, index) }}">(listen)</a></td>
-        {% else %}
-        <td>🙁</td>
-        {% end %}
-      </tr>
+      {% include va_table_partial.html %}
       {% end %}
     </table>
   </div>

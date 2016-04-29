@@ -20,10 +20,14 @@ def tlable_make_assr(text):
         salt = os.getenv("TLABLE_SALT").encode("utf8")
         return base64.b64encode(hashlib.sha256(text.encode("utf8") + salt).digest()).decode("utf8")
 
-def tlable(text):
+def tlable(text, write=1):
     text = text.replace("\n", " ")
-    return """<span class="tlable" data-summertriangle-assr="{1}">{0}</span>""".format(
-        tornado.escape.xhtml_escape(text), tlable_make_assr(text))
+    if write:
+        return """<span class="tlable" data-summertriangle-assr="{1}">{0}</span>""".format(
+            tornado.escape.xhtml_escape(text), tlable_make_assr(text))
+    else:
+        return """<span class="tlable">{0}</span>""".format(
+            tornado.escape.xhtml_escape(text))
 
 @route("/api/v1/read_tl")
 class TranslateReadAPI(tornado.web.RequestHandler):
@@ -35,11 +39,11 @@ class TranslateReadAPI(tornado.web.RequestHandler):
             load = json.loads(self.request.body.decode("utf8"))
         except ValueError:
             self.set_status(400)
-            return
+            return self.finish()
         else:
             if not isinstance(load, list):
                 self.set_status(400)
-                return
+                return self.finish()
 
         unique = list(set(load))
 
@@ -309,3 +313,17 @@ class HappeningAPI(HandlerSyncedWithMaster, APIUtilMixin):
             json.dump(payload, self, ensure_ascii=0, sort_keys=1, indent=2, default=self.fix_datetime)
         else:
             json.dump(payload, self, default=self.fix_datetime)
+
+@route(r"/api/internal/va_table")
+class VATable(HandlerSyncedWithMaster):
+    def post(self):
+        try:
+            load = json.loads(self.request.body.decode("utf8"))
+        except ValueError:
+            self.set_status(400)
+            return
+
+        has_title_call = load["has_title_call"]
+        va_ids = load["va_ids"]
+        unique = list(set(va_ids))
+        self.render("va_table_partial.html", include_title_call=has_title_call, va_id=unique, **self.settings)
