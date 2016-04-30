@@ -322,7 +322,7 @@ def do_preswitch_tasks(new_db_path, old_db_path):
         new_db_path,
         transient_data_path("names.csv")])
 
-    if old_db_path and not os.getenv("DEV", None):
+    if old_db_path and not os.getenv("DISABLE_HISTORY_UPDATES", None):
         history_json = subprocess.check_output(["toolchain/make_diff.py",
             old_db_path,
             new_db_path])
