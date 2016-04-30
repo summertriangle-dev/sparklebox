@@ -26,6 +26,8 @@
       {% set va_id = [chara.chara_id] %}
       {% if chara.voice %}
         {% set include_title_call = 1 %}
+      {% else %}
+        {% set include_title_call = 0 %}
       {% end %}
       {% include va_table_partial.html %}
       {% end %}
