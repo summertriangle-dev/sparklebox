@@ -75,7 +75,7 @@ class ApiClient(object):
             "USER_ID": self.lolfuscate(str(self.user)),
             "CARRIER": "google",
             "UDID": self.lolfuscate(self.udid),
-            "APP_VER": "9.9.9",
+            "APP_VER": "1.8.0",
             "RES_VER": str(self.res_ver),
             "IP_ADDRESS": "127.0.0.1",
             "DEVICE_NAME": "Nexus 42",
