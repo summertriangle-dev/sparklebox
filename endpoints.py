@@ -190,7 +190,7 @@ class SpriteRedirect(tornado.web.RequestHandler):
 
         assoc_char = assoc_card.chara_id
         assoc_pose = assoc_card.pose
-        self.redirect("{0}/chara/{1}/{2}.png".format(self.settings["image_host"],
+        self.redirect("{0}/chara2/{1}/{2}.png".format(self.settings["image_host"],
                                                      assoc_char, assoc_pose))
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
             {"card_id": "({0}) {1} <{2}>".format(assoc_card.title, assoc_card.chara.conventional, card_id)})
@@ -201,8 +201,10 @@ class SpriteViewerEX(tornado.web.RequestHandler):
     def get(self, chara_id):
         achar = starlight.data.chara(int(chara_id))
         if achar:
+            svxdata = starlight.data.svx_data(achar.chara_id)
             self.render("spriteviewer.html",
-                load="{0}/chara/{1}".format(self.settings["image_host"], int(chara_id)),
+                load="{0}/chara2/{1}".format(self.settings["image_host"], int(chara_id)),
+                known_poses=svxdata,
                 chara=achar,
                 **self.settings)
         else:

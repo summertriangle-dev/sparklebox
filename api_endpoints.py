@@ -120,7 +120,7 @@ def extend_card(self, d):
     d["spread_image_ref"] = "/".join((self.settings["image_host"], "spread", "{0}.png".format(d["id"]))) \
         if d["has_spread"] else None
     d["card_image_ref"] = "/".join((self.settings["image_host"], "card", "{0}.png".format(d["id"])))
-    d["sprite_image_ref"] = "/".join((self.settings["image_host"], "chara", str(d["chara_id"]), "{0}.png".format(d["pose"])))
+    d["sprite_image_ref"] = "/".join((self.settings["image_host"], "chara2", str(d["chara_id"]), "{0}.png".format(d["pose"])))
     d["attribute"] = enums.api_char_type(d["attribute"])
 
 def extend_char(self, d):
