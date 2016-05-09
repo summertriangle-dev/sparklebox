@@ -83,10 +83,22 @@ function SVX_APPLY_ADJUSTMENT(pid, x, y) {
   var yr = parseInt(face.getAttribute("data-rel-position-y"));
   var rw = 1 << Math.ceil(Math.log2(pose.width - x));
   var rh = 1 << Math.ceil(Math.log2(pose.height - y));
-  console.log([pid, rw, rh]);
 
   face.setAttribute("data-position-x", (((rw / 2) - 64) + xr) + x);
-  face.setAttribute("data-position-y", ((rh - 64) - yr) + y - 1);
+  face.setAttribute("data-position-y", ((rh - 64) - yr) + y);
+  face.setAttribute("data-adj-x", x);
+  face.setAttribute("data-adj-y", y);
+}
+
+function SVX_APPLY_ADJUSTMENTEX(pid, x, y, rw, rh) {
+  var pose = document.getElementById("svx__pose_" + pid);
+  var face = document.getElementById("svx__face_" + pid);
+
+  var xr = parseInt(face.getAttribute("data-rel-position-x"));
+  var yr = parseInt(face.getAttribute("data-rel-position-y"));
+
+  face.setAttribute("data-position-x", (((rw / 2) - 64) + xr) + x);
+  face.setAttribute("data-position-y", ((rh - 64) - yr) + y);
   face.setAttribute("data-adj-x", x);
   face.setAttribute("data-adj-y", y);
 }
