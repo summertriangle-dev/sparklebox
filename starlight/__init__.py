@@ -315,6 +315,13 @@ class DataCache(object):
         self.primed_this["sel_valist"] += 1
         return self.prime_from_cursor("va_data_t", va_list)
 
+    def svx_data(self, id):
+        return self.prime_from_cursor("fp_data_t",
+            self.hnd.execute("SELECT pose, position_x, position_y FROM chara_face_position WHERE chara_id = ?", (id,)))
+
+    def __del__(self):
+        self.hnd.close()
+
 def do_preswitch_tasks(new_db_path, old_db_path):
     print("trace do_preswitch_tasks", new_db_path, old_db_path)
     subprocess.call(["toolchain/name_finder.py",

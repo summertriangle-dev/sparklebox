@@ -9,140 +9,50 @@
     {% else %}
     <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
     {% end %}
-    <style>
-    .svx_left {
-      text-align:center;
-      background-color:#333;
-      padding:10px 20px 0;
-    }
-    .svx_face {
-      margin-bottom:5px;
-      margin-left:5px;
-      background-color: #222;
-      border:1px solid #000;
-    }
-    </style>
     <script type="text/javascript">
     var ISVR = "{{ load }}";
-    function svx_canvas_save(body, face, forcedraw) {
-      var canvas = document.getElementById("buffer");
-
-      canvas.width = body.naturalWidth;
-      canvas.height = body.naturalHeight;
-
-      var ctx = canvas.getContext("2d")
-      ctx.drawImage(body, 0, 0);
-      if (face.style.display != "none" || forcedraw) {
-        ctx.drawImage(face, parseInt(face.style.left), parseInt(face.style.top));
-      }
-
-      var a = document.createElement("a");
-      a.href = canvas.toDataURL("image/png");
-      a.download = "composite.png";
-      a.click();
-    }
-
-    function svx_download_img(target) {
-      var body = document.getElementById("svx__pose_" + target);
-      var face = document.getElementById("svx__face_" + target);
-      svx_canvas_save(body, face);
-    }
-
-    function svx_download_all_img(target, ids) {
-      var canvas = document.getElementById("buffer");
-      var body = document.getElementById("svx__pose_" + target);
-      var face = document.getElementById("svx__face_" + target);
-
-      for (var i = 0; i < ids.length; i++) {
-        var dummy = document.createElement("img");
-        dummy.style.display = "none";
-        dummy.style.top = face.style.top;
-        dummy.style.left = face.style.left;
-        dummy.onload = function() {
-          svx_canvas_save(body, dummy, true);
-          dummy.parentNode.removeChild(dummy);
-        }
-        document.body.appendChild(dummy);
-        dummy.src = ISVR + "/" + target + "_" + ids[i] + ".png";
-      }
-    }
-
-    function svx_apply_face(that) {
-      var target = that.getAttribute("data-pose-target");
-      var overlay = document.querySelector("#svx__face_" + target);
-      overlay.src = that.getAttribute("src");
-      overlay.style.display = "inline";
-    }
-
-    function svx_clear_face(that) {
-      var target = that.getAttribute("data-pose-target");
-      document.querySelector("#svx__face_" + target).style.display = "none";
-    }
-
-    function construct_crap_tree(ent) {
-      var root = document.createElement("div");
-      root.innerHTML = '<div class="carcon"><div class="svx_left"><div class="rel"><img id="template_img" crossorigin="anonymous"/><img id="template_overlay" crossorigin="anonymous"/></div></div><div id="c__head" class="card_right"><div id="template_buttons"></div><div id="template_flist" class="content tight"></div></div></div>';
-
-      var top = root.querySelector("#template_overlay");
-      top.style.display = "none";
-      top.style.position = "absolute";
-      top.style.top = ent.position[1] + "px"
-      top.style.left = ent.position[0] + "px"
-      top.id = "svx__face_" + ent.id;
-
-      var sub = root.querySelector("#template_img");
-      sub.src = ISVR + "/" + ent.id + ".png";
-      sub.id = "svx__pose_" + ent.id;
-
-      var a = root.querySelector("#template_flist");
-      a.removeAttribute("id");
-      for (var i = 0; i < ent.face_list.length; i++) {
-        var img = document.createElement("img");
-        img.className = "svx_face";
-        img.src = ISVR + "/" + ent.id + "_" + ent.face_list[i] + ".png";
-        img.setAttribute("data-pose-target", ent.id);
-        img.setAttribute("onclick", "svx_apply_face(this)");
-        a.appendChild(img);
-      }
-
-      var img = document.createElement("img");
-      img.className = "svx_face";
-      img.src = "{{ handler.static_url("img/marker_empty_face.png") }}";
-      img.setAttribute("data-pose-target", ent.id);
-      img.setAttribute("onclick", "svx_clear_face(this)");
-      a.appendChild(img);
-
-      root.querySelector("#template_buttons").innerHTML = (
-        '<a class="image_switch" href="javascript:;" onclick="svx_download_img(%s)">Download current composite</a>').replace(/\%s/g, ent.id);
-
-      return root.children[0];
-    }
-    function POSE_LIST(the_list) {
-      for (var i = 0; i < the_list.length; i++) {
-        document.body.querySelector("#main_content").appendChild(construct_crap_tree(the_list[i]));
-      }
-    }
+    var MARKER_EMPTY_FACE = "{{ handler.static_url("img/marker_empty_face.png") }}";
+    var CHARA_NAME = "{{ chara.conventional }}";
     </script>
+    <script type="text/javascript" src="{{ handler.static_url("js/svex.js") }}"></script>
+    <title>Expressions: {{ chara.conventional }} (sldb)</title>
 </head>
 
 <body>
-  <div id="main_content" class="container">
-    <div class="stdcon chara_header">
-        <div class="name_slab">
-            (<a href="/char/{{ chara.chara_id }}">Go back</a>) MF: {{ chara.conventional }}
+  <div id="the_template" style="display:none">
+    <div class="carcon">
+      <div class="svx_left">
+        <div class="rel">
+          <img id="template_img" crossorigin="anonymous"/>
+          <img id="template_overlay" crossorigin="anonymous"/>
         </div>
+      </div>
+      <div class="card_right">
+        <div class="stdcon chara_header" style="width:100%">
+          <div id="template_buttons"></div>
+        </div>
+        <div id="template_flist" class="content tight"></div>
+      </div>
     </div>
+  </div>
+
+  <div id="main_content" class="container">
     <div class="va unbordered box black" style="width:100%">
       <div class="content">
         <div class="table_stub" style="padding-top:10px">
-          This is a bit rough, but you can still play around. <a href="https://github.com/summertriangle-dev/sparklebox/issues/3">See this issue for the latest progress.</a>
+          <a class="image_switch" href="/char/{{ chara.chara_id }}">Go back</a>
         </div>
       </div>
     </div>
   </div>
 
-  <script type="text/javascript" src="{{ load }}/svx.json"></script>
-  <canvas id="buffer" style="display:none"></canvas>
+  <script type="text/javascript">
+  {% for pose in known_poses %}
+  SVX_INIT_FOR_POSE({{ pose.pose }}, {{ pose.position_x }}, {{ pose.position_y }});
+  {% end %}
+  </script>
 
+  <canvas id="buffer" style="display:none"></canvas>
+  {% include footer.html %}
 </body>
 </html>

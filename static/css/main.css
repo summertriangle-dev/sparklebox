@@ -614,6 +614,9 @@ span.var {
   color: white;
   text-decoration: none;
 }
+.image_switch:visited {
+  color: white;
+}
 .noline {
   text-decoration: none;
 }
@@ -653,4 +656,14 @@ span.var {
   .hides_under_mobile {
     display: none;
   }
+}
+.svx_left {
+  text-align: center;
+  background-color: #333;
+  padding: 10px 20px 0;
+}
+.svx_face {
+  margin: 5px 0 5px 5px;
+  background-color: #222;
+  border: 1px solid #000;
 }
