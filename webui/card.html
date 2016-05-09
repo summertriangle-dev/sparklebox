@@ -13,9 +13,26 @@
     <script type="text/javascript" src="{{ handler.static_url("js/level.js") }}"></script>
     <script type="text/javascript" src="{{ handler.static_url("js/soundinliner.js") }}"></script>
     <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
+    {% if just_one_card %}
+    <title>Card: {{ enums.rarity(just_one_card.rarity) }} {{ just_one_card.chara.conventional }} (sldb)</title>
+    {% else %}
+    <title>{{ len(cards) }} cards (sldb)</title>
+    {% end %}
 </head>
 
 <body>
+    {% if just_one_card %}
+    <div class="container tight">
+      <div class="va unbordered box black" style="width:100%">
+        <div class="content">
+          <div class="table_stub" style="padding-top:10px">
+            <a class="image_switch" href="/char/{{ just_one_card.chara_id }}">All cards for {{ just_one_card.chara.conventional }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% end %}
+
     {% for chain in cards %}
     <div class="container tight">
         {% set card_id = chain[0].id %}

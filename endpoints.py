@@ -171,8 +171,12 @@ class Card(HandlerSyncedWithMaster):
         acard = [starlight.data.cards(ch) for ch in unique]
 
         if acard:
+            if len(acard) == 1:
+                just_one_card = acard[0][0]
+            else:
+                just_one_card = None
             self.set_header("Content-Type", "text/html")
-            self.render("card.html", cards=acard, use_table=use_table, **self.settings)
+            self.render("card.html", cards=acard, use_table=use_table, just_one_card=just_one_card, **self.settings)
             self.settings["analytics"].analyze_request(
                 self.request, self.__class__.__name__, {"card_id": card_idlist})
         else:
