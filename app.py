@@ -90,7 +90,7 @@ def main():
         autoreload=1 if in_dev_mode else 0,
         is_dev=in_dev_mode,
 
-        tle=tl_models.TranslationEngine(starlight.data.names, use_satellite=1),
+        tle=tl_models.TranslationEngine(starlight, use_satellite=1),
         enums=enums,
         starlight=starlight,
         tlable=endpoints.tlable,

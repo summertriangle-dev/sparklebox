@@ -147,10 +147,15 @@ class TranslationSQL(object):
         yield from gv
 
 class TranslationEngine(TranslationSQL):
-    def __init__(self, names_db, use_satellite):
+    def __init__(self, data_source, use_satellite):
         super().__init__(use_satellite)
-        self.k2r = {x.kanji: x.conventional for _, x in names_db.items()}
+        self.dsrc = data_source
+        self.k2rid = -1
+        self.k2r = {}
 
     def translate_name(self, kanji):
+        if self.k2rid != id(self.dsrc.data.names):
+            self.k2r = {x.kanji: x.conventional for _, x in self.dsrc.data.names.items()}
+
         k = self.k2r.get(kanji, kanji)
         return k
