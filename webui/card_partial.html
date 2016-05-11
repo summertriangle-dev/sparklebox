@@ -22,6 +22,11 @@
       <span class="item ext"></span>
       {% end %}
       <span class="item name">
+        <span class="icon {{ enums.stat_dot(card.best_stat) }}" title="{{ _(enums.stat_en(card.best_stat)) }}"></span>
+        {% if card.skill %}
+        <span class="icon {{ enums.skill_class(card.skill.skill_type) }}"
+              title="{{ _(enums.skill_type(card.skill.skill_type)) }}"></span>
+        {% end %}
         {{ tle.translate_name(card.name_only) }}
         <span style="font-size:70%">[{{ enums.rarity(card.rarity) }}]</span>
       </span>

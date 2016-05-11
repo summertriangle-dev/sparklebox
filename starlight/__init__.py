@@ -236,7 +236,8 @@ class DataCache(object):
             overall_min=lambda obj: obj.vocal_min + obj.dance_min + obj.visual_min,
             overall_max=lambda obj: obj.vocal_max + obj.dance_max + obj.visual_max,
             overall_bonus=lambda obj: obj.bonus_vocal + obj.bonus_dance + obj.bonus_visual,
-            valist=lambda obj: [])
+            valist=lambda obj: [],
+            best_stat=lambda obj: max(((obj.visual_max, 1), (obj.dance_max, 2), (obj.vocal_max, 3)))[1])
 
         for p in selected:
             self.card_cache[p.id] = p
@@ -346,7 +347,7 @@ def update_to_res_ver(res_ver):
     global is_updating_to_new_truth
 
     def ok_to_reload(path):
-        global data, last_version_check
+        global data, last_version_check, is_updating_to_new_truth
 
         is_updating_to_new_truth = 0
         last_version_check = time()

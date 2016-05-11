@@ -120,10 +120,71 @@ footer {
 
 /* chara_partial */
 
-div.icon {
-  width:48px; height:48px;
+.stitches-marker(@x: 0, @y: 0, @width: 0, @height: 0) {
+    background-position: @x @y;
+    width: @width;
+    height: @height;
+}
+
+.icon {
   display:inline-block;
-  background-image:url(../img/marker_missing_icon.png);
+  background-image:url(../img/smarkers.png);
+  .stitches-marker(-48px, -76px, 48px, 48px);
+
+  &.icon_event {
+    .stitches-marker(0, -76px, 48px, 48px);
+  }
+  &.icon_n {
+    .stitches-marker(-96px, -76px, 48px, 48px);
+  }
+  &.icon_r {
+    .stitches-marker(-154px, 0, 48px, 48px);
+  }
+  &.icon_sr {
+    .stitches-marker(-154px, -48px, 48px, 48px);
+  }
+  &.icon_ssr {
+    .stitches-marker(-144px, -96px, 48px, 48px);
+  }
+  &.m_vi {
+    .stitches-marker(-56px, 0, 24px, 24px);
+  }
+  &.m_da {
+    .stitches-marker(0, 0, 24px, 24px);
+  }
+  &.m_vo {
+    .stitches-marker(-28px, 0, 24px, 24px);
+  }
+  &.s_pl {
+    .stitches-marker(-56px, -52px, 24px, 24px);
+  }
+  &.s_cprot {
+    .stitches-marker(-56px, -26px, 24px, 24px);
+  }
+  &.s_combobonus {
+    .stitches-marker(-82px, -52px, 24px, 24px);
+  }
+  &.s_scorebonus {
+    .stitches-marker(-82px, -26px, 24px, 24px);
+  }
+  &.s_heal {
+    .stitches-marker(-28px, -52px, 24px, 24px);
+  }
+  &.s_life {
+    .stitches-marker(-28px, -26px, 24px, 24px);
+  }
+  &.s_overload {
+    .stitches-marker(0, -26px, 24px, 24px);
+  }
+
+  @media only screen and (min-resolution: 2dppx) {
+    &.icon_event, &.icon_n, &.icon_r, &.icon_sr, &.icon_ssr, &.m_vi,
+    &.m_da, &.m_vo, &.s_pl, &.s_cprot, &.s_combobonus, &.s_scorebonus,
+    &.s_heal, &.s_life, &.s_overload {
+      background-image:url(../img/smarkers@2x.png);
+      background-size: 202px 144px;
+    }
+  }
 }
 
 div.stdcon {
@@ -327,6 +388,9 @@ td {
           border-right:@name_tag_height / 4 solid transparent;
           border-bottom:(@name_tag_height / 2) solid transparent;
         }
+        .icon {
+          vertical-align:text-bottom;
+        }
       }
     }
 
@@ -346,6 +410,9 @@ td {
           border-bottom:(@name_tag_height_sm / 2) solid transparent;
         }
       }
+      .icon {
+        vertical-align:middle;
+      }
     }
 
     .name_tag.force_small {
@@ -362,6 +429,9 @@ td {
         border-left:@name_tag_height_sm / 4 solid transparent;
         border-right:@name_tag_height_sm / 4 solid transparent;
         border-bottom:(@name_tag_height_sm / 2) solid transparent;
+      }
+      .icon {
+        vertical-align:middle;
       }
     }
 
@@ -701,4 +771,69 @@ span.var {
   margin:5px 0 5px 5px;
   background-color: #222;
   border:1px solid #000;
+}
+
+.icon.msprites {
+  position:relative;
+
+  &::before {
+    position:absolute;
+    left:1px; top:1px;
+    display:block;
+    width:9px; height:9px;
+    background: url("../img/smarkers.png") 0 -50px no-repeat;
+
+    content:"";
+  }
+
+  &.mm_vi::before {
+    background-position: -145px -11px;
+  }
+
+  &.mm_da::before {
+   background-position: -134px -11px;
+  }
+
+  &.mm_vo::before {
+   background-position: -134px 0;
+  }
+
+  &::after {
+    position:absolute;
+    left:1px; top:10px;
+    display:block;
+    width:9px; height:9px;
+    background: url("../img/smarkers.png") 0 -50px no-repeat;
+
+    content:"";
+  }
+
+  &.ms_pl::after {
+    background-position: -105px 0;
+  }
+  &.ms_cprot::after {
+    background-position: -83px 0;
+  }
+  &.ms_combobonus::after {
+    background-position: -116px 0;
+  }
+  &.ms_scorebonus::after {
+    background-position: -94px 0;
+  }
+  &.ms_heal::after {
+    background-position: -94px -11px;
+  }
+  &.ms_life::after {
+    background-position: -83px -11px;
+  }
+  &.ms_overload::after {
+    background-position: -105px -11px;
+  }
+
+  @media only screen and (min-resolution: 2dppx) {
+    &::after, &::before {
+      background-image:url("../img/smarkers@2x.png")!important;
+      background-size:202px 144px!important;
+    }
+  }
 }

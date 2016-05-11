@@ -10,7 +10,7 @@
   {% for key in ["event", "ssr", "sr", "r", "n"] %}
   {% if cl[key] %}
   <div class="iconex_row">
-    <a href="/card/{{ ",".join(map(str, cl[key])) }}" ><img src="{{ handler.static_url("img/marker_" + key + ".png") }}" /></a>
+    <a href="/card/{{ ",".join(map(str, cl[key])) }}" >{% raw icon(key) %}</a>
     {% for card in cl[key] %}
     {% raw icon_ex(card, request.is_low_bandwidth) %}
     {% end %}

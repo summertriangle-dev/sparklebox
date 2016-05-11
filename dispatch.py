@@ -2,6 +2,11 @@ import tornado.web
 import json
 import os
 import starlight
+import time
+try:
+    from plop.collector import Collector, PlopFormatter
+except ImportError:
+    pass
 
 ROUTES = []
 
@@ -52,4 +57,18 @@ class HandlerSyncedWithMaster(tornado.web.RequestHandler):
     def prepare(self):
         starlight.data.reset_statistics()
         starlight.check_version()
+
         super().prepare()
+
+        if self.get_argument("profile", None) and os.environ.get("ALLOW_PROFILING"):
+            self.collector = Collector()
+            self.collector.start()
+
+    def finish(self, *args, **kw):
+        super().finish(*args, **kw)
+
+        if self.get_argument("profile", None) and os.environ.get("ALLOW_PROFILING"):
+            self.collector.stop()
+            formatter = PlopFormatter(max_stacks=9001)
+            if self.collector.samples_taken:
+                formatter.store(self.collector, "{0}_{1}.profile".format(self.__class__.__name__, time.time()))

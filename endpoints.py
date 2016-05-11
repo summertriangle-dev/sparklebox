@@ -34,9 +34,12 @@ def icon_ex(card_id, is_lowbw=0):
 
         btext = "({0}) {1}".format(enums.rarity(rec.rarity), tlable(rec.title, write=0) if rec.title_flag else "")
         ish = """<div class="profile">
-            <div class="icon icon_{rec.id}"></div>
+            <div class="icon icon_{rec.id} msprites m{1} {2}"></div>
             <div class="profile_text"><b>{0}</b><br>{btext}</div>
-        </div>""".format(tornado.escape.xhtml_escape(rec.chara.conventional), rec=rec, btext=btext)
+        </div>""".format(tornado.escape.xhtml_escape(rec.chara.conventional),
+            enums.stat_dot(rec.best_stat),
+            "m" + enums.skill_class(rec.skill.skill_type) if rec.skill else "",
+            rec=rec, btext=btext)
         return """<a href="{link}" class="noline">{ish}</a>""".format(rec=rec, ish=ish, link=link)
 
 def audio(object_id, use, index):

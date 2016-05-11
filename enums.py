@@ -117,6 +117,18 @@ skill_class = enum([
     14, "s_overload",
 ])
 
+stat_dot = enum([
+    1, "m_vi",
+    2, "m_da",
+    3, "m_vo"
+])
+
+stat_en = enum([
+    1, "This card's highest stat is Visual",
+    2, "This card's highest stat is Dance",
+    3, "This card's highest stat is Vocal"
+])
+
 # TODO need enum defs for
 # constellation
 # blood_type

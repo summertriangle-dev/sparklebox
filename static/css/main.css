@@ -77,11 +77,107 @@ footer {
   left: 61px;
 }
 /* chara_partial */
-div.icon {
+.icon {
+  display: inline-block;
+  background-image: url(../img/smarkers.png);
+  background-position: -48px -76px;
   width: 48px;
   height: 48px;
-  display: inline-block;
-  background-image: url(../img/marker_missing_icon.png);
+}
+.icon.icon_event {
+  background-position: 0 -76px;
+  width: 48px;
+  height: 48px;
+}
+.icon.icon_n {
+  background-position: -96px -76px;
+  width: 48px;
+  height: 48px;
+}
+.icon.icon_r {
+  background-position: -154px 0;
+  width: 48px;
+  height: 48px;
+}
+.icon.icon_sr {
+  background-position: -154px -48px;
+  width: 48px;
+  height: 48px;
+}
+.icon.icon_ssr {
+  background-position: -144px -96px;
+  width: 48px;
+  height: 48px;
+}
+.icon.m_vi {
+  background-position: -56px 0;
+  width: 24px;
+  height: 24px;
+}
+.icon.m_da {
+  background-position: 0 0;
+  width: 24px;
+  height: 24px;
+}
+.icon.m_vo {
+  background-position: -28px 0;
+  width: 24px;
+  height: 24px;
+}
+.icon.s_pl {
+  background-position: -56px -52px;
+  width: 24px;
+  height: 24px;
+}
+.icon.s_cprot {
+  background-position: -56px -26px;
+  width: 24px;
+  height: 24px;
+}
+.icon.s_combobonus {
+  background-position: -82px -52px;
+  width: 24px;
+  height: 24px;
+}
+.icon.s_scorebonus {
+  background-position: -82px -26px;
+  width: 24px;
+  height: 24px;
+}
+.icon.s_heal {
+  background-position: -28px -52px;
+  width: 24px;
+  height: 24px;
+}
+.icon.s_life {
+  background-position: -28px -26px;
+  width: 24px;
+  height: 24px;
+}
+.icon.s_overload {
+  background-position: 0 -26px;
+  width: 24px;
+  height: 24px;
+}
+@media only screen and (min-resolution: 2dppx) {
+  .icon.icon_event,
+  .icon.icon_n,
+  .icon.icon_r,
+  .icon.icon_sr,
+  .icon.icon_ssr,
+  .icon.m_vi,
+  .icon.m_da,
+  .icon.m_vo,
+  .icon.s_pl,
+  .icon.s_cprot,
+  .icon.s_combobonus,
+  .icon.s_scorebonus,
+  .icon.s_heal,
+  .icon.s_life,
+  .icon.s_overload {
+    background-image: url(../img/smarkers@2x.png);
+    background-size: 202px 144px;
+  }
 }
 div.stdcon {
   /*padding:8px 16px*/
@@ -287,6 +383,9 @@ td.Passion a {
     border-right: 10px solid transparent;
     border-bottom: 20px solid transparent;
   }
+  .carcon .card_right .name_tag .icon {
+    vertical-align: text-bottom;
+  }
 }
 @media screen and (max-width: 768px) {
   .carcon .card_right .name_tag {
@@ -303,6 +402,9 @@ td.Passion a {
     border-right: 7.5px solid transparent;
     border-bottom: 15px solid transparent;
   }
+  .carcon .card_right .icon {
+    vertical-align: middle;
+  }
 }
 .carcon .card_right .name_tag.force_small {
   height: 30px;
@@ -318,6 +420,9 @@ td.Passion a {
   border-left: 7.5px solid transparent;
   border-right: 7.5px solid transparent;
   border-bottom: 15px solid transparent;
+}
+.carcon .card_right .name_tag.force_small .icon {
+  vertical-align: middle;
 }
 .carcon .card_right .name_tag {
   color: white;
@@ -666,4 +771,64 @@ span.var {
   margin: 5px 0 5px 5px;
   background-color: #222;
   border: 1px solid #000;
+}
+.icon.msprites {
+  position: relative;
+}
+.icon.msprites::before {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  display: block;
+  width: 9px;
+  height: 9px;
+  background: url("../img/smarkers.png") 0 -50px no-repeat;
+  content: "";
+}
+.icon.msprites.mm_vi::before {
+  background-position: -145px -11px;
+}
+.icon.msprites.mm_da::before {
+  background-position: -134px -11px;
+}
+.icon.msprites.mm_vo::before {
+  background-position: -134px 0;
+}
+.icon.msprites::after {
+  position: absolute;
+  left: 1px;
+  top: 10px;
+  display: block;
+  width: 9px;
+  height: 9px;
+  background: url("../img/smarkers.png") 0 -50px no-repeat;
+  content: "";
+}
+.icon.msprites.ms_pl::after {
+  background-position: -105px 0;
+}
+.icon.msprites.ms_cprot::after {
+  background-position: -83px 0;
+}
+.icon.msprites.ms_combobonus::after {
+  background-position: -116px 0;
+}
+.icon.msprites.ms_scorebonus::after {
+  background-position: -94px 0;
+}
+.icon.msprites.ms_heal::after {
+  background-position: -94px -11px;
+}
+.icon.msprites.ms_life::after {
+  background-position: -83px -11px;
+}
+.icon.msprites.ms_overload::after {
+  background-position: -105px -11px;
+}
+@media only screen and (min-resolution: 2dppx) {
+  .icon.msprites::after,
+  .icon.msprites::before {
+    background-image: url("../img/smarkers@2x.png") !important;
+    background-size: 202px 144px!important;
+  }
 }
