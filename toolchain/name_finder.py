@@ -22,7 +22,7 @@ from pprint import pprint
 CLASS_FAMILY_NAME = set("sup")
 CLASS_GIVEN_NAME = set("mfgu")
 AX_PARSE = re.compile(r"/\(([a-z\,]+)\) (.+)/")
-FIX_PAT = re.compile(r"([きぎしじずずちぢひびぴみにゆり][ゅょゃ]|[おこごそぞとどほぼぽものよろゆ])う")
+FIX_PAT = re.compile(r"([きぎしじずずちぢひびぴみにゆり][ゅょゃ]|[こごそぞとどほぼぽものよろゆ])う")
 Word = namedtuple("Word", ["kanji", "kana", "classifier", "roman"])
 _Search = namedtuple("Search", ["kanji", "kana", "real_kanji"])
 
