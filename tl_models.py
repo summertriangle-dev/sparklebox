@@ -67,6 +67,8 @@ class TranslationSQL(object):
     def __init__(self, use_satellite):
         self.really_connected = 0
         self.session_nest = []
+        self.history_cache = []
+        self.history_is_all_loaded = 0
 
     def __enter__(self):
         if not self.really_connected:
@@ -135,16 +137,27 @@ class TranslationSQL(object):
         with self as s:
             s.add(HistoryEntry(time=dt, payload=payload))
             s.commit()
+        self.history_cache = []
+
+    def get_history(self, nent):
+        if self.history_is_all_loaded or (nent and nent <= len(self.history_cache)):
+            return self.history_cache[:nent]
+
+        self.history_cache = list(self._get_history(nent))
+        if not nent:
+            self.history_is_all_loaded = 1
+        return self.history_cache
 
     @retry(5)
-    def get_history(self, nent):
+    def _get_history(self, nent):
+        print("trace _get_history")
         with self as s:
             rows = s.query(HistoryEntry).order_by(HistoryEntry.time.desc())
 
             if nent:
                 rows = rows.limit(nent)
             gv = rows.all()
-        yield from gv
+            yield from gv
 
 class TranslationEngine(TranslationSQL):
     def __init__(self, data_source, use_satellite):
