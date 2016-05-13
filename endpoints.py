@@ -68,6 +68,13 @@ class Home(HandlerSyncedWithMaster):
 
         recent_history = self.settings["tle"].get_history(5)
 
+        # cache priming has a high overhead so prime all icons at once
+        preprime_set = set()
+        for h in [x.asdict() for x in recent_history]:
+            for k in ["n", "r", "sr", "ssr", "event"]:
+                preprime_set.update(h.get(k, ()))
+        starlight.data.cards(preprime_set)
+
         self.render("main.html", history=recent_history,
             events=zip(events, event_rewards),
             la_cards=real_ones, **self.settings)
@@ -220,6 +227,12 @@ class History(HandlerSyncedWithMaster):
     """ Display all history entries. """
     def get(self):
         all_history = self.settings["tle"].get_history(nent=None)
+
+        preprime_set = set()
+        for h in [x.asdict() for x in all_history]:
+            for k in ["n", "r", "sr", "ssr", "event"]:
+                preprime_set.update(h.get(k, ()))
+        starlight.data.cards(preprime_set)
 
         self.render("history.html", history=all_history, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
