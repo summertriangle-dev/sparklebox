@@ -54,7 +54,10 @@ function tlinject_activate() {
     for (var i = 0; i < strings.length; i++) {
         if (tls.indexOf(strings[i].textContent) == -1)
             tls.push(strings[i].textContent);
-        strings[i].setAttribute("data-original-string", strings[i].textContent);
+
+        if (!strings[i].hasAttribute("data-original-string"))
+            strings[i].setAttribute("data-original-string", strings[i].textContent);
+
         if (strings[i].hasAttribute("data-summertriangle-assr"))
             strings[i].setAttribute("onclick", "event.preventDefault(); submit_tl_string(this, this.getAttribute('data-original-string'))")
     }
