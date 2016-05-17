@@ -377,7 +377,7 @@ def check_version_api_recv(response, msg):
 
     res_ver = msg.get(b"data_headers", {}).get(b"required_res_ver", b"-1").decode("utf8")
     if not data or res_ver != data.version:
-        if res_ver != -1:
+        if res_ver != "-1":
             update_to_res_ver(res_ver)
         else:
             print("no required_res_ver, did the app get a forced update?")
