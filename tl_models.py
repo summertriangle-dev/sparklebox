@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 from time import time as _time
 from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, UnicodeText, LargeBinary
 from sqlalchemy import create_engine
@@ -45,6 +46,15 @@ class TranslationEntry(Base):
     def __repr__(self):
         return "<TL entry {x.id} '{x.english}' by {x.submitter} @{x.submit_utc}>".format(x=self)
 
+class TranslationCache(Base):
+    __tablename__ = "ss_translation_cache"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    key = Column(utext())
+    english = Column(utext())
+
+    def __repr__(self):
+        return "<TL entry {x.id} '{x.english}'>".format(x=self)
 
 class HistoryEntry(Base):
     __tablename__ = "ss_history"
@@ -115,14 +125,7 @@ class TranslationSQL(object):
     @retry(5)
     def translate(self, done, *key):
         with self as s:
-            transient = aliased(TranslationEntry)
-            result = s.query(TranslationEntry).filter(
-                s.query(func.count(transient.id))
-                .filter(transient.submit_utc >= TranslationEntry.submit_utc)
-                .filter(transient.key == TranslationEntry.key)
-                .order_by(transient.id.desc())
-                .correlate(TranslationEntry)
-                .as_scalar() == 1).filter(TranslationEntry.key.in_(key)).all()
+            result = s.query(TranslationCache).filter(TranslationCache.key.in_(key)).limit(len(key)).all()
         done(result)
 
     @retry(5)
@@ -130,6 +133,12 @@ class TranslationSQL(object):
         with self as s:
             s.add(TranslationEntry(key=key, english=eng,
                                    submitter=sender, submit_utc=time()))
+            try:
+                thing_to_update = s.query(TranslationCache).filter(TranslationCache.key == key).one()
+            except NoResultFound:
+                thing_to_update = TranslationCache(key=key, english=eng)
+            thing_to_update.english = eng
+            s.add(thing_to_update)
             s.commit()
 
     @retry(5)
@@ -138,6 +147,23 @@ class TranslationSQL(object):
             s.add(HistoryEntry(time=dt, payload=payload))
             s.commit()
         self.history_cache = []
+
+    @retry(5)
+    def update_caches(self):
+        with self as s:
+            transient = aliased(TranslationEntry)
+            result = s.query(TranslationEntry).filter(
+                s.query(func.count(transient.id))
+                .filter(transient.submit_utc >= TranslationEntry.submit_utc)
+                .filter(transient.key == TranslationEntry.key)
+                .order_by(transient.id.desc())
+                .correlate(TranslationEntry)
+                .as_scalar() == 1).all()
+            s.query(TranslationCache).delete()
+            cache_ents = [TranslationCache(key=x.key, english=x.english)
+                for x in result if x.key != x.english]
+            s.add_all(cache_ents)
+            s.commit()
 
     def get_history(self, nent):
         if self.history_is_all_loaded or (nent and nent <= len(self.history_cache)):

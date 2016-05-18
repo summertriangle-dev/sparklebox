@@ -251,6 +251,12 @@ class DebugViewVA(HandlerSyncedWithMaster):
         self.render("debug_view_database.html", data=loaded,
                     fields=fields, **self.settings)
 
+@route(r"/tl_cacheall")
+@dev_mode_only
+class DebugTLCacheUpdate(tornado.web.RequestHandler):
+    def get(self):
+        self.settings["tle"].update_caches()
+        self.write("ok.")
 
 @route(r"/tl_debug")
 @dev_mode_only
