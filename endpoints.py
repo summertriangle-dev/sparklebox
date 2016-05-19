@@ -69,7 +69,7 @@ class Home(HandlerSyncedWithMaster):
         gacha_limited = starlight.data.limited_availability_cards(gachas)
         real_ones = filter(lambda p: bool(p[1]), zip(gachas, gacha_limited))
 
-        recent_history = self.settings["tle"].get_history(5)
+        recent_history = self.settings["tle"].get_history(5, starlight.data.version)
 
         # cache priming has a high overhead so prime all icons at once
         preprime_set = set()
@@ -229,7 +229,7 @@ class SpriteViewerEX(tornado.web.RequestHandler):
 class History(HandlerSyncedWithMaster):
     """ Display all history entries. """
     def get(self):
-        all_history = self.settings["tle"].get_history(nent=None)
+        all_history = self.settings["tle"].get_history(nent=None, key=starlight.data.version)
 
         preprime_set = set()
         for h in [x.asdict() for x in all_history]:

@@ -79,6 +79,7 @@ class TranslationSQL(object):
         self.session_nest = []
         self.history_cache = []
         self.history_is_all_loaded = 0
+        self.history_cache_key = None
 
     def __enter__(self):
         if not self.really_connected:
@@ -165,7 +166,12 @@ class TranslationSQL(object):
             s.add_all(cache_ents)
             s.commit()
 
-    def get_history(self, nent):
+    def get_history(self, nent, key):
+        if key != self.history_cache_key:
+            self.history_cache = []
+            self.history_is_all_loaded = 0
+            self.history_cache_key = key
+
         if self.history_is_all_loaded or (nent and nent <= len(self.history_cache)):
             return self.history_cache[:nent]
 
