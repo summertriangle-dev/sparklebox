@@ -400,7 +400,12 @@ def check_version():
             return
 
         print("trace check_version")
-        print("current APP_VER:", os.environ.get("APP_VER"))
+        if ( os.environ.get("VC_APP_VER") == None ):
+            print("VC_APP_VER not set, update aborted")
+            print("keep current version")
+            return
+        else:
+            print("current VC_APP_VER:", os.environ.get("APP_VER"))
         if data:
             data.vc_this = 1
 
@@ -445,9 +450,13 @@ def init():
         check.stop()
         ioloop.IOLoop.clear_instance()
         print("Initial download complete. Please restart the server...")
+        sys.exit()
 
 def are_we_there_yet():
     if data:
         ioloop.IOLoop.instance().stop()
     else:
+        if ( os.environ.get("VC_APP_VER") == None ):
+            print("exit due init failure") # would only show when no mdb exists
+            sys.exit()
         print("not done yet")
