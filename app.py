@@ -104,6 +104,7 @@ def main():
     port = int(os.environ.get("PORT", 5000))
 
     http_server.listen(port, addr)
+    print("Current APP_VER:", os.environ.get("APP_VER"))
     print("Ready.")
     tornado.ioloop.IOLoop.instance().start()
 

@@ -400,6 +400,7 @@ def check_version():
             return
 
         print("trace check_version")
+        print("current APP_VER:", os.environ.get("APP_VER"))
         if data:
             data.vc_this = 1
 
