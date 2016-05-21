@@ -448,7 +448,7 @@ def init():
         sys.exit()
 
 def are_we_there_yet():
-    if data:
+    if not is_updating_to_new_truth:
         ioloop.IOLoop.instance().stop()
     else:
         print("not done yet")
