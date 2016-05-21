@@ -2,6 +2,8 @@ import csv
 from collections import namedtuple
 
 def clean_value(val):
+    if val is None:
+        return None
     try:
         return int(val)
     except ValueError:
