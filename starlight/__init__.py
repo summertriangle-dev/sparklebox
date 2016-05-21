@@ -207,7 +207,6 @@ class DataCache(object):
             kanji_spaced = lambda obj: self.names.get(obj.chara_id).kanji_spaced,
             kana_spaced = lambda obj:  self.names.get(obj.chara_id).kana_spaced,
             conventional =lambda obj: self.names.get(obj.chara_id).conventional,
-            translated =lambda obj: self.names.get(obj.chara_id).translated,
             valist=lambda obj: []):
             self.char_cache[p.chara_id] = p
             self.primed_this["prm_char"] += 1
@@ -378,7 +377,7 @@ def check_version_api_recv(response, msg):
 
     res_ver = msg.get(b"data_headers", {}).get(b"required_res_ver", b"-1").decode("utf8")
     if not data or res_ver != data.version:
-        if res_ver != -1:
+        if res_ver != "-1":
             update_to_res_ver(res_ver)
         else:
             print("no required_res_ver, did the app get a forced update?")
