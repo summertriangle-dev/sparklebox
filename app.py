@@ -104,7 +104,9 @@ def main():
     port = int(os.environ.get("PORT", 5000))
 
     http_server.listen(port, addr)
-    print("Current APP_VER:", os.environ.get("VC_APP_VER", "Not set. Auto update won't work."))
+    print("Current APP_VER:", os.environ.get("VC_APP_VER",
+        "1.9.1 (warning: Truth updates will fail in the future if an accurate VC_APP_VER "
+        "is not set. Export VC_APP_VER to suppress this warning.)"))
     print("Ready.")
     tornado.ioloop.IOLoop.instance().start()
 
