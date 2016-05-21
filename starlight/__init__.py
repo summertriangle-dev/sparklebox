@@ -388,6 +388,9 @@ def check_version_api_recv(response, msg):
         is_updating_to_new_truth = 0
 
 def can_check_version():
+    if ( os.environ.get("VC_APP_VER") == None ):
+        print ("APP_VER not set, auto update won't work")
+        return
     return all([x in os.environ for x in ["VC_ACCOUNT", "VC_AES_KEY", "VC_SID_SALT"]]) \
         and not os.getenv("DISABLE_AUTO_UPDATES", None)
 
@@ -400,6 +403,7 @@ def check_version():
             return
 
         print("trace check_version")
+        print("current APP_VER:", os.environ.get("VC_APP_VER"))
         if data:
             data.vc_this = 1
 
@@ -444,6 +448,7 @@ def init():
         check.stop()
         ioloop.IOLoop.clear_instance()
         print("Initial download complete. Please restart the server...")
+        sys.exit()
 
 def are_we_there_yet():
     if data:
