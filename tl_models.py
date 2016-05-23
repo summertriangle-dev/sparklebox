@@ -72,6 +72,24 @@ class HistoryEntry(Base):
     def asdict(self):
         return json.loads(self.payload.decode("ascii"))
 
+class GachaRewardEntry(Base):
+    __tablename__ = "ss_gacha_available_ex"
+
+    gacha_id = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
+    step_num = Column(Integer)
+    reward_id = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
+    recommend_order = Column(Integer)
+    limited_flag = Column(Integer, primary_key=True, autoincrement=False)
+
+class GachaPresenceEntry(Base):
+    __tablename__ = "ss_gacha_contiguous_presence"
+
+    rowid = Column(Integer, primary_key=True)
+    card_id = Column(Integer, nullable=False)
+    gacha_id_first = Column(Integer, nullable=False)
+    gacha_id_last = Column(Integer, nullable=False)
+    avail_start = Column(Integer, nullable=False)
+    avail_end = Column(Integer, nullable=False)
 
 class TranslationSQL(object):
     def __init__(self, use_satellite):
