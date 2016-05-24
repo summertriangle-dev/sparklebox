@@ -1,81 +1,91 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {% if is_dev %}
-    <link rel="stylesheet/less" type="text/css" href="{{ handler.static_url("css/main.less") }}" />
-    <script type="text/javascript" src="{{ handler.static_url("js/less.js") }}"></script>
-    {% else %}
-    <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
-    {% end %}
-    <link rel="stylesheet" type="text/css" href="{{ image_host }}/icons2/icons.css?c={{ starlight.data.version }}" />
-    <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
-    <script type="text/javascript" src="{{ handler.static_url("js/skills.js") }}"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% if is_dev %}
+  <link rel="stylesheet/less" type="text/css" href="{{ handler.static_url("css/main.less") }}" />
+  <script type="text/javascript" src="{{ handler.static_url("js/less.js") }}"></script>
+  {% else %}
+  <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
+  {% end %}
+  <link rel="stylesheet" type="text/css" href="{{ image_host }}/icons2/icons.css?c={{ starlight.data.version }}" />
+  <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
+  <script type="text/javascript" src="{{ handler.static_url("js/skills.js") }}"></script>
 
-    <title>Cards by Centre Skill (sldb)</title>
+  <title>Cards by Centre Skill (sldb)</title>
 </head>
 
 <body>
-    <div class="container">
-        <table class="stats_table control_table">
-            <tr class="toggles_row control_row">
-                <th>Show lead skills targeting:</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="ca_all" class="life" title="All variants">X</td>
-                <th class="life_ax" title="All variants">All</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="ca_cute" class="Cute">X</td>
-                <th class="kizuna_ax">Cute</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="ca_passion" class="Passion">X</td>
-                <th class="vocal_ax">Passion</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="ca_cool" class="Cool">X</td>
-                <th class="vocal_ax">Cool</th>
-            </tr>
-        </table>
-        <table class="stats_table control_table">
-            <tr class="toggles_row control_row">
-                <th>Show lead skills affecting:</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="ce_vocal" class="vocal">X</td>
-                <th class="kizuna_ax">Vocal</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="ce_visual" class="visual">X</td>
-                <th class="vocal_ax">Visual</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="ce_dance" class="dance">X</td>
-                <th class="vocal_ax">Dance</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="ce_anyappeal" class="kizuna">X</td>
-                <th class="vocal_ax">All appeals</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="ce_life" class="life">X</td>
-                <th class="life_ax" title="All variants">Life</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="ce_skill" class="max_level">X</td>
-                <th class="vocal_ax">Skill Prob.</th>
-            </tr>
-        </table>
-
-        <table class="table" style="width:100%">
-            <tr class="control_row">
-                <th></th>
-                <th class="hides_under_mobile"></th>
-                <th>{{ _("Skill Name") }}</th>
-                <th>{{ _("Effect") }}</th>
-            </tr>
-        {% for card in cards %}
-            {% if card.lead_skill %}
-            <tr class="{{ enums.lskill_effective_target(card.lead_skill.target_attribute) }}
-                       {{ enums.lskill_effective_param(card.lead_skill.target_param) }}">
-                <td class="{{ enums.attribute(card.attribute) }}" style="width:1%">
-                    <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{% raw icon(card.id) %}</a>
-                </td>
-                <td class="{{ enums.attribute(card.attribute) }} hides_under_mobile">
-                    <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{{ tle.translate_name(card.name_only) }}</a><br>
-                        {% if card.title %}({% raw tlable(card.title) %}){% end %}
-                </td>
-                <td>{% raw tlable(card.lead_skill.name) %}</td>
-                <td>{% raw starlight.en.describe_lead_skill_html(card.lead_skill) %}</td>
-            </tr>
-            {% end %}
-        {% end %}
-        </table>
+  <div class="container">
+    <div class="stdcon chara_header">
+      <table class="stats_table control_table">
+        <tr class="toggles_row">
+          <th>Target Type</th>
+          <td onclick="toggle_kill_css(this)" data-kill-class="ca_all" class="vocal" title="All variants">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="ca_cute" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="ca_passion" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="ca_cool" class="vocal">X</td>
+        </tr>
+        <tr>
+          <th>&nbsp;</th>
+          <th>All</th>
+          <th>Cute</th>
+          <th>Passion</th>
+          <th>Cool</th>
+        </tr>
+      </table>
+      <table class="stats_table control_table">
+        <tr class="toggles_row">
+          <th>Target Stat</th>
+          <td onclick="toggle_kill_css(this)" data-kill-class="ce_vocal" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="ce_visual" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="ce_dance" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="ce_anyappeal" class="vocal">X</td>
+          <td><!-- dummy --></td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="ce_life" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="ce_skill" class="vocal">X</td>
+        </tr>
+        <tr>
+          <th>&nbsp;</th>
+          <th>Vocal</th>
+          <th>Visual</th>
+          <th>Dance</th>
+          <th>All</th>
+          <th><!-- dummy --></th>
+          <th>Life</th>
+          <th>Skill Prob.</th>
+        </tr>
+      </table>
     </div>
 
-    {% include footer.html %}
-    <script>tlinject_activate()</script>
+    <table class="table" style="width:100%">
+      <tr class="control_row">
+        <th></th>
+        <th class="hides_under_mobile"></th>
+        <th>{{ _("Skill Name") }}</th>
+        <th>{{ _("Effect") }}</th>
+      </tr>
+    {% for card in cards %}
+      {% if card.lead_skill %}
+      <tr class="{{ enums.lskill_effective_target(card.lead_skill.target_attribute) }}
+             {{ enums.lskill_effective_param(card.lead_skill.target_param) }}">
+        <td class="{{ enums.attribute(card.attribute) }}" style="width:1%">
+          <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{% raw icon(card.id) %}</a>
+        </td>
+        <td class="{{ enums.attribute(card.attribute) }} hides_under_mobile">
+          <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{{ tle.translate_name(card.name_only) }}</a><br>
+            {% if card.title %}({% raw tlable(card.title) %}){% end %}
+        </td>
+        <td>{% raw tlable(card.lead_skill.name) %}</td>
+        <td>{% raw starlight.en.describe_lead_skill_html(card.lead_skill) %}</td>
+      </tr>
+      {% end %}
+    {% end %}
+    </table>
+  </div>
+
+  {% include footer.html %}
+  <script>tlinject_activate()</script>
 </body>
 </html>

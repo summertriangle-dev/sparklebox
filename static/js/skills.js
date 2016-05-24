@@ -9,7 +9,7 @@ function toggle_kill_css(that) {
         kill_css.textContent = "." + that.getAttribute("data-kill-class") + " { display:none; }"
         kill_css.id = cssid;
         document.head.appendChild(kill_css);
-        that.innerHTML = " "
+        that.innerHTML = "&nbsp;"
     }
     
 }

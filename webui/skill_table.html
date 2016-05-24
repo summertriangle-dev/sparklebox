@@ -1,69 +1,74 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {% if is_dev %}
-    <link rel="stylesheet/less" type="text/css" href="{{ handler.static_url("css/main.less") }}" />
-    <script type="text/javascript" src="{{ handler.static_url("js/less.js") }}"></script>
-    {% else %}
-    <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
-    {% end %}
-    <link rel="stylesheet" type="text/css" href="{{ image_host }}/icons2/icons.css?c={{ starlight.data.version }}" />
-    <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
-    <script type="text/javascript" src="{{ handler.static_url("js/skills.js") }}"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% if is_dev %}
+  <link rel="stylesheet/less" type="text/css" href="{{ handler.static_url("css/main.less") }}" />
+  <script type="text/javascript" src="{{ handler.static_url("js/less.js") }}"></script>
+  {% else %}
+  <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
+  {% end %}
+  <link rel="stylesheet" type="text/css" href="{{ image_host }}/icons2/icons.css?c={{ starlight.data.version }}" />
+  <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
+  <script type="text/javascript" src="{{ handler.static_url("js/skills.js") }}"></script>
 
-    <title>Cards by Skill (sldb)</title>
+  <title>Cards by Skill (sldb)</title>
 </head>
 
 <body>
-    <div class="container">
-        <table class="stats_table control_table">
-            <tr class="toggles_row control_row">
-                <th>Show active skill types:</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="s_pl" class="vocal" title="All variants">X</td>
-                <th class="life_ax" title="All variants">Perf. Lock*</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="s_cprot" class="vocal">X</td>
-                <th class="kizuna_ax">Prot. Combo</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="s_combobonus" class="vocal">X</td>
-                <th class="vocal_ax">Combo Bonus</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="s_scorebonus" class="vocal">X</td>
-                <th class="dance_ax">Score Bonus</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="s_heal" class="vocal">X</td>
-                <th class="visual_ax">Healer</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="s_life" class="vocal">X</td>
-                <th class="max_level_ax">Guard</th>
-                <td onclick="toggle_kill_css(this)" data-kill-class="s_overload" class="vocal">X</td>
-                <th class="max_level_ax">Overload</th>
-            </tr>
-        </table>
-
-        <table class="table" style="width:100%">
-            <tr class="control_row">
-                <th></th>
-                <th class="hides_under_mobile"></th>
-                <th>{{ _("Skill Name") }}</th>
-                <th>{{ _("Effect") }}</th>
-            </tr>
-        {% for card in cards %}
-            {% if card.skill %}
-            <tr class="{{ enums.skill_class(card.skill.skill_type) }}">
-                <td class="{{ enums.attribute(card.attribute) }}" style="width:1%">
-                    <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{% raw icon(card.id) %}</a>
-                </td>
-                <td class="{{ enums.attribute(card.attribute) }} hides_under_mobile">
-                    <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{{ tle.translate_name(card.name_only) }}</a><br>
-                        {% if card.title %}({% raw tlable(card.title) %}){% end %}
-                </td>
-                <td>{% raw tlable(card.skill.skill_name) %}</td>
-                <td>{% raw starlight.en.describe_skill_html(card.skill) %}</td>
-            </tr>
-            {% end %}
-        {% end %}
-        </table>
+  <div class="container">
+    <div class="stdcon chara_header">
+      <table class="stats_table control_table">
+        <tr class="toggles_row">
+          <th>Skill Type</th>
+          <td onclick="toggle_kill_css(this)" data-kill-class="s_pl" class="vocal" title="All variants">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="s_cprot" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="s_combobonus" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="s_scorebonus" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="s_heal" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="s_life" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="s_overload" class="vocal">X</td>
+        </tr>
+        <tr>
+          <th>&nbsp;</th>
+          <th title="All variants">Perf. Lock*</th>
+          <th>Prot. Combo</th>
+          <th>Combo Bonus</th>
+          <th>Score Bonus</th>
+          <th>Healer</th>
+          <th>Guard</th>
+          <th>Overload</th>
+        </tr>
+      </table>
     </div>
 
-    {% include footer.html %}
-    <script>tlinject_activate()</script>
+    <table class="table" style="width:100%">
+      <tr class="control_row">
+        <th></th>
+        <th class="hides_under_mobile"></th>
+        <th>{{ _("Skill Name") }}</th>
+        <th>{{ _("Effect") }}</th>
+      </tr>
+    {% for card in cards %}
+      {% if card.skill %}
+      <tr class="{{ enums.skill_class(card.skill.skill_type) }}">
+        <td class="{{ enums.attribute(card.attribute) }}" style="width:1%">
+          <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{% raw icon(card.id) %}</a>
+        </td>
+        <td class="{{ enums.attribute(card.attribute) }} hides_under_mobile">
+          <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{{ tle.translate_name(card.name_only) }}</a><br>
+            {% if card.title %}({% raw tlable(card.title) %}){% end %}
+        </td>
+        <td>{% raw tlable(card.skill.skill_name) %}</td>
+        <td>{% raw starlight.en.describe_skill_html(card.skill) %}</td>
+      </tr>
+      {% end %}
+    {% end %}
+    </table>
+  </div>
+
+  {% include footer.html %}
+  <script>tlinject_activate()</script>
 </body>
 </html>
