@@ -124,6 +124,11 @@ footer {
   width: 24px;
   height: 24px;
 }
+.icon.m_ba {
+  background-position: 0 -52px;
+  width: 24px;
+  height: 24px;
+}
 .icon.s_pl {
   background-position: -56px -52px;
   width: 24px;
@@ -177,7 +182,8 @@ footer {
   .icon.s_scorebonus,
   .icon.s_heal,
   .icon.s_life,
-  .icon.s_overload {
+  .icon.s_overload,
+  .icon.m_ba {
     background-image: url(../img/smarkers@2x.png);
     background-size: 202px 144px;
     border-radius: 0px;
@@ -822,7 +828,7 @@ span.var {
   display: block;
   width: 9px;
   height: 9px;
-  background: url("../img/smarkers.png") 0 -50px no-repeat;
+  background: url("../img/smarkers.png") -115px -50px no-repeat;
   content: "";
 }
 .icon.msprites.mm_vi::before {
@@ -834,6 +840,9 @@ span.var {
 .icon.msprites.mm_vo::before {
   background-position: -134px 0;
 }
+.icon.msprites.mm_ba::before {
+  background-position: -145px 0;
+}
 .icon.msprites::after {
   position: absolute;
   left: 1px;
@@ -841,7 +850,7 @@ span.var {
   display: block;
   width: 9px;
   height: 9px;
-  background: url("../img/smarkers.png") 0 -50px no-repeat;
+  background: url("../img/smarkers.png") -115px -50px no-repeat;
   content: "";
 }
 .icon.msprites.ms_pl::after {

@@ -58,6 +58,21 @@ def skill_dur(dur_def, ttype):
     return "{0}..{1}".format(_scale_skill_value(maxv, minv, 0),
                              _scale_skill_value(maxv, minv, 9))
 
+def determine_best_stat(vo, vi, da):
+    """Card stats are either balanced (VoViDa are around the same),
+       or one stat will be noticeably higher.
+       This function returns which one."""
+    VISUAL, DANCE, VOCAL, BALANCED = 1, 2, 3, 4
+    # for balanced cards, the ratio hi:lo will be close to 1
+    THRES = 1.2
+    stats = ((vo, VOCAL), (vi, VISUAL), (da, DANCE))
+    lo, lo_typ = min(stats)
+    hi, hi_typ = max(stats)
+    if hi / lo > THRES:
+        return hi_typ
+    else:
+        return BALANCED + hi_typ
+
 TITLE_ONLY_REGEX = r"^［(.+)］"
 NAME_ONLY_REGEX = r"^(?:［.+］)?(.+)$"
 
@@ -239,7 +254,7 @@ class DataCache(object):
             overall_max=lambda obj: obj.vocal_max + obj.dance_max + obj.visual_max,
             overall_bonus=lambda obj: obj.bonus_vocal + obj.bonus_dance + obj.bonus_visual,
             valist=lambda obj: [],
-            best_stat=lambda obj: max(((obj.visual_max, 1), (obj.dance_max, 2), (obj.vocal_max, 3)))[1])
+            best_stat=lambda obj: determine_best_stat(obj.vocal_max, obj.visual_max, obj.dance_max))
 
         for p in selected:
             self.card_cache[p.id] = p
