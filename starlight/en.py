@@ -4,6 +4,19 @@ import os
 import enums
 import re
 
+def westernized_name(chara):
+    """Our conventionals are ordered Last First, but project-imas uses First Last."""
+    if " " in chara.kanji_spaced:
+        # "The majority of Japanese people have one surname and one given name with no middle name,"
+        # in case that proves false, here's an implementation that reverses
+        # "Last First Middle" -> "First Middle Last".
+
+        # names = chara.conventional.split(" ")
+        # return "{0} {1}".format(" ".join(names[1:]), names[0]).strip()
+        return " ".join(reversed(chara.conventional.split(" ")))
+    else:
+        return chara.conventional
+
 # skill describer
 
 SKILL_DESCRIPTIONS = {
