@@ -67,7 +67,6 @@ class Home(HandlerSyncedWithMaster):
 
         gachas = starlight.data.gachas(now)
         gacha_limited = starlight.data.limited_availability_cards(gachas)
-        real_ones = filter(lambda p: bool(p[1]), zip(gachas, gacha_limited))
 
         recent_history = self.settings["tle"].get_history(5, starlight.data.version)
 
@@ -80,7 +79,7 @@ class Home(HandlerSyncedWithMaster):
 
         self.render("main.html", history=recent_history,
             events=zip(events, event_rewards),
-            la_cards=real_ones, **self.settings)
+            la_cards=zip(gachas, gacha_limited), **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 @route("/suggest")

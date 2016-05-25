@@ -48,15 +48,21 @@
       {% end %}
       {% for gacha, available in la_cards_ %}
       <div class="header">
+        {% if available %}
         <span class="item left">Limited availability!</span>
+        {% else %}
+        <span class="item left">Current gacha</span>
+        {% end %}
         <span class="item ext"></span>
         <span class="item right">expires in <span class="counter" data-count-to="{{ gacha.end_date.timestamp() }}">meme</span></span>
       </div>
+      {% if available %}
       <div class="content" style="background:#333;text-align:left;">
         {% for ent in available %}
         {% raw icon_ex(ent, request.is_low_bandwidth) %}
         {% end %}
       </div>
+      {% end %}
       {% end %}
     </div>
     {% end %}

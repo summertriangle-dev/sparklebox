@@ -92,10 +92,10 @@ class DataCache(object):
     @lru_cache(1)
     def gacha_ids(self):
         gachas = []
-        gacha_stub_t = namedtuple("gacha_stub_t", ("id", "start_date", "end_date"))
-        for id, ss, es in self.hnd.execute("SELECT id, start_date, end_date FROM gacha_data"):
+        gacha_stub_t = namedtuple("gacha_stub_t", ("id", "start_date", "end_date", "type", "subtype"))
+        for id, ss, es, t, t2 in self.hnd.execute("SELECT id, start_date, end_date, type, type_detail FROM gacha_data where type = 3 and type_detail = 1"):
             ss, es = JST(ss), JST(es)
-            gachas.append(gacha_stub_t(id, ss, es))
+            gachas.append(gacha_stub_t(id, ss, es, t, t2))
 
         self.primed_this["sel_gacha"] += 1
         return sorted(gachas, key=lambda x: x.start_date)
