@@ -22,6 +22,20 @@
     <div class="stdcon chara_header">
       <table class="stats_table control_table">
         <tr class="toggles_row">
+          <th>Card Rarity</th>
+          <td onclick="toggle_kill_css(this)" data-kill-class="SSR" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="SR" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="Rare" class="vocal">X</td>
+        </tr>
+        <tr>
+          <th>&nbsp;</th>
+          <th>SSR</th>
+          <th>SR</th>
+          <th>Rare</th>
+        </tr>
+      </table>
+      <table class="stats_table control_table">
+        <tr class="toggles_row">
           <th>Target Type</th>
           <td onclick="toggle_kill_css(this)" data-kill-class="ca_all" class="vocal" title="All variants">X</td>
           <td onclick="toggle_kill_css(this)" data-kill-class="ca_cute" class="vocal">X</td>
@@ -69,7 +83,8 @@
       </tr>
     {% for card in cards %}
       {% if card.lead_skill %}
-      <tr class="{{ enums.lskill_effective_target(card.lead_skill.target_attribute) }}
+      <tr class="{{ enums.rarity(card.rarity) }}
+             {{ enums.lskill_effective_target(card.lead_skill.target_attribute) }}
              {{ enums.lskill_effective_param(card.lead_skill.target_param) }}">
         <td class="{{ enums.attribute(card.attribute) }}" style="width:1%">
           <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{% raw icon(card.id) %}</a>
