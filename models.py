@@ -36,6 +36,9 @@ def combine_availability(l):
     """Take a list of discrete Availability and turn any small lapses <= 3 days
        into a Gap on the parent object.
        Returns in place because of gacha_availability()"""
+    if not l:
+        return
+
     new_list = []
     prev = l[0]
     for availability in l[1:]:
@@ -135,6 +138,7 @@ class TranslationSQL(object):
         self.history_is_all_loaded = 0
         self.history_cache_key = None
         self.connect_url = override_url
+        self.availability_cache = {}
 
     def __enter__(self):
         if not self.really_connected:
@@ -258,7 +262,8 @@ class TranslationSQL(object):
                 self.seed_initial(gacha)
             prev = gacha
 
-        return []
+        self.availability_cache = {}
+        return
 
     @retry(5)
     def seed_initial(self, prev, delete=0):
@@ -300,11 +305,31 @@ class TranslationSQL(object):
             print(new_ids)
             s.commit()
 
-    @retry(5)
     def gacha_availability(self, cards, gacha_list):
+        ret = {}
+        need_fetch = []
+        for k in cards:
+            pre = self.availability_cache.get(k)
+            if pre is None:
+                need_fetch.append(k)
+            else:
+                ret[k] = pre
+
+        if need_fetch:
+            fetch = self._gacha_availability(need_fetch, gacha_list)
+            ret.update(fetch)
+            self.availability_cache.update(fetch)
+        return ret
+
+    @retry(5)
+    def _gacha_availability(self, cards, gacha_list):
+        print("trace _gacha_availability", cards)
         gacha_map = {x.id: x for x in gacha_list}
 
         ga = defaultdict(lambda: [])
+        for k in cards:
+            ga[k] # force the empty list to be created and cached
+
         with self as s:
             ents = s.query(GachaPresenceEntry).filter(GachaPresenceEntry.card_id.in_(cards)).all()
 
