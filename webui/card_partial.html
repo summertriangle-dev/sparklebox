@@ -9,9 +9,9 @@
       </div>
     </div>
 
-    <p class="card_image_offlink"><a class="sprite_link" href="{{ image_host }}/chara2/{{ card.chara.chara_id }}/{{ card.pose }}.png">{{ _("View sprite") }}</a></p>
-    <p class="card_image_offlink"><a class="petit_link" href="{{ image_host }}/puchi/{{ card.id }}.png">{{ _("Petit sprite") }}</a></p>
-    <p class="card_image_offlink"><a class="sprite_link" href="/card/{{ card.id }}/table">{{ _("Raw data table") }}</a></p>
+    <p class="card_image_offlink"><a class="sprite_link" target="_blank" href="{{ image_host }}/chara2/{{ card.chara.chara_id }}/{{ card.pose }}.png">{{ _("View sprite") }}</a></p>
+    <p class="card_image_offlink"><a class="petit_link" target="_blank" href="{{ image_host }}/puchi/{{ card.id }}.png">{{ _("Petit sprite") }}</a></p>
+    <p class="card_image_offlink"><a href="/card/{{ card.id }}/table">{{ _("Raw data table") }}</a></p>
   </div>
   {% end %}
 
@@ -34,12 +34,12 @@
 
     {% if card.has_spread %}
     <div class="spread_view rel" style="background-image:url({{ image_host }}/spread/{{ card.id }}.png)">
-      <a class="spread_link" style="height:100%;width:100%;display:block" href="{{ image_host }}/spread/{{ card.id }}.png"></a>
+      <a class="spread_link" style="height:100%;width:100%;display:block" target="_blank" href="{{ image_host }}/spread/{{ card.id }}.png"></a>
       <div class="hang_inside">
         <a class="image_switch" href="javascript:void(0);" onclick="toggle_transform_state(this, pn(this, 4))">{{ _("Swap costume") }}</a>
-        <a class="image_switch sprite_link" href="{{ image_host }}/chara2/{{ card.chara.chara_id }}/{{ card.pose }}.png">{{ _("View sprite") }}</a>
-        <a class="image_switch petit_link" href="{{ image_host }}/puchi/{{ card.id }}.png">{{ _("Petit sprite") }}</a>
-        <a class="image_switch sprite_link" href="/card/{{ card.id }}/table">{{ _("Raw data table") }}</a>
+        <a class="image_switch sprite_link" target="_blank" href="{{ image_host }}/chara2/{{ card.chara.chara_id }}/{{ card.pose }}.png">{{ _("View sprite") }}</a>
+        <a class="image_switch petit_link" target="_blank" href="{{ image_host }}/puchi/{{ card.id }}.png">{{ _("Petit sprite") }}</a>
+        <a class="image_switch" href="/card/{{ card.id }}/table">{{ _("Raw data table") }}</a>
       </div>
     </div>
     {% end %}
