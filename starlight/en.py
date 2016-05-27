@@ -17,6 +17,27 @@ def westernized_name(chara):
     else:
         return chara.conventional
 
+def availability_date_range(a, now):
+    if a.start.year == a.end.year:
+        return "{0}; {1} ~ {2}".format(
+            a.start.strftime("%Y"),
+            a.start.strftime("%d %B"),
+            a.end.strftime("%d %B") if a.end < now else "present",
+        )
+    else:
+        return "{0} ~ {1}".format(
+            a.start.strftime("%Y %b %d"),
+            a.end.strftime("%Y %b %d") if a.end < now else "present",
+        )
+
+def gap_date_range(a):
+    delta = (a.end - a.start)
+    return "{0} ~ {1} ({2} d)".format(
+        a.start.strftime("%d %B"),
+        a.end.strftime("%d %B"),
+        round(delta.days + (delta.seconds / 86400))
+    )
+
 # skill describer
 
 SKILL_DESCRIPTIONS = {

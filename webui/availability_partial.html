@@ -1,0 +1,49 @@
+{% set _a = availability.get(card.id, []) %}
+{% if _a %}
+<div class="gacha_availability box {{ enums.attribute(card.attribute) }}">
+  <div class="header">
+    <span class="item left">{{ _("Availability") }}</span>
+    <span class="item ext"></span>
+  </div>
+  <div class="content">
+    <ul>
+    {% for presence in _a %}
+    {# FIXME the logic gets a bit complex here; consider moving it into its own partial? #}
+
+    {% if presence.type == presence._TYPE_EVENT %}
+
+    <li class="avlistentry_event  {{ "ga_available" if presence.start <= now < presence.end else "ga_unavailable" }}">
+      <strong class="{{ "ga_available" if presence.start <= now < presence.end else "ga_unavailable" }}">Event</strong>: {% raw tlable(presence.name) %}
+      <small>({{ starlight.en.availability_date_range(presence, now) }})</small>
+    </li>
+
+    {% elif presence.type == presence._TYPE_GACHA %}
+
+    {% if presence.name %}
+    <li class="avlistentry_limited">
+      <strong class="{{ "ga_available" if presence.start <= now < presence.end else "ga_unavailable" }}">Limited</strong>: {% raw tlable(presence.name) %}
+      <small>({{ starlight.en.availability_date_range(presence, now) }})</small>
+    </li>
+
+    {% else %}
+    <li class="avlistentry_regular {{ "ga_available" if presence.start <= now < presence.end else "ga_unavailable" }}">
+      <strong class="{{ "ga_available" if presence.start <= now < presence.end else "ga_unavailable" }}">Gacha</strong>
+      <small>({{ starlight.en.availability_date_range(presence, now) }})</small>
+      {% if presence.gaps %}
+      <ul class="avlistentry_regular_melded">
+        {% for gap in presence.gaps %}
+        <li>Missing from {{ starlight.en.gap_date_range(gap) }}</li>
+        {% end %}
+        <li title="Probably due to type boxes."><span class="help">(Why?)</span></li>
+      </ul>
+      {% end %}
+    </li>
+    {% end %}
+
+    {% end %}
+
+    {% end %}
+    </ul>
+  </div>
+</div>
+{% end %}

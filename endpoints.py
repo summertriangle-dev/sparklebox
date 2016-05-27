@@ -17,14 +17,14 @@ tlable = api_endpoints.tlable
 def icon(css_class):
     return """<div class="icon icon_{0}"></div>""".format(css_class)
 
-def icon_ex(card_id, is_lowbw=0):
+def icon_ex(card_id, is_lowbw=0, collapsible=0):
     rec = starlight.data.card(card_id)
     if not rec:
         btext = "(?) bug:{0}".format(card_id)
         ish = """<div class="profile">
             <div class="icon icon_unknown"></div>
-            <div class="profile_text"><b>Mysterious Kashikoi Person</b><br>{btext}</div>
-        </div>""".format(btext=btext)
+            <div class="profile_text {0}"><b>Mysterious Kashikoi Person</b><br>{btext}</div>
+        </div>""".format("hides_under_mobile" if collapsible else "", btext=btext)
         return """<a class="noline">{ish}</a>""".format(ish=ish)
     else:
         if not is_lowbw:
@@ -35,10 +35,11 @@ def icon_ex(card_id, is_lowbw=0):
         btext = "({0}) {1}".format(enums.rarity(rec.rarity), tlable(rec.title, write=0) if rec.title_flag else "")
         ish = """<div class="profile">
             <div class="icon icon_{rec.id} msprites m{1} {2}"></div>
-            <div class="profile_text"><b>{0}</b><br>{btext}</div>
+            <div class="profile_text {3}"><b>{0}</b><br>{btext}</div>
         </div>""".format(tornado.escape.xhtml_escape(rec.chara.conventional),
             enums.stat_dot(rec.best_stat),
             "m" + enums.skill_class(rec.skill.skill_type) if rec.skill else "",
+            "hides_under_mobile" if collapsible else "",
             rec=rec, btext=btext)
         return """<a href="{link}" class="noline">{ish}</a>""".format(rec=rec, ish=ish, link=link)
 
@@ -150,6 +151,10 @@ class Character(HandlerSyncedWithMaster):
                 unique.append(c)
 
         acard = [starlight.data.cards(ch) for ch in unique]
+        availability = starlight.data.event_availability(card_ids)
+        ga_av = self.settings["tle"].gacha_availability(card_ids, starlight.data.gacha_ids())
+        for k in ga_av:
+            availability[k].extend(ga_av[k])
 
         if achar:
             self.set_header("Content-Type", "text/html")
@@ -158,6 +163,8 @@ class Character(HandlerSyncedWithMaster):
                 chara_id=chara_id,
                 cards=acard,
                 use_table=use_table,
+                availability=availability,
+                now=pytz.utc.localize(datetime.now()),
                 **self.settings)
             self.settings["analytics"].analyze_request(
                 self.request, self.__class__.__name__, {"chara": achar.conventional})
@@ -177,7 +184,11 @@ class Card(HandlerSyncedWithMaster):
             if c not in unique:
                 unique.append(c)
 
-        acard = [starlight.data.cards(ch) for ch in unique]
+        acard = [starlight.data.cards(ch) for ch in unique if ch]
+        availability = starlight.data.event_availability(card_ids)
+        ga_av = self.settings["tle"].gacha_availability(card_ids, starlight.data.gacha_ids())
+        for k in ga_av:
+            availability[k].extend(ga_av[k])
 
         if acard:
             if len(acard) == 1:
@@ -185,7 +196,9 @@ class Card(HandlerSyncedWithMaster):
             else:
                 just_one_card = None
             self.set_header("Content-Type", "text/html")
-            self.render("card.html", cards=acard, use_table=use_table, just_one_card=just_one_card, **self.settings)
+            self.render("card.html", cards=acard, use_table=use_table,
+                just_one_card=just_one_card, availability=availability,
+                now=pytz.utc.localize(datetime.now()), **self.settings)
             self.settings["analytics"].analyze_request(
                 self.request, self.__class__.__name__, {"card_id": card_idlist})
         else:
@@ -256,6 +269,14 @@ class DebugTLCacheUpdate(tornado.web.RequestHandler):
     def get(self):
         self.settings["tle"].update_caches()
         self.write("ok.")
+
+@route(r"/ga_genpresencecache")
+@dev_mode_only
+class DebugGachaPresenceUpdate(tornado.web.RequestHandler):
+    def get(self):
+        cl = self.settings["tle"].gen_presence(starlight.data.gacha_ids())
+        self.set_header("Content-Type", "text/plain; charset=utf-8")
+        self.write("ok")
 
 @route(r"/tl_debug")
 @dev_mode_only

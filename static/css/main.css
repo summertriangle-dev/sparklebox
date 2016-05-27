@@ -237,6 +237,7 @@ div.stdcon {
 th {
   font-size: 70%;
   text-transform: uppercase;
+  padding: 3px 6px;
 }
 td.vocal,
 td.vocal span {
@@ -433,37 +434,37 @@ td.Passion a {
 }
 @media screen and (max-width: 768px) {
   .carcon .card_right .name_tag {
-    min-height: 26px;
+    min-height: 28px;
   }
   .carcon .card_right .name_tag .item {
-    line-height: 26px;
+    line-height: 28px;
     font-size: 16px;
-    padding: 0 5px 0 5px;
+    padding: 0 6px 0 6px;
   }
   .carcon .card_right .name_tag .ext {
-    border-top: 13px solid transparent;
-    border-left: 6.5px solid transparent;
-    border-right: 6.5px solid transparent;
-    border-bottom: 13px solid transparent;
+    border-top: 14px solid transparent;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 14px solid transparent;
   }
   .carcon .card_right .icon {
     vertical-align: middle;
   }
 }
 .carcon .card_right .name_tag.force_small {
-  height: 26px;
+  height: 28px;
 }
 .carcon .card_right .name_tag.force_small .item {
-  line-height: 26px;
+  line-height: 28px;
   font-size: 16px;
-  padding: 0 5px 0 5px;
+  padding: 0 6px 0 6px;
 }
 .carcon .card_right .name_tag.force_small .ext {
   padding: 0;
-  border-top: 13px solid transparent;
-  border-left: 6.5px solid transparent;
-  border-right: 6.5px solid transparent;
-  border-bottom: 13px solid transparent;
+  border-top: 14px solid transparent;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 14px solid transparent;
 }
 .carcon .card_right .name_tag.force_small .icon {
   vertical-align: middle;
@@ -689,6 +690,11 @@ span.var {
 .box > .content > * {
   vertical-align: middle;
 }
+.box > .content ul {
+  margin: 0;
+  list-style-position: inside;
+  padding-left: 5px;
+}
 .box .table_stub {
   padding: 0 10px 10px;
   text-align: center;
@@ -892,4 +898,18 @@ span.var {
 .ga_unavailable td {
   background-color: #ffcccc;
   border-color: #ff6666;
+}
+strong.ga_unavailable {
+  text-decoration: line-through;
+  color: #990000;
+}
+strong.ga_available {
+  color: #267326;
+}
+.avlistentry_regular_melded li {
+  font-size: 80%;
+}
+.help {
+  border-bottom: 1px dashed;
+  cursor: help;
 }

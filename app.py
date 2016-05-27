@@ -12,7 +12,7 @@ import subprocess
 import user_agents
 from collections import namedtuple
 
-import tl_models
+import models
 import dispatch
 import endpoints
 import enums
@@ -90,7 +90,7 @@ def main():
         autoreload=1 if in_dev_mode else 0,
         is_dev=in_dev_mode,
 
-        tle=tl_models.TranslationEngine(starlight, use_satellite=1),
+        tle=models.TranslationEngine(starlight, use_satellite=1),
         enums=enums,
         starlight=starlight,
         tlable=endpoints.tlable,

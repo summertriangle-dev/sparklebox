@@ -22,8 +22,8 @@
 
 @name_tag_height: 40px;
 @name_tag_pad: @name_tag_height / 4;
-@name_tag_height_sm: 26px;
-@name_tag_pad_sm: 5px;
+@name_tag_height_sm: 28px;
+@name_tag_pad_sm: 6px;
 
 @box_header_height: 24px;
 @box_header_pad: 4px;
@@ -253,6 +253,7 @@ div.stdcon {
 th {
   font-size:70%;
   text-transform:uppercase;
+  padding:3px 6px;
 }
 
 td {
@@ -583,7 +584,7 @@ span.var {
     }
     margin:0;
     border-left:none;
-    border-right:none
+    border-right:none;
   }
 
   & > .header {
@@ -661,6 +662,11 @@ span.var {
 
     & > * {
       vertical-align:middle;
+    }
+    ul {
+      margin:0;
+      list-style-position:inside;
+      padding-left:5px;
     }
   }
 
@@ -895,4 +901,22 @@ span.var {
 .ga_unavailable td {
   background-color:@unavailable_colour;
   border-color:darken(@unavailable_colour, 20%);
+}
+
+strong.ga_unavailable {
+  text-decoration:line-through;
+  color:darken(@unavailable_colour, 60%);
+}
+
+strong.ga_available {
+  color:darken(@available_colour, 50%);
+}
+
+.avlistentry_regular_melded li {
+  font-size:80%;
+}
+
+.help {
+  border-bottom:1px dashed;
+  cursor:help;
 }

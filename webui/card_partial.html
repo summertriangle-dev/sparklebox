@@ -81,7 +81,7 @@
           </table>
 
           <table class="stats_table" style="display:inline-table">
-            <tr><td class="vocal">{{ _card.overall_min }}..{{ _card.overall_max }}
+            <tr><td class="vocal"><span class="var">{{ _card.overall_min }}..{{ _card.overall_max }}</span>
                                   <span style="font-size:80%">+{{ _card.overall_bonus }}</span></td>
               <td class="kizuna">{{ _card.rarity_dep.max_love }}</td>
               <td class="max_level">{{ _card.rarity_dep.base_max_level }}</td></tr>
@@ -94,6 +94,8 @@
       {% end %}
     </div>
     <div class="content">
+      {% include availability_partial.html %}
+
       {% if card.skill %}
       <div class="skill box {{ enums.attribute(card.attribute) }}">
         <div class="header">

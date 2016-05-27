@@ -2,7 +2,7 @@ import re
 import sqlite3
 import pickle
 import os
-import tl_models
+import models
 import subprocess
 import sys
 from time import time
@@ -12,7 +12,7 @@ from functools import lru_cache, partial
 from collections import defaultdict, namedtuple, Counter
 from tornado import ioloop
 
-from csvloader import clean_value, load_keyed_db_file
+from csvloader import clean_value, load_keyed_db_file, load_db_file
 from . import en
 from . import apiclient
 from . import acquisition
@@ -73,6 +73,10 @@ def determine_best_stat(vo, vi, da):
     else:
         return BALANCED + hi_typ
 
+Availability = namedtuple("Availability", ("type", "name", "start", "end"))
+Availability._TYPE_GACHA = 1
+Availability._TYPE_EVENT = 2
+
 TITLE_ONLY_REGEX = r"^［(.+)］"
 NAME_ONLY_REGEX = r"^(?:［.+］)?(.+)$"
 
@@ -92,10 +96,10 @@ class DataCache(object):
     @lru_cache(1)
     def gacha_ids(self):
         gachas = []
-        gacha_stub_t = namedtuple("gacha_stub_t", ("id", "start_date", "end_date", "type", "subtype"))
-        for id, ss, es, t, t2 in self.hnd.execute("SELECT id, start_date, end_date, type, type_detail FROM gacha_data where type = 3 and type_detail = 1"):
+        gacha_stub_t = namedtuple("gacha_stub_t", ("id", "name", "start_date", "end_date", "type", "subtype"))
+        for id, n, ss, es, t, t2 in self.hnd.execute("SELECT id, name, start_date, end_date, type, type_detail FROM gacha_data where type = 3 and type_detail = 1"):
             ss, es = JST(ss), JST(es)
-            gachas.append(gacha_stub_t(id, ss, es, t, t2))
+            gachas.append(gacha_stub_t(id, n, ss, es, t, t2))
 
         self.primed_this["sel_gacha"] += 1
         return sorted(gachas, key=lambda x: x.start_date)
@@ -119,6 +123,15 @@ class DataCache(object):
                 select.append(stub)
         return select
 
+    def available_cards(self, gachas):
+        current = gachas
+        query = "SELECT gacha_id, reward_id FROM gacha_available WHERE gacha_id IN ({0})".format(",".join("?" * len(current)))
+        tmp = defaultdict(lambda: [])
+        [tmp[gid].append(reward) for gid, reward in self.hnd.execute(query, tuple(g.id for g in current))]
+
+        self.primed_this["sel_ac"] += 1
+        return [tmp[gacha.id] for gacha in current]
+
     def limited_availability_cards(self, gachas):
         select = [gacha.id for gacha in gachas]
         query = "SELECT gacha_id, reward_id FROM gacha_available WHERE limited_flag == 1 AND gacha_id IN ({0})".format(",".join("?" * len(select)))
@@ -130,6 +143,24 @@ class DataCache(object):
 
     def current_limited_availability(self):
         return self.limited_availability(TODAY())
+
+    def event_availability(self, cards):
+        events = {x.id: Availability(Availability._TYPE_EVENT, x.name, x.start_date, x.end_date) for x in self.event_ids()}
+        query = "SELECT event_id, reward_id FROM event_available WHERE reward_id IN ({0})".format(",".join("?" * len(cards)))
+        ea = defaultdict(lambda: [])
+
+        for event, reward in self.hnd.execute(query, cards):
+            if event in self.overridden_events:
+                continue
+            ea[reward].append(events[event])
+
+        for event, reward in self.ea_overrides:
+            if reward in cards:
+                ea[reward].append(events[event])
+
+        [v.sort(key=lambda x: x.start) for v in ea.values()]
+        self.primed_this["sel_evtreward_rev"] += 1
+        return ea
 
     def events(self, when):
         select = []
@@ -159,6 +190,8 @@ class DataCache(object):
 
     def prime_caches(self):
         self.names = self.load_names()
+        self.ea_overrides = list(load_db_file(private_data_path("event_availability_overrides.csv")))
+        self.overridden_events = set(x.event_id for x in self.ea_overrides)
 
         prob_def = self.keyed_prime_from_table("probability_type")
         time_def = self.keyed_prime_from_table("available_time_type")
@@ -436,8 +469,12 @@ def init():
     global data
     available_mdbs = sorted(list(filter(lambda x: x.endswith(".mdb"), os.listdir(transient_data_path()))), reverse=1)
     if available_mdbs:
-        print("Loading mdb:", available_mdbs[0])
-        data = DataCache(available_mdbs[0].split(".")[0])
+        try:
+            explicit_vers = int(sys.argv[1])
+        except (ValueError, IndexError):
+            explicit_vers = available_mdbs[0].split(".")[0]
+        print("Loading mdb:", explicit_vers)
+        data = DataCache(explicit_vers)
     else:
         print("No mdb, let's download one")
 
