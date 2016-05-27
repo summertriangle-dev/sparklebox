@@ -358,7 +358,7 @@ def do_preswitch_tasks(new_db_path, old_db_path):
             old_db_path,
             new_db_path])
         if history_json:
-            tl_models.TranslationSQL(use_satellite=1).push_history(os.path.getmtime(old_db_path), history_json)
+            models.TranslationSQL(use_satellite=1).push_history(os.path.getmtime(new_db_path), history_json)
 
 def update_to_res_ver(res_ver):
     global is_updating_to_new_truth
