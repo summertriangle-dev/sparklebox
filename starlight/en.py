@@ -49,7 +49,7 @@ SKILL_DESCRIPTIONS = {
     7: """all Great, Nice, and Bad notes will become Perfect notes""",
     9: """Nice notes will not break combo""",
     12: """you will not lose health""",
-    14: """<span class="let">{1}</span> life will be consumed, then: all notes receive a <span class="let">{0}</span>% score bonus, and Nice/Bad notes will not break combo""",
+    14: """<span class="let">{1}</span> life will be consumed, then: Perfect notes receive a <span class="let">{0}</span>% score bonus, and Nice/Bad notes will not break combo""",
     17: """all Perfect notes will restore <span class="let">{0}</span> health""" }
 
 REMOVE_HTML = re.compile(r"</?span[^>]*>")
