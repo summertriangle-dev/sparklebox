@@ -141,6 +141,9 @@ class TranslationSQL(object):
         self.history_cache = []
         self.history_is_all_loaded = 0
         self.availability_cache = {}
+        self.caches_disabled = bool(os.getenv("TLE_DISABLE_CACHES"))
+        if self.caches_disabled:
+            print("TranslationSQL: no caching")
 
     def __enter__(self):
         if not self.really_connected:
@@ -308,6 +311,9 @@ class TranslationSQL(object):
             s.commit()
 
     def gacha_availability(self, cards, gacha_list):
+        if self.caches_disabled:
+            return self._gacha_availability(cards, gacha_list)
+
         ret = {}
         need_fetch = []
         for k in cards:
@@ -359,6 +365,9 @@ class TranslationSQL(object):
         return ga
 
     def get_history(self, nent):
+        if self.caches_disabled:
+            return self._get_history(nent)
+
         if self.history_is_all_loaded or (nent and nent <= len(self.history_cache)):
             return self.history_cache[:nent]
 

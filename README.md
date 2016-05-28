@@ -76,7 +76,16 @@ $VC_ACCOUNT - Credentials for automatic updating, in the form user_id:viewer_id:
 
 $VC_SID_SALT, $VC_AES_KEY - Client secrets used for automatic updating.
 
+$VC_APP_VER - Game version (not data version), e.g. "1.9.1". Used for automatic updating.
+    The game will reject version checks with an outdated client, so it's important to
+    keep this up to date.
+
+$TLE_DISABLE_CACHES - Disable local caching of TranslationEngine data. Set this to a
+    non-blank string if DB query speed doesn't matter (e.g. you use SQLite, or mysqld
+    is running on the same server as the app)
+
 $DISABLE_AUTO_UPDATES - Disables the automatic updater even if VC_* are set.
+
 ```
 
 For the `IMAGE_HOST` environment variable, you should use one of these
