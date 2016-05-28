@@ -373,7 +373,7 @@ class TranslationSQL(object):
 
     def get_history(self, nent):
         if self.caches_disabled:
-            return self._get_history(nent)
+            return list(self._get_history(nent))
 
         if self.history_is_all_loaded or (nent and nent <= len(self.history_cache)):
             return self.history_cache[:nent]
