@@ -2,6 +2,17 @@ TL_ENABLED_TEXT = "<a href='javascript:;' onclick='tlinject_revert()'>Disable TL
                   "(<a href='javascript:;' onclick='tlinject_about()'>What's this?</a>)"
 TL_DISABLED_TEXT = "<a href='javascript:;' onclick='tlinject_activate()'>Enable TLs</a> " +
                    "(<a href='javascript:;' onclick='tlinject_about()'>What's this?</a>)"
+PROMPT_EXTRA_TEXT = "* The string you submit may be released as part of a public data dump. " +
+                      "These data dump(s) WILL NOT contain any metadata that can be used to identify you. " +
+                      "If you are not okay with that, click Cancel. \n" +
+                    "* Two asterisks '**' will remove the current translation. You usually don't need to do this."
+
+if (!String.prototype.trim) {
+    // polyfill from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+    String.prototype.trim = function() {
+        return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+    };
+}
 
 function load_translations(trans, cb) {
     var xhr = new XMLHttpRequest()
@@ -20,9 +31,12 @@ function load_translations(trans, cb) {
 
 function submit_tl_string(node, text) {
     var sub = prompt("What is the English translation of '" + text + "'?\n\n" +
-        "* The string you submit may be released as part of a public data dump. These data dump(s) WILL NOT contain any metadata that can be used to identify you. If you are not okay with that, click Cancel.");
+        PROMPT_EXTRA_TEXT);
 
-    if (sub === null) return
+    if (sub === null) return;
+
+    sub = sub.trim()
+    if (sub == "") return;
 
     var xhr = new XMLHttpRequest()
     xhr.open("POST", "/api/v1/send_tl", true)
@@ -42,7 +56,10 @@ function submit_tl_string(node, text) {
 function set_strings_by_table(table) {
     var strings = document.getElementsByClassName("tlable")
     for (var i = 0; i < strings.length; i++) {
-        strings[i].textContent = table[strings[i].getAttribute("data-original-string")] || strings[i].textContent;
+        var s = table[strings[i].getAttribute("data-original-string")];
+        if (s === undefined) continue;
+
+        strings[i].textContent = s == "**" ? strings[i].getAttribute("data-original-string") : s;
     }
 }
 

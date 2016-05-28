@@ -67,7 +67,7 @@ class TranslateWriteAPI(tornado.web.RequestHandler):
         A security token is present to prevent spamming of random keys,
         but otherwise all strings will be accepted. """
 
-    BAD_WORDS = ["undefined"]
+    BAD_WORDS = ["undefined", "null", ""]
 
     def post(self):
         try:
@@ -77,16 +77,20 @@ class TranslateWriteAPI(tornado.web.RequestHandler):
             return
 
         key = load.get("key", "")
-        s = load.get("tled", "").strip() or key
+        s = load.get("tled", "").strip()
         assr = load.get("security")
         #print(key, s, assr)
         if not (key and s and assr) or tlable_make_assr(key) != assr:
             self.set_status(400)
             return
-        
+
         if s in self.BAD_WORDS:
             self.set_status(400)
             return
+
+        # ** resets the string
+        if s == "**":
+            s = key
 
         self.settings["tle"].set_translation(
             load.get("key"), s, self.request.remote_ip)
