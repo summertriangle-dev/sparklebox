@@ -134,10 +134,10 @@ class TranslationSQL(object):
     def __init__(self, use_satellite, override_url=None):
         self.really_connected = 0
         self.session_nest = []
+        self.connect_url = override_url
+
         self.history_cache = []
         self.history_is_all_loaded = 0
-        self.history_cache_key = None
-        self.connect_url = override_url
         self.availability_cache = {}
 
     def __enter__(self):
@@ -350,16 +350,7 @@ class TranslationSQL(object):
         [combine_availability(v) for v in ga.values()]
         return ga
 
-    def fetch_g2(self):
-        with self as s:
-            return s.query(GachaPresenceEntry).order_by(GachaPresenceEntry.avail_end).all()
-
-    def get_history(self, nent, key):
-        if key != self.history_cache_key:
-            self.history_cache = []
-            self.history_is_all_loaded = 0
-            self.history_cache_key = key
-
+    def get_history(self, nent):
         if self.history_is_all_loaded or (nent and nent <= len(self.history_cache)):
             return self.history_cache[:nent]
 
@@ -383,12 +374,34 @@ class TranslationEngine(TranslationSQL):
     def __init__(self, data_source, use_satellite, override_url=None):
         super().__init__(use_satellite, override_url)
         self.dsrc = data_source
-        self.k2rid = -1
+        self.cache_id = -1
         self.k2r = {}
 
+    def kill_caches(self, dv):
+        self.k2r = {x.kanji: x.conventional for _, x in self.dsrc.data.names.items()}
+
+        self.history_cache = []
+        self.history_is_all_loaded = 0
+
+        self.availability_cache = {}
+
+        self.cache_id = dv
+
     def translate_name(self, kanji):
-        if self.k2rid != id(self.dsrc.data.names):
-            self.k2r = {x.kanji: x.conventional for _, x in self.dsrc.data.names.items()}
+        if self.cache_id != self.dsrc.data.version:
+            self.kill_caches(self.dsrc.data.version)
 
         k = self.k2r.get(kanji, kanji)
         return k
+
+    def get_history(self, nent):
+        if self.cache_id != self.dsrc.data.version:
+            self.kill_caches(self.dsrc.data.version)
+
+        return super().get_history(nent)
+
+    def gacha_availability(self, cards, gacha_list):
+        if self.cache_id != self.dsrc.data.version:
+            self.kill_caches(self.dsrc.data.version)
+
+        return super().gacha_availability(cards, gacha_list)
