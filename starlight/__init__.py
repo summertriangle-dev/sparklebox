@@ -386,12 +386,16 @@ def do_preswitch_tasks(new_db_path, old_db_path):
         new_db_path,
         transient_data_path("names.csv")])
 
-    if old_db_path and not os.getenv("DISABLE_HISTORY_UPDATES", None):
-        history_json = subprocess.check_output(["toolchain/make_diff.py",
+    if old_db_path:
+        if not os.getenv("DISABLE_HISTORY_UPDATES", None):
+            history_json = subprocess.check_output(["toolchain/make_diff.py",
+                old_db_path,
+                new_db_path])
+            if history_json:
+                models.TranslationSQL(use_satellite=1).push_history(os.path.getmtime(new_db_path), history_json)
+        subprocess.call(["toolchain/make_contiguous_gacha.py",
             old_db_path,
             new_db_path])
-        if history_json:
-            models.TranslationSQL(use_satellite=1).push_history(os.path.getmtime(new_db_path), history_json)
 
 def update_to_res_ver(res_ver):
     global is_updating_to_new_truth
