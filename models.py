@@ -15,6 +15,8 @@ from tornado.ioloop import IOLoop
 from functools import partial
 from collections import defaultdict, namedtuple
 
+unknown_gacha_t = namedtuple("unknown_gacha_t", ("name"))
+
 Gap = namedtuple("Gap", ("start", "end"))
 class Availability(object):
     """mutable class so we can meld stuff"""
@@ -333,9 +335,15 @@ class TranslationSQL(object):
         with self as s:
             ents = s.query(GachaPresenceEntry).filter(GachaPresenceEntry.card_id.in_(cards)).all()
 
+        def getgacha(gid):
+            if gid in gacha_map:
+                return gacha_map[gid]
+            else:
+                return unknown_gacha_t("??? (unknown gacha ID: {0})".format(gid))
+
         for e in ents:
-            if e.gacha_id_first == e.gacha_id_last or gacha_map[e.gacha_id_first].name == gacha_map[e.gacha_id_last].name:
-                name = gacha_map[e.gacha_id_first].name
+            if e.gacha_id_first == e.gacha_id_last or getgacha(e.gacha_id_first).name == getgacha(e.gacha_id_last).name:
+                name = getgacha(e.gacha_id_first).name
             else:
                 name = None
 
