@@ -86,6 +86,8 @@ $TLE_DISABLE_CACHES - Disable local caching of TranslationEngine data. Set this 
 
 $DISABLE_AUTO_UPDATES - Disables the automatic updater even if VC_* are set.
 
+$TLE_TABLE_PREFIX - Prefix for table names in TranslationSQL. Defaults to 'ss'.
+
 ```
 
 For the `IMAGE_HOST` environment variable, you should use one of these

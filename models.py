@@ -75,8 +75,14 @@ def utext():
     else:
         return UnicodeText(collation="utf8_bin")
 
+TABLE_PREFIX = os.getenv("TLE_TABLE_PREFIX", None)
+if TABLE_PREFIX is None:
+    print("Warning: env variable TLE_TABLE_PREFIX unset. Defaulting to 'ss'. "
+        "(Set TLE_TABLE_PREFIX to silence this warning.)")
+    TABLE_PREFIX = "ss"
+
 class TranslationEntry(Base):
-    __tablename__ = "ss_translation"
+    __tablename__ = TABLE_PREFIX + "_translation"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     key = Column(utext())
@@ -88,7 +94,7 @@ class TranslationEntry(Base):
         return "<TL entry {x.id} '{x.english}' by {x.submitter} @{x.submit_utc}>".format(x=self)
 
 class TranslationCache(Base):
-    __tablename__ = "ss_translation_cache"
+    __tablename__ = TABLE_PREFIX + "_translation_cache"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     key = Column(utext())
@@ -98,7 +104,7 @@ class TranslationCache(Base):
         return "<TL entry {x.id} '{x.english}'>".format(x=self)
 
 class HistoryEntry(Base):
-    __tablename__ = "ss_history"
+    __tablename__ = TABLE_PREFIX + "_history"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     time = Column(Integer)
@@ -114,7 +120,7 @@ class HistoryEntry(Base):
         return json.loads(self.payload.decode("ascii"))
 
 class GachaRewardEntry(Base):
-    __tablename__ = "ss_gacha_available_ex"
+    __tablename__ = TABLE_PREFIX + "_gacha_available_ex"
 
     gacha_id = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
     step_num = Column(Integer)
@@ -123,7 +129,7 @@ class GachaRewardEntry(Base):
     limited_flag = Column(Integer, primary_key=True, autoincrement=False)
 
 class GachaPresenceEntry(Base):
-    __tablename__ = "ss_gacha_contiguous_presence"
+    __tablename__ = TABLE_PREFIX + "_gacha_contiguous_presence"
 
     rowid = Column(Integer, primary_key=True)
     card_id = Column(Integer, nullable=False)
