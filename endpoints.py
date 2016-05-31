@@ -164,7 +164,7 @@ class Character(HandlerSyncedWithMaster):
                 cards=acard,
                 use_table=use_table,
                 availability=availability,
-                now=pytz.utc.localize(datetime.now()),
+                now=pytz.utc.localize(datetime.utcnow()),
                 **self.settings)
             self.settings["analytics"].analyze_request(
                 self.request, self.__class__.__name__, {"chara": achar.conventional})
@@ -198,7 +198,7 @@ class Card(HandlerSyncedWithMaster):
             self.set_header("Content-Type", "text/html")
             self.render("card.html", cards=acard, use_table=use_table,
                 just_one_card=just_one_card, availability=availability,
-                now=pytz.utc.localize(datetime.now()), **self.settings)
+                now=pytz.utc.localize(datetime.utcnow()), **self.settings)
             self.settings["analytics"].analyze_request(
                 self.request, self.__class__.__name__, {"card_id": card_idlist})
         else:
