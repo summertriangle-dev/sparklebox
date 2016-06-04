@@ -278,6 +278,7 @@ class DataCache(object):
         selected = self.prime_from_cursor("card_data_t", cur,
             chara=lambda obj: self.char_cache.get(obj.chara_id),
             has_spread=lambda obj: obj.rarity > 4,
+            has_sign=lambda obj: obj.rarity > 6,
             name_only=lambda obj: re.match(NAME_ONLY_REGEX, obj.name).group(1),
             title=lambda obj: re.match(TITLE_ONLY_REGEX, obj.name).group(1) if obj.title_flag else None,
             skill=lambda obj: self._skills.get(obj.skill_id),
