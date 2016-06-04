@@ -39,6 +39,9 @@
         <a class="image_switch" href="javascript:void(0);" onclick="toggle_transform_state(this, pn(this, 4))">{{ _("Swap costume") }}</a>
         <a class="image_switch sprite_link" target="_blank" href="{{ image_host }}/chara2/{{ card.chara.chara_id }}/{{ card.pose }}.png">{{ _("View sprite") }}</a>
         <a class="image_switch petit_link" target="_blank" href="{{ image_host }}/puchi/{{ card.id }}.png">{{ _("Petit sprite") }}</a>
+        {% if card.rarity == 7 %}
+        <a class="image_switch sign_link" target="_blank" href="{{ image_host }}/sign/{{ card.id }}.png">{{ _("SSR签名") }}</a>
+        {% end %}
         <a class="image_switch" href="/card/{{ card.id }}/table">{{ _("Raw data table") }}</a>
       </div>
     </div>
