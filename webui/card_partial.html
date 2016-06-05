@@ -36,7 +36,11 @@
     <div class="spread_view rel" style="background-image:url({{ image_host }}/spread/{{ card.id }}.png)">
       <a class="spread_link" style="height:100%;width:100%;display:block" target="_blank" href="{{ image_host }}/spread/{{ card.id }}.png"></a>
         {% if card.has_sign %}
-        <a class="sign_view" target="_blank" href="{{ image_host }}/sign/{{ card.id }}.png">
+          {% if not request.is_mobile %}
+          <a class="sign_view" target="_blank" href="{{ image_host }}/sign/{{ card.id }}.png">
+          {% else %}
+          <a class="sign_view_m" target="_blank" href="{{ image_host }}/sign/{{ card.id }}.png">
+          {% end %}
           <img src="{{ image_host }}/sign/{{ card.id }}.png" style="width:50%" alt="{{ _("SSR Signature") }}" />
         </a>
         {% end %}

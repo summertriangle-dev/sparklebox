@@ -70,10 +70,13 @@ def early_init():
     _super_RequestHandler_prepare3 = tornado.web.RequestHandler.prepare
     def _swizzle_RequestHandler_prepare3(self):
         self.request.is_low_bandwidth = 0
+        self.request.is_mobile = 0
         if "User-Agent" in self.request.headers:
             ua = user_agents.parse(self.request.headers["User-Agent"])
             if ua.is_mobile or ua.is_tablet:
                 self.request.is_low_bandwidth = 1
+            if ua.is_mobile:
+                self.request.is_mobile = 1
 
         _super_RequestHandler_prepare3(self)
     tornado.web.RequestHandler.prepare = _swizzle_RequestHandler_prepare3
