@@ -765,12 +765,10 @@ span.var {
 .spread_view .sign_view {
   position: absolute;
   right:0; bottom:0;
-  text-align:right;
-}
-.spread_view .sign_view_m {
-  position: absolute;
-  right:0; top:0;
-  text-align:right;
+
+  @media screen and (max-width:@hides_under_mobile_threshold) {
+    top:0;
+  }
 }
 .image_switch {
   padding: 3px 7px;
