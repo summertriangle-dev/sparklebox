@@ -11,8 +11,8 @@ a:visited {
   color: #56b8e0;
 }
 body {
-  background-color: #111111;
-  color: #eeeeee;
+  background-color: #111;
+  color: #eee;
 }
 @media screen and (max-width: 600px) {
   body {
@@ -61,7 +61,7 @@ footer {
   padding: 8px 10px;
   background-color: #333;
   display: block;
-  color: #eeeeee;
+  color: #eee;
 }
 .welcome_spec {
   font-size: 0;
@@ -201,7 +201,7 @@ div.stdcon {
   font-size: 24px;
   font-weight: normal;
   color: white;
-  text-shadow: 1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000, 0px 0px 15px #000000;
+  text-shadow: 1px 0px #000, -1px 0px #000, 0px 1px #000, 0px -1px #000, 0px 0px 15px #000;
 }
 .chara_header .name_slab .english {
   font-weight: normal;
@@ -209,7 +209,7 @@ div.stdcon {
 }
 .chara_header .infor_slab {
   color: white;
-  text-shadow: 1px 0px #000000, -1px 0px #000000, 0px 1px #000000, 0px -1px #000000;
+  text-shadow: 1px 0px #000, -1px 0px #000, 0px 1px #000, 0px -1px #000;
 }
 .chara_header .infor_slab a {
   color: #56b8e0;
@@ -764,10 +764,12 @@ span.var {
 }
 .spread_view .sign_view {
   position: absolute;
-  right:0; bottom:0;
-
-  @media screen and (max-width:@hides_under_mobile_threshold) {
-    top:0;
+  right: 0;
+  bottom: 0;
+}
+@media screen and (max-width: 600px) {
+  .spread_view .sign_view {
+    top: 0;
   }
 }
 .image_switch {
@@ -808,14 +810,14 @@ span.var {
 .crowd_tl_notice {
   font-size: 13px;
   padding: 6px 10px;
-  color: #eeeeee;
+  color: #eee;
   position: fixed;
   bottom: 0;
   left: 0;
   background-color: rgba(17, 17, 17, 0.7);
 }
 .crowd_tl_notice a {
-  color: #eeeeee;
+  color: #eee;
 }
 @media screen and (max-width: 600px) {
   .hides_under_mobile {
