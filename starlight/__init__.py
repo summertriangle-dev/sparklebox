@@ -369,9 +369,36 @@ class DataCache(object):
         return [self._lead_skills.get(id) for id in ids]
 
     def va_data(self, id):
-        va_list = self.hnd.execute("SELECT * FROM card_comments WHERE id = ?", (id,))
+        va_list = self.hnd.execute("SELECT id, use_type, `index`, voice_flag, discription, 0 AS n1 FROM card_comments WHERE id = ?", (id,))
         self.primed_this["sel_valist"] += 1
-        return self.prime_from_cursor("va_data_t", va_list)
+        ret = list(self.prime_from_cursor("va_data_t", va_list))
+        r_va_data_t, va_data_t = self.class_cache.get("va_data_t")
+
+        # used in Lives, not recorded in mdb though
+        # https://github.com/summertriangle-dev/sparklebox/issues/14
+        range_of_extra_type6_voice = lambda: range(1, 8)
+
+        if ret[0].voice_flag:
+            if id in self.char_cache:
+                # char: return a title call entry
+                # use type -4 so it doesn't take the string of USE_TYPE__T_4.
+                # in endpoints.audio this gets converted back to a positive int.
+                yield va_data_t(id, -4, 13, 1, "アイドルマスター シンデレラガールズ スターライトステージ!", 0)
+            elif self.chain_id[id] == id:
+                # above: return live entries only for base form because t-formed
+                # just duplicates them.
+                # Return live entries.
+                yield va_data_t(id, 6, 1, 1, en.NO_STRING_FMT.format(id, 1), 61)
+                yield va_data_t(id, 6, 2, 1, en.NO_STRING_FMT.format(id, 2), 61)
+
+                yield va_data_t(id, 6, 3, 1, en.NO_STRING_FMT.format(id, 3), 62)
+                yield va_data_t(id, 6, 4, 1, en.NO_STRING_FMT.format(id, 4), 62)
+                yield va_data_t(id, 6, 5, 1, en.NO_STRING_FMT.format(id, 5), 62)
+
+                yield va_data_t(id, 6, 6, 1, en.NO_STRING_FMT.format(id, 6), 63)
+                yield va_data_t(id, 6, 7, 1, en.NO_STRING_FMT.format(id, 7), 63)
+
+        yield from ret
 
     def svx_data(self, id):
         return self.prime_from_cursor("fp_data_t",

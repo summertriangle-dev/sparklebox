@@ -44,7 +44,7 @@ def icon_ex(card_id, is_lowbw=0, collapsible=0):
         return """<a href="{link}" class="noline">{ish}</a>""".format(rec=rec, ish=ish, link=link)
 
 def audio(object_id, use, index):
-    a = (object_id << 40) | ((use & 0xFF) << 24) | ((index & 0xFF) << 16) | 0x11AB
+    a = (object_id << 40) | ((abs(use) & 0xFF) << 24) | ((index & 0xFF) << 16) | 0x11AB
     # make everything 8 bytes long for reasons
     a &= 0xFFFFFFFFFFFFFFFF
     a ^= 0x1042FC1040200700

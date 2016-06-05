@@ -764,8 +764,13 @@ span.var {
 }
 .spread_view .sign_view {
   position: absolute;
-  left: 0;
-  bottom: 0;
+  right:0; bottom:0;
+  text-align:right;
+}
+.spread_view .sign_view_m {
+  position: absolute;
+  right:0; top:0;
+  text-align:right;
 }
 .image_switch {
   padding: 3px 7px;
