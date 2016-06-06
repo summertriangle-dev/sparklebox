@@ -749,6 +749,15 @@ span.var {
 .spread_view .hang_inside {
   right:auto; left:10px;
 }
+.spread_view .sign_view {
+  position: absolute;
+  right:0; bottom:0;
+  max-width:35%; max-height:100%;
+
+  @media screen and (max-width:@hides_under_mobile_threshold) {
+    top:0;
+  }
+}
 .image_switch {
   padding:3px 7px;
   border:1px solid rgba(255, 255, 255, 0.9);
