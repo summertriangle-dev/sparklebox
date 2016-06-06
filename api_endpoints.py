@@ -92,11 +92,8 @@ class TranslateWriteAPI(tornado.web.RequestHandler):
         if s == "**":
             s = key
 
-        x_real_ip = self.request.headers.get("X-Real-IP")
-        remote_ip = x_real_ip or self.request.remote_ip
-
         self.settings["tle"].set_translation(
-            load.get("key"), s, remote_ip)
+            load.get("key"), s, self.request.remote_ip)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
                                                    {"key": key, "value": s})
 
