@@ -766,6 +766,8 @@ span.var {
   position: absolute;
   right: 0;
   bottom: 0;
+  max-width:35%;
+  max-height:100%;
 }
 @media screen and (max-width: 600px) {
   .spread_view .sign_view {
