@@ -43,16 +43,24 @@ def gap_date_range(a):
 # skill describer
 
 SKILL_DESCRIPTIONS = {
-    1: """all Perfect notes will receive a <span class="let">{0}</span>% score bonus""",
-    2: """all Great and Perfect notes will receive a <span class="let">{0}</span>% score bonus""",
+    1: """Perfect notes will receive a <span class="let">{0}</span>% score bonus""",
+    2: """Great/Perfect notes will receive a <span class="let">{0}</span>% score bonus""",
+    3: """Nice/Great/Perfect notes will receive a <span class="let">{0}</span>% score bonus""", #provisional
     4: """you will gain an extra <span class="let">{0}</span>% combo bonus""",
-    5: """all Great notes will become Perfect notes""",
-    6: """all Great and Nice notes will become Perfect notes""",
-    7: """all Great, Nice, and Bad notes will become Perfect notes""",
+    5: """Great notes will become Perfect notes""",
+    6: """Nice/Great notes will become Perfect notes""",
+    7: """Bad/Nice/Great notes will become Perfect notes""",
+    8: """all notes will become Perfect notes""", #provisional
     9: """Nice notes will not break combo""",
+    10: """Bad/Nice notes will not break combo""", #provisional
+    11: """your combo will not be broken""", #provisional
     12: """you will not lose health""",
+    13: """all notes will restore <span class="let">{0}</span> health""", #provisional
     14: """<span class="let">{1}</span> life will be consumed, then: Perfect notes receive a <span class="let">{0}</span>% score bonus, and Nice/Bad notes will not break combo""",
-    17: """all Perfect notes will restore <span class="let">{0}</span> health""" }
+    17: """Perfect notes will restore <span class="let">{0}</span> health""",
+    18: """Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
+    19: """Nice/Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
+}
 
 REMOVE_HTML = re.compile(r"</?span[^>]*>")
 
@@ -66,7 +74,7 @@ def describe_skill_html(skill):
     fire_interval = skill.condition
     effect_val = skill.value
     # TODO symbols
-    if skill.skill_type in [1, 2, 4, 14]:
+    if skill.skill_type in [1, 2, 3, 4, 14]:
         effect_val -= 100
 
     effect_clause = SKILL_DESCRIPTIONS.get(

@@ -31,14 +31,26 @@ attribute = enum([
 skill_type = enum([
     1, "Perfect Score Bonus",
     2, "Score Bonus",
+    3, "Score Bonus",
+
     4, "Combo Bonus",
+
     5, "Lesser Perfect Lock",
     6, "Greater Perfect Lock",
     7, "Extreme Perfect Lock",
-    9, "Combo Support",
-    12, "Life Support",
+    8, "Unconditional Perfect Lock",
+
+    9, "Combo Guard",
+    10, "Greater Combo Guard",
+    11, "Unconditional Combo Guard",
+
+    12, "Life Guard",
+    13, "Unconditional Healer",
     14, "Overload",
+
     17, "Healer",
+    18, "Healer",
+    19, "Healer",
 ])
 
 skill_probability = enum([
@@ -110,15 +122,27 @@ lskill_target_param = enum([
 
 skill_class = enum([
     1, "s_scorebonus",
-    17, "s_heal",
-    4, "s_combobonus",
-    5, "s_pl",
-    9, "s_cprot",
-    7, "s_pl",
     2, "s_scorebonus",
+    3, "s_scorebonus",
+
+    4, "s_combobonus",
+
+    5, "s_pl",
     6, "s_pl",
+    7, "s_pl",
+    8, "s_pl",
+
+    9, "s_cprot",
+    10, "s_cprot",
+    11, "s_cprot",
+
     12, "s_life",
+    13, "s_heal",
     14, "s_overload",
+
+    17, "s_heal",
+    18, "s_heal",
+    19, "s_heal",
 ])
 
 stat_dot = enum([
