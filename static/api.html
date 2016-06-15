@@ -44,7 +44,8 @@
   &quot;result&quot;: [
     ; an array containing each object in the order they
     ; were requested, or null if it doesn&#39;t exist
-    ; for detailed object contents, read the <a href="https://github.com/summertriangle-dev/sparklebox/wiki">wiki</a>.
+    ; for detailed object contents, read the wiki:
+    ; https://github.com/summertriangle-dev/sparklebox/wiki
   ]
 }</code></pre></div>
 
@@ -67,21 +68,57 @@
 
     <hr>
 
-    <h3 id="toc_7">Crowd Translations</h3>
+    <h3 id="toc_7">Object List</h3>
+
+    <div><pre><code class="language-none">GET /api/v1/list/(object type)?...</code></pre></div>
+
+    <p>Return a list of brief descriptions for all objects available using the corresponding object API.</p>
+
+    <h4 id="toc_8">Supported object types</h4>
+
+    <ul>
+    <li><code>card_t</code>: Card info.</li>
+    <li><code>char_t</code>: Character info.</li>
+    </ul>
+
+    <h4 id="toc_9">Return value</h4>
+
+    <p>Success:</p>
+
+    <div><pre><code class="language-none">{
+  &quot;result&quot;: [
+    ; an array containing each object
+    ; for detailed object contents, read the wiki:
+    ; https://github.com/summertriangle-dev/sparklebox/wiki
+  ]
+}</code></pre></div>
+
+    <p>Error: This endpoint currently does not have any error conditions.</p>
+
+    <h4 id="toc_10">Query Parameters</h4>
+
+    <ul>
+    <li>keys=&lt;NAME&gt;,&lt;NAME&gt;...<br>
+    The list of specific keys you want, from the list of available ones. If you don&#39;t pass this parameter, you get all keys.</li>
+    </ul>
+
+    <hr>
+
+    <h3 id="toc_11">Crowd Translations</h3>
 
     <div><pre><code class="language-none">POST /api/v1/read_tl
 
-[&quot;string1&quot;, &quot;string2&quot;, ..., &quot;stringN&quot;]</code></pre></div>
+    [&quot;string1&quot;, &quot;string2&quot;, ..., &quot;stringN&quot;]</code></pre></div>
 
     <p>Query translations for the given strings. This is the same API used by tlinject.js on starlight.kirara.ca.</p>
 
-    <h4 id="toc_8">Return value</h4>
+    <h4 id="toc_12">Return value</h4>
 
     <p>The value returned is a JSON dict mapping the original strings to their translated counterparts if available:</p>
 
     <div><pre><code class="language-none">{&quot;つぼみ&quot;: &quot;Tsubomi&quot;}</code></pre></div>
 
-    <h4 id="toc_9">Errors</h4>
+    <h4 id="toc_13">Errors</h4>
 
     <ul>
     <li>5xx - try again.</li>
@@ -90,16 +127,16 @@
 
     <hr>
 
-    <h3 id="toc_10">Time</h3>
+    <h3 id="toc_14">Time</h3>
 
     <div><pre><code class="language-none">GET /api/v1/happening/now
-GET /api/v1/happening/(timestamp)</code></pre></div>
+    GET /api/v1/happening/(timestamp)</code></pre></div>
 
     <p>Get time-sensitive information.</p>
 
-    <h2 id="toc_11">Misc.</h2>
+    <h2 id="toc_15">Misc.</h2>
 
-    <h3 id="toc_12">URLs</h3>
+    <h3 id="toc_16">URLs</h3>
 
     <p>All URLs returned in API responses should be interpreted as relative to the URL that the response came from.</p>
 
@@ -111,29 +148,30 @@ GET /api/v1/happening/(timestamp)</code></pre></div>
     <li>We might return a fully-qualified URL to another domain like <code>https://static.com/card/123.png</code></li>
     </ul>
 
-    <h3 id="toc_13">Images</h3>
+    <h3 id="toc_17">Images</h3>
 
     <p>Some objects will have image URLs embedded in them. As a general rule, you can hotlink any image returned in an API response. However, if you expect a lot of traffic, you may want to mirror the images to your own server.</p>
 
-    <h3 id="toc_14">Errors</h3>
+    <h3 id="toc_18">Errors</h3>
 
     <p>If there is an error processing the request, we will return the JSON object</p>
 
-    <div><pre><code class="language-none">{&quot;error&quot;: &quot;Some error message&quot;}</code></pre></div>
+    <div><pre><code class="language-none"> {&quot;error&quot;: &quot;Some error message&quot;}</code></pre></div>
 
     <p>and the appropriate HTTP status.</p>
 
-    <h3 id="toc_15">Rate limiting</h3>
+    <h3 id="toc_19">Rate limiting</h3>
 
     <p>There is none. If it does exist in the future, we will return an HTTP 429 status with the error object.</p>
 
-    <h3 id="toc_16">Attribution</h3>
+    <h3 id="toc_20">Attribution</h3>
 
     <p>You don&#39;t have to credit data that comes from the API because it reads from game truth anyway. But if you&#39;d like to, credit the <q><a href="https://starlight.kirara.ca/">Starlight Database</a></q>.</p>
 
-    <h2 id="toc_17">Bugs and Feature Requests</h2>
+    <h2 id="toc_21">Bugs and Feature Requests</h2>
 
     <p><a href="https://github.com/summertriangle-dev/sparklebox/issues">File an issue here</a> if you have any problems with using the API.</p>
+
   </div>
 <body>
 </html>

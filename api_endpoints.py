@@ -12,6 +12,7 @@ import pytz
 import itertools
 import enums
 from datetime import datetime, timedelta
+from functools import partial
 
 def tlable_make_assr(text):
     if not text:
@@ -284,6 +285,67 @@ class ObjectAPI(HandlerSyncedWithMaster, APIUtilMixin):
             json.dump({"result": h(ids, cfg)}, self, ensure_ascii=0, sort_keys=1, indent=2)
         else:
             json.dump({"result": h(ids, cfg)}, self)
+
+@route(r"/api/v1/list/card_t")
+class CardListAPI(HandlerSyncedWithMaster, APIUtilMixin):
+    KEYS = ["id", "chara_id", "attribute", "has_spread", "pose", "title", "name_only",
+        "hp_min", "hp_max", "vocal_min", "vocal_max", "visual_min", "visual_max",
+        "dance_min", "dance_max", "bonus_hp", "bonus_dance", "bonus_vocal", "bonus_visual",
+        "evolution_id"]
+    STRUCTS = ["rarity_dep"]
+
+    def stub_object(self, obj, user_want_keys):
+        base = {}
+
+        user_want_keys = user_want_keys or (self.KEYS + self.STRUCTS)
+
+        for key in self.KEYS:
+            if key in user_want_keys:
+                base[key] = getattr(obj, key)
+
+        for key in self.STRUCTS:
+            if key in user_want_keys:
+                ob = getattr(obj, key)
+                base[key] = self.fix_namedtuples(ob.__class__.__name__, ob._asdict(), {"stubs": "no"})
+
+        self.post_stubbing(base, obj)
+
+        base.update(APIUtilMixin.stub_object(obj))
+        return base
+
+    def post_stubbing(self, base, obj):
+        base["conventional"] = obj.chara.conventional
+        base["chara"] = APIUtilMixin.stub_object(obj.chara)
+
+    def list_objects(self):
+        return starlight.data.cards([chain[0] for _, chain in starlight.data.id_chain.items()])
+
+    def get(self):
+        ks_raw = self.get_argument("keys", "")
+        if ks_raw:
+            normalized = (x.lower().strip() for x in ks_raw.split(","))
+        else:
+            normalized = ""
+        f = partial(self.stub_object, user_want_keys=list(normalized))
+        roots = map(f, self.list_objects())
+
+        self.set_header("Content-Type", "application/json; charset=utf-8")
+        if self.settings["is_dev"]:
+            json.dump({"result": list(roots)}, self, ensure_ascii=0, sort_keys=1, indent=2)
+        else:
+            json.dump({"result": list(roots)}, self)
+
+@route(r"/api/v1/list/char_t")
+class CharListAPI(CardListAPI):
+    KEYS = ["chara_id", "conventional", "kanji_spaced", "kana_spaced"]
+    STRUCTS = []
+
+    def list_objects(self):
+        # TODO proper way to get all charids
+        return starlight.data.charas(starlight.data.all_chara_id_to_cards())
+
+    def post_stubbing(self, base, obj):
+        base["cards"] = starlight.data.cards_belonging_to_char(obj.chara_id)
 
 @route(r"/api/v1/happening/(now|-?[0-9+])")
 class HappeningAPI(HandlerSyncedWithMaster, APIUtilMixin):
