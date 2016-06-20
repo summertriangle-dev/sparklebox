@@ -20,6 +20,8 @@
 {% import random %}
 
 <body>
+  {% include header.html %}
+
   <div class="container">
     <input type="text" id="search" placeholder="{{ _("Search for idols") }}" onkeyup="suggest(this, this.value)">
     <div id="suggestions"></div>

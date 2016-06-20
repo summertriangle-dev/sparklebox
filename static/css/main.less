@@ -651,7 +651,7 @@ span.var {
 
     & > .header, .table th, .table_stub {
       color:white;
-      background-color: darken(#444, 10%);;
+      background-color: darken(#444, 10%);
       .left { background-color: lighten(#444, 10%); }
       .ext { border-top-color: lighten(#444, 10%); border-left-color: lighten(#444, 10%); }
     }
@@ -805,6 +805,7 @@ span.var {
   position:fixed;
   bottom:0; left:0;
   background-color:fade(@main_bg, 70%);
+  z-index:9001;
 
   a {
     color:@main_text;
@@ -928,4 +929,28 @@ strong.ga_available {
 .help {
   border-bottom:1px dashed;
   cursor:help;
+}
+
+.global_header {
+  background-color: darken(#444, 13%);
+  color:darken(white, 20%);
+
+  & > span, & > a {
+    display:inline-block;
+    padding:6px 6px;
+  }
+
+  a {
+    text-decoration:none;
+    color:white;
+
+    &:visited {
+      color:white;
+    }
+
+    &::after {
+      content:"»";
+      padding-left:8px;
+    }
+  }
 }
