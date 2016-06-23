@@ -407,124 +407,20 @@ td.Passion a {
   flex-grow: 1;
   vertical-align: top;
   color: #222;
-  /* this entire section is basically a hack to keep things aligned properly
-     * chances are if you touch something here it will break, so don't do it */
 }
 .carcon .card_right > * {
   font-size: 16px;
-}
-@media screen and (min-width: 769px) {
-  .carcon .card_right .name_tag {
-    min-height: 40px;
-  }
-  .carcon .card_right .name_tag .item {
-    line-height: 40px;
-    font-size: 20px;
-    padding: 0 10px 0 10px;
-  }
-  .carcon .card_right .name_tag .ext {
-    border-top: 20px solid transparent;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 20px solid transparent;
-  }
-  .carcon .card_right .name_tag .icon {
-    vertical-align: text-bottom;
-  }
-}
-@media screen and (max-width: 768px) {
-  .carcon .card_right .name_tag {
-    min-height: 28px;
-  }
-  .carcon .card_right .name_tag .item {
-    line-height: 28px;
-    font-size: 16px;
-    padding: 0 6px 0 6px;
-  }
-  .carcon .card_right .name_tag .ext {
-    border-top: 14px solid transparent;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-bottom: 14px solid transparent;
-  }
-  .carcon .card_right .icon {
-    vertical-align: middle;
-  }
-}
-.carcon .card_right .name_tag.force_small {
-  height: 28px;
-}
-.carcon .card_right .name_tag.force_small .item {
-  line-height: 28px;
-  font-size: 16px;
-  padding: 0 6px 0 6px;
-}
-.carcon .card_right .name_tag.force_small .ext {
-  padding: 0;
-  border-top: 14px solid transparent;
-  border-left: 7px solid transparent;
-  border-right: 7px solid transparent;
-  border-bottom: 14px solid transparent;
-}
-.carcon .card_right .name_tag.force_small .icon {
-  vertical-align: middle;
-}
-.carcon .card_right .name_tag {
-  color: white;
-  font-size: 0;
-}
-.carcon .card_right .name_tag .item.name {
-  word-wrap: break-word;
-}
-.carcon .card_right .name_tag .item {
-  display: inline-block;
-  vertical-align: middle;
-}
-.carcon .card_right .name_tag .name::after {
-  /* force all-latin text to align as jap text */
-  content: "あ";
-  color: transparent;
-}
-.carcon .card_right .name_tag .ext {
-  vertical-align: middle;
-  padding: 0;
-}
-.carcon .card_right .name_tag.Cute {
-  background-color: #fb0774;
-}
-.carcon .card_right .name_tag.Cute .title {
-  background-color: #cc035d;
-}
-.carcon .card_right .name_tag.Cute .ext {
-  border-top-color: #cc035d;
-  border-left-color: #cc035d;
-}
-.carcon .card_right .name_tag.Cool {
-  background-color: #236dfb;
-}
-.carcon .card_right .name_tag.Cool .title {
-  background-color: #0452e7;
-}
-.carcon .card_right .name_tag.Cool .ext {
-  border-top-color: #0452e7;
-  border-left-color: #0452e7;
-}
-.carcon .card_right .name_tag.Passion {
-  color: #222;
-  background-color: #fca926;
-}
-.carcon .card_right .name_tag.Passion .title {
-  background-color: #fdbd58;
-}
-.carcon .card_right .name_tag.Passion .ext {
-  border-top-color: #fdbd58;
-  border-left-color: #fdbd58;
 }
 .carcon .card_right .spread_view {
   height: 350px;
   width: 100%;
   background-position: center center;
   background-size: cover;
+}
+@media screen and (min-width: 1280px) {
+  .carcon .card_right .spread_view {
+    height: 720px;
+  }
 }
 .carcon .card_right .evolution_setter {
   font-size: 80%;
@@ -552,6 +448,115 @@ td.Passion a {
 }
 .carcon .card_right .stats_table {
   text-align: center;
+}
+/* this entire section is basically a hack to keep things aligned properly
+ * chances are if you touch something here it will break, so don't do it */
+@media screen and (min-width: 769px) {
+  .name_tag {
+    min-height: 40px;
+  }
+  .name_tag .item {
+    line-height: 40px;
+    font-size: 20px;
+    padding: 0 10px 0 10px;
+  }
+  .name_tag .ext {
+    border-top: 20px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid transparent;
+  }
+  .name_tag .icon {
+    vertical-align: text-bottom;
+  }
+}
+@media screen and (max-width: 768px) {
+  .name_tag {
+    min-height: 28px;
+  }
+  .name_tag .item {
+    line-height: 28px;
+    font-size: 16px;
+    padding: 0 6px 0 6px;
+  }
+  .name_tag .ext {
+    border-top: 14px solid transparent;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 14px solid transparent;
+  }
+  .icon {
+    vertical-align: middle;
+  }
+}
+.name_tag {
+  color: white;
+  font-size: 0!important;
+}
+.name_tag .item.name {
+  word-wrap: break-word;
+}
+.name_tag .item {
+  display: inline-block;
+  vertical-align: middle;
+}
+.name_tag .name::after {
+  /* force all-latin text to align as jap text */
+  content: "あ";
+  color: transparent;
+}
+.name_tag .ext {
+  vertical-align: middle;
+  padding: 0;
+}
+.name_tag.Cute {
+  background-color: #fb0774;
+}
+.name_tag.Cute .title {
+  background-color: #cc035d;
+}
+.name_tag.Cute .ext {
+  border-top-color: #cc035d;
+  border-left-color: #cc035d;
+}
+.name_tag.Cool {
+  background-color: #236dfb;
+}
+.name_tag.Cool .title {
+  background-color: #0452e7;
+}
+.name_tag.Cool .ext {
+  border-top-color: #0452e7;
+  border-left-color: #0452e7;
+}
+.name_tag.Passion {
+  color: #222;
+  background-color: #fca926;
+}
+.name_tag.Passion .title {
+  background-color: #fdbd58;
+}
+.name_tag.Passion .ext {
+  border-top-color: #fdbd58;
+  border-left-color: #fdbd58;
+}
+.name_tag.force_small {
+  height: 28px;
+}
+.name_tag.force_small .item {
+  line-height: 28px;
+  font-size: 16px;
+  padding: 0 6px 0 6px;
+}
+.name_tag.force_small .ext {
+  padding: 0;
+  border-top: 14px solid transparent;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 14px solid transparent;
+}
+.name_tag.force_small .icon {
+  vertical-align: middle;
 }
 span.let,
 span.var {

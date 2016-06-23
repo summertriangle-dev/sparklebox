@@ -74,12 +74,29 @@
           <th>Skill Prob.</th>
         </tr>
       </table>
+      <table class="stats_table control_table">
+        <tr class="toggles_row">
+          <th>High stat</th>
+          <td onclick="toggle_kill_css(this)" data-kill-class="m_vo_kc" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="m_vi_kc" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="m_da_kc" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="m_ba_kc" class="vocal">X</td>
+        </tr>
+        <tr>
+          <th>&nbsp;</th>
+          <th>Vocal</th>
+          <th>Visual</th>
+          <th>Dance</th>
+          <th>Balanced</th>
+        </tr>
+      </table>
     </div>
 
     <table class="table" style="width:100%">
       <tr class="control_row">
         <th></th>
         <th class="hides_under_mobile"></th>
+        <th></th>
         <th>{{ _("Skill Name") }}</th>
         <th>{{ _("Effect") }}</th>
       </tr>
@@ -87,7 +104,8 @@
       {% if card.lead_skill %}
       <tr class="{{ enums.rarity(card.rarity) }}
              {{ enums.lskill_effective_target(card.lead_skill.target_attribute) }}
-             {{ enums.lskill_effective_param(card.lead_skill.target_param) }}">
+             {{ enums.lskill_effective_param(card.lead_skill.target_param) }}
+             {{ enums.stat_dot(card.best_stat) }}_kc">
         <td class="{{ enums.attribute(card.attribute) }}" style="width:1%">
           <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{% raw icon(card.id) %}</a>
         </td>
@@ -95,6 +113,7 @@
           <a href="/char/{{ card.chara_id }}#c_{{ card.id }}_head">{{ tle.translate_name(card.name_only) }}</a><br>
             {% if card.title %}({% raw tlable(card.title) %}){% end %}
         </td>
+        <td class="{{ enums.attribute(card.attribute) }}"><div class="icon {{ enums.stat_dot(card.best_stat) }}"></div></td>
         <td>{% raw tlable(card.lead_skill.name) %}</td>
         <td>{% raw starlight.en.describe_lead_skill_html(card.lead_skill) %}</td>
       </tr>

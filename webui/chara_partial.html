@@ -38,6 +38,9 @@
 {% else %}
 <div id="raw_chara_{{ chara_id }}" class="stdcon table">
     <table class="table">
+        <tr><td colspan="2"><b>This table is for usage by humans.
+            If you want to access this information programmatically, consider using the <a href="/static/api.html">API</a> instead.
+            It will save you the trouble of parsing this table.</b></td></tr>
         {% for key, value in chara.__dict__.items() %}
         <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
         {% end %}

@@ -409,118 +409,15 @@ td {
       font-size:16px;
     }
 
-    /* this entire section is basically a hack to keep things aligned properly
-     * chances are if you touch something here it will break, so don't do it */
-
-    @media screen and (min-width:769px) {
-      .name_tag {
-        min-height:@name_tag_height;
-
-        .item {
-          line-height: @name_tag_height;
-          font-size: @name_tag_height - (@name_tag_pad * 2);
-          padding:0 @name_tag_pad 0 @name_tag_pad;
-        }
-        .ext {
-          border-top:@name_tag_height / 2 solid transparent;
-          border-left:@name_tag_height / 4 solid transparent;
-          border-right:@name_tag_height / 4 solid transparent;
-          border-bottom:(@name_tag_height / 2) solid transparent;
-        }
-        .icon {
-          vertical-align:text-bottom;
-        }
-      }
-    }
-
-    @media screen and (max-width:768px) {
-      .name_tag {
-        min-height:@name_tag_height_sm;
-
-        .item {
-          line-height: @name_tag_height_sm;
-          font-size: @name_tag_height_sm - (@name_tag_pad_sm * 2);
-          padding:0 @name_tag_pad_sm 0 @name_tag_pad_sm;
-        }
-        .ext {
-          border-top:@name_tag_height_sm / 2 solid transparent;
-          border-left:@name_tag_height_sm / 4 solid transparent;
-          border-right:@name_tag_height_sm / 4 solid transparent;
-          border-bottom:(@name_tag_height_sm / 2) solid transparent;
-        }
-      }
-      .icon {
-        vertical-align:middle;
-      }
-    }
-
-    .name_tag.force_small {
-      height:@name_tag_height_sm;
-
-      .item {
-        line-height: @name_tag_height_sm;
-        font-size: @name_tag_height_sm - (@name_tag_pad_sm * 2);
-        padding:0 @name_tag_pad_sm 0 @name_tag_pad_sm;
-      }
-      .ext {
-        padding:0;
-        border-top:@name_tag_height_sm / 2 solid transparent;
-        border-left:@name_tag_height_sm / 4 solid transparent;
-        border-right:@name_tag_height_sm / 4 solid transparent;
-        border-bottom:(@name_tag_height_sm / 2) solid transparent;
-      }
-      .icon {
-        vertical-align:middle;
-      }
-    }
-
-    .name_tag {
-      color:white;
-      font-size:0;
-
-      .item.name {
-          word-wrap:break-word;
-      }
-
-      .item {
-        display:inline-block;
-        vertical-align:middle;
-      }
-
-      .name::after {
-        /* force all-latin text to align as jap text */
-        content:"あ";
-        color:transparent;
-      }
-
-      .ext {
-        vertical-align:middle;
-        padding:0;
-      }
-
-      &.Cute {
-        background-color: @cute_colour;
-        .title { background-color: darken(@cute_colour, 10%); }
-        .ext { border-top-color: darken(@cute_colour, 10%); border-left-color: darken(@cute_colour, 10%); }
-      }
-      &.Cool {
-        background-color: @cool_colour;
-        .title { background-color: darken(@cool_colour, 10%); }
-        .ext { border-top-color: darken(@cool_colour, 10%); border-left-color: darken(@cool_colour, 10%); }
-      }
-      &.Passion {
-        color:#222;
-        background-color: @passion_colour;
-        .title { background-color: lighten(@passion_colour, 10%); }
-        .ext { border-top-color: lighten(@passion_colour, 10%); border-left-color: lighten(@passion_colour, 10%); }
-      }
-    }
-
     .spread_view {
       height:350px;
       width:100%;
       background-position:center center;
       background-size:cover;
+
+      @media screen and (min-width: @max_page_width) {
+        height:720px;
+      }
     }
 
     .evolution_setter {
@@ -556,6 +453,113 @@ td {
     .stats_table {
       text-align:center;
     }
+  }
+}
+
+/* this entire section is basically a hack to keep things aligned properly
+ * chances are if you touch something here it will break, so don't do it */
+
+@media screen and (min-width:769px) {
+  .name_tag {
+    min-height:@name_tag_height;
+
+    .item {
+      line-height: @name_tag_height;
+      font-size: @name_tag_height - (@name_tag_pad * 2);
+      padding:0 @name_tag_pad 0 @name_tag_pad;
+    }
+    .ext {
+      border-top:@name_tag_height / 2 solid transparent;
+      border-left:@name_tag_height / 4 solid transparent;
+      border-right:@name_tag_height / 4 solid transparent;
+      border-bottom:(@name_tag_height / 2) solid transparent;
+    }
+    .icon {
+      vertical-align:text-bottom;
+    }
+  }
+}
+
+@media screen and (max-width:768px) {
+  .name_tag {
+    min-height:@name_tag_height_sm;
+
+    .item {
+      line-height: @name_tag_height_sm;
+      font-size: @name_tag_height_sm - (@name_tag_pad_sm * 2);
+      padding:0 @name_tag_pad_sm 0 @name_tag_pad_sm;
+    }
+    .ext {
+      border-top:@name_tag_height_sm / 2 solid transparent;
+      border-left:@name_tag_height_sm / 4 solid transparent;
+      border-right:@name_tag_height_sm / 4 solid transparent;
+      border-bottom:(@name_tag_height_sm / 2) solid transparent;
+    }
+  }
+  .icon {
+    vertical-align:middle;
+  }
+}
+
+.name_tag {
+  color:white;
+  font-size:0!important;
+
+  .item.name {
+      word-wrap:break-word;
+  }
+
+  .item {
+    display:inline-block;
+    vertical-align:middle;
+  }
+
+  .name::after {
+    /* force all-latin text to align as jap text */
+    content:"あ";
+    color:transparent;
+  }
+
+  .ext {
+    vertical-align:middle;
+    padding:0;
+  }
+
+  &.Cute {
+    background-color: @cute_colour;
+    .title { background-color: darken(@cute_colour, 10%); }
+    .ext { border-top-color: darken(@cute_colour, 10%); border-left-color: darken(@cute_colour, 10%); }
+  }
+  &.Cool {
+    background-color: @cool_colour;
+    .title { background-color: darken(@cool_colour, 10%); }
+    .ext { border-top-color: darken(@cool_colour, 10%); border-left-color: darken(@cool_colour, 10%); }
+  }
+  &.Passion {
+    color:#222;
+    background-color: @passion_colour;
+    .title { background-color: lighten(@passion_colour, 10%); }
+    .ext { border-top-color: lighten(@passion_colour, 10%); border-left-color: lighten(@passion_colour, 10%); }
+  }
+}
+
+.name_tag.force_small {
+  height:@name_tag_height_sm;
+
+  .item {
+    line-height: @name_tag_height_sm;
+    font-size: @name_tag_height_sm - (@name_tag_pad_sm * 2);
+    padding:0 @name_tag_pad_sm 0 @name_tag_pad_sm;
+  }
+  .ext {
+    padding:0;
+    border-top:@name_tag_height_sm / 2 solid transparent;
+    border-left:@name_tag_height_sm / 4 solid transparent;
+    border-right:@name_tag_height_sm / 4 solid transparent;
+    border-bottom:(@name_tag_height_sm / 2) solid transparent;
+  }
+  .icon {
+    vertical-align:middle;
   }
 }
 
