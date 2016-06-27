@@ -77,6 +77,12 @@ Availability = namedtuple("Availability", ("type", "name", "start", "end"))
 Availability._TYPE_GACHA = 1
 Availability._TYPE_EVENT = 2
 
+gacha_rates_t = namedtuple("gacha_rates_t", ("r", "sr", "ssr"))
+# to be safe: define as exprs of int so the resulting floats will compare properly.
+# otherwise there may be a subtle difference between "8850/100" and "88.5"
+# and == will break.
+gacha_rates_t._REGULAR_RATES = gacha_rates_t(8850 / 100, 1000 / 100, 150 / 100)
+
 TITLE_ONLY_REGEX = r"^［(.+)］"
 NAME_ONLY_REGEX = r"^(?:［.+］)?(.+)$"
 
@@ -96,10 +102,13 @@ class DataCache(object):
     @lru_cache(1)
     def gacha_ids(self):
         gachas = []
-        gacha_stub_t = namedtuple("gacha_stub_t", ("id", "name", "start_date", "end_date", "type", "subtype"))
-        for id, n, ss, es, t, t2 in self.hnd.execute("SELECT id, name, start_date, end_date, type, type_detail FROM gacha_data where type = 3 and type_detail = 1"):
+        gacha_stub_t = namedtuple("gacha_stub_t", ("id", "name", "start_date", "end_date", "type", "subtype", "rates"))
+        stub_query = """SELECT gacha_data.id, gacha_data.name, start_date, end_date, type, type_detail,
+                        gacha_rate.rare_ratio, gacha_rate.sr_ratio, gacha_rate.ssr_ratio
+                        FROM gacha_data LEFT JOIN gacha_rate USING (id) WHERE type = 3 AND type_detail = 1"""
+        for id, n, ss, es, t, t2, r, sr, ssr in self.hnd.execute(stub_query):
             ss, es = JST(ss), JST(es)
-            gachas.append(gacha_stub_t(id, n, ss, es, t, t2))
+            gachas.append(gacha_stub_t(id, n, ss, es, t, t2, gacha_rates_t(r / 100, sr / 100, ssr / 100)))
 
         self.primed_this["sel_gacha"] += 1
         return sorted(gachas, key=lambda x: x.start_date)

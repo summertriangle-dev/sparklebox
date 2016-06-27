@@ -493,6 +493,9 @@ td.Passion a {
   color: white;
   font-size: 0!important;
 }
+.name_tag small {
+  vertical-align: bottom;
+}
 .name_tag .item.name {
   word-wrap: break-word;
 }
@@ -570,6 +573,9 @@ span.var {
   display: inline-block;
   border: 1px solid;
   vertical-align: top;
+}
+.box small {
+  vertical-align: bottom;
 }
 .box.col2 {
   /* don't know why but it works

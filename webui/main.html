@@ -56,7 +56,12 @@
         <span class="item left">Current gacha</span>
         {% end %}
         <span class="item ext"></span>
-        <span class="item right">expires in <span class="counter" data-count-to="{{ gacha.end_date.timestamp() }}">meme</span></span>
+        <span class="item right">
+          expires in <span class="counter" data-count-to="{{ gacha.end_date.timestamp() }}">meme</span>
+          {% if gacha.rates != gacha.rates._REGULAR_RATES %}
+          <small>rates: R {{ gacha.rates.r }}% / SR {{ gacha.rates.sr }}% / SSR {{ gacha.rates.ssr }}%</small>
+          {% end %}
+        </span>
       </div>
       {% if available %}
       <div class="content" style="background:#333;text-align:left;">
