@@ -90,11 +90,30 @@ def describe_skill_html(skill):
 
 
 def describe_lead_skill_html(skill):
-    assert skill.up_type == 1 and skill.type == 20
+    if skill.up_type == 1 and skill.type == 20:
+        target_attr = enums.lskill_target(skill.target_attribute)
+        target_param = enums.lskill_param(skill.target_param)
 
-    target_attr = enums.lskill_target(skill.target_attribute)
-    target_param = enums.lskill_param(skill.target_param)
+        effect_clause = """Raises {0} of {1} members by <span class="let">{2}</span>%""".format(
+            target_param, target_attr, skill.up_value)
 
-    built = """Raises {0} of {1} members by <span class="let">{2}</span>%.""".format(
-        target_param, target_attr, skill.up_value)
-    return built
+        need_list = []
+        if skill.need_cute:
+            need_list.append("Cute")
+        if skill.need_cool:
+            need_list.append("Cool")
+        if skill.need_passion:
+            need_list.append("Passion")
+
+        if need_list:
+            need_str = ", ".join(need_list[:-1])
+            need_str = "{0}, and {1}".format(need_str, need_list[-1])
+            predicate_clause = """when there are {0} idols are on the team.""".format(need_str)
+            built = " ".join((effect_clause, predicate_clause))
+        else:
+            built = effect_clause + "."
+        return built
+    else:
+        return """I don't know how to describe this leader skill. Please report this as a bug. (up_type: {0}, type: {1})""".format(
+            skill.up_type, skill.type
+        )
