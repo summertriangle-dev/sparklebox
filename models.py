@@ -8,7 +8,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, UnicodeText, LargeBinary
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, aliased
+from sqlalchemy.orm import sessionmaker, aliased, load_only
 from sqlalchemy import func
 import multiprocessing
 from tornado.ioloop import IOLoop
@@ -22,12 +22,13 @@ class Availability(object):
     """mutable class so we can meld stuff"""
     _TYPE_GACHA = 1
     _TYPE_EVENT = 2
-    def __init__(self, type, name, start, end, gaps):
+    def __init__(self, type, name, start, end, gaps, limited):
         self.type = type
         self.name = name
         self.start = start
         self.end = end
         self.gaps = gaps
+        self.limited = limited
 
     def __repr__(self):
         return "models.Availability({0})".format(
@@ -45,7 +46,8 @@ def combine_availability(l):
     prev = l[0]
     for availability in l[1:]:
         bet = availability.start - prev.end
-        if bet.seconds > 0 and bet.days <= 3:
+        # max 3 day gap, and both descriptions must be limited/non-limited
+        if bet.seconds > 0 and bet.days <= 3 and prev.limited == availability.limited:
             prev.gaps.append(Gap(prev.end, availability.start))
             prev.end = availability.end
         else:
@@ -353,6 +355,10 @@ class TranslationSQL(object):
 
         with self as s:
             ents = s.query(GachaPresenceEntry).filter(GachaPresenceEntry.card_id.in_(cards)).all()
+            limflags = s.query(GachaRewardEntry).options(load_only("gacha_id", "reward_id")) \
+                .filter(GachaRewardEntry.reward_id.in_(cards), GachaRewardEntry.limited_flag == 1).all()
+
+        limflags = set((x.gacha_id, x.reward_id) for x in limflags)
 
         def getgacha(gid):
             if gid in gacha_map:
@@ -371,7 +377,8 @@ class TranslationSQL(object):
                 name = None
 
             ga[e.card_id].append(Availability(Availability._TYPE_GACHA, name,
-                utc.localize(datetime.utcfromtimestamp(e.avail_start)), utc.localize(datetime.utcfromtimestamp(e.avail_end)), []))
+                utc.localize(datetime.utcfromtimestamp(e.avail_start)), utc.localize(datetime.utcfromtimestamp(e.avail_end)), [],
+                (e.gacha_id_first, e.card_id) in limflags))
 
         [v.sort(key=lambda x: x.start) for v in ga.values()]
         [combine_availability(v) for v in ga.values()]

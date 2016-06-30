@@ -8,7 +8,6 @@
   <div class="content">
     <ul>
     {% for presence in _a %}
-    {# FIXME the logic gets a bit complex here; consider moving it into its own partial? #}
 
     {% if presence.type == presence._TYPE_EVENT %}
 
@@ -19,16 +18,23 @@
 
     {% elif presence.type == presence._TYPE_GACHA %}
 
-    {% if presence.name %}
-    <li class="avlistentry_limited">
-      <strong class="{{ "ga_available" if presence.start <= now < presence.end else "ga_unavailable" }}">Limited</strong>: {% raw tlable(presence.name) %}
-      <small>({{ starlight.en.availability_date_range(presence, now) }})</small>
-    </li>
-
-    {% else %}
     <li class="avlistentry_regular {{ "ga_available" if presence.start <= now < presence.end else "ga_unavailable" }}">
-      <strong class="{{ "ga_available" if presence.start <= now < presence.end else "ga_unavailable" }}">Gacha</strong>
+      <strong class="{{ "ga_available" if presence.start <= now < presence.end else "ga_unavailable" }}">
+        {% if presence.name %}
+        {% raw tlable(presence.name) %}
+        {% else %}
+        Gacha
+        {% end %}
+      </strong>
+
       <small>({{ starlight.en.availability_date_range(presence, now) }})</small>
+
+      {% if presence.limited %}
+      <ul class="avlistentry_regular_melded">
+        <li>This card is/was limited during the gacha period.</li>
+      </ul>
+      {% end %}
+
       {% if presence.gaps %}
       <ul class="avlistentry_regular_melded">
         {% for gap in presence.gaps %}
@@ -38,8 +44,6 @@
       </ul>
       {% end %}
     </li>
-    {% end %}
-
     {% end %}
 
     {% end %}
