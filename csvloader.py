@@ -9,6 +9,15 @@ def clean_value(val):
     except ValueError:
         return val.replace("\\n", "\n")
 
+# Return a function taking a tuple that right-pads the tuple to
+# `to_n_columns` items with the empty string.
+def pad_value_list(to_n_columns):
+    def apply(to_list):
+        l = list(to_list)
+        l += [""] * (to_n_columns - len(l))
+        return tuple(l)
+    return apply
+
 # Load a database file (equivalent of treasurebox arks)
 # For runtime-computed parameters, pass a function into kwargs
 # for the attribute name you want, the function will be called
@@ -34,8 +43,12 @@ def load_db_file(file, **kwargs):
             fields.append(key)
 
         the_type = namedtuple(class_name, fields)
+        padder = pad_value_list(raw_field_len)
 
-        for val_list in filter(lambda list: len(list) == raw_field_len, reader):
+        # exclude empty lines and almost-empty lines (where all values are whitespace)
+        for val_list in filter(lambda list: len(list) != 0 and any(map(str.split, list)), reader):
+            # pad partial rows to N columns (issue 7)
+            val_list = padder(val_list)
             temp_obj = the_raw_type(*map(clean_value, val_list))
             try:
                 extvalues = tuple(kwargs[key](temp_obj) for key in keys)

@@ -194,7 +194,27 @@ class DataCache(object):
     def load_names(self):
         overrides = load_keyed_db_file(private_data_path("overrides.csv"))
         names = load_keyed_db_file(transient_data_path("names.csv"))
-        names.update(overrides)
+
+        if not names:
+            # then we can't get a schema
+            names.update(overrides)
+            return names
+
+        schema = next(iter(names.values())).__class__
+        names_keys = set(schema._fields)
+        overrides_keys = set(schema._fields)
+        if not overrides_keys <= names_keys:
+            raise Exception('names.csv schema error: all of "chara_id","kanji","kanji_spaced","kana_spaced","conventional" must be present in the header')
+
+        for key in overrides:
+            intermediate = names.get(key)
+            if intermediate is None:
+                continue
+
+            d = intermediate._asdict()
+            d.update(overrides[key]._asdict())
+            names[key] = schema(**d)
+
         return names
 
     def prime_caches(self):
@@ -263,9 +283,9 @@ class DataCache(object):
         cur = self.hnd.execute(query, idl)
 
         for p in self.prime_from_cursor("chara_data_t", cur,
-            kanji_spaced = lambda obj: self.names.get(obj.chara_id).kanji_spaced,
-            kana_spaced = lambda obj:  self.names.get(obj.chara_id).kana_spaced,
-            conventional =lambda obj: self.names.get(obj.chara_id).conventional,
+            kanji_spaced=lambda obj: self.names.get(obj.chara_id).kanji_spaced,
+            kana_spaced=lambda obj:  self.names.get(obj.chara_id).kana_spaced,
+            conventional=lambda obj: self.names.get(obj.chara_id).conventional,
             valist=lambda obj: []):
             self.char_cache[p.chara_id] = p
             self.primed_this["prm_char"] += 1
