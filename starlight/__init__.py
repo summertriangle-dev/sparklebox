@@ -206,14 +206,27 @@ class DataCache(object):
         if not overrides_keys <= names_keys:
             raise Exception('names.csv schema error: all of "chara_id","kanji","kanji_spaced","kana_spaced","conventional" must be present in the header')
 
+        # maps kanji -> chara id
+        by_kanji = {v.kanji: k for k, v in names.items()}
+
         for key in overrides:
-            intermediate = names.get(key)
+            if key < 0:
+                # a negative chara id in the override entry means we should match on kanji.
+                real_key = by_kanji.get(overrides[key].kanji)
+                intermediate = names.get(real_key)
+            else:
+                real_key = key
+                intermediate = names.get(key)
+
             if intermediate is None:
                 continue
 
             d = intermediate._asdict()
-            d.update(overrides[key]._asdict())
-            names[key] = schema(**d)
+            override_vals = overrides[key]._asdict()
+            # chara_id may differ if we indexed on kanji, so remove it
+            del override_vals["chara_id"]
+            d.update(override_vals)
+            names[real_key] = schema(**d)
 
         return names
 
