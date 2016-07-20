@@ -370,6 +370,20 @@ class HappeningAPI(HandlerSyncedWithMaster, APIUtilMixin):
         else:
             json.dump(payload, self, ensure_ascii=0, default=self.fix_datetime)
 
+@route(r"/api/v1/info")
+class InformationAPI(HandlerSyncedWithMaster):
+    def get(self):
+        self.set_header("Content-Type", "application/json; charset=utf-8")
+
+        payload = {
+            "truth_version": starlight.data.version
+        }
+
+        if self.settings["is_dev"]:
+            json.dump(payload, self, ensure_ascii=0, sort_keys=1, indent=2)
+        else:
+            json.dump(payload, self, ensure_ascii=0)
+
 @route(r"/api/private/va_table")
 class VATable(HandlerSyncedWithMaster):
     def post(self):
