@@ -58,7 +58,7 @@ class TranslateReadAPI(tornado.web.RequestHandler):
     def complete(self, ret):
         from_db = {tlo.key: tlo.english for tlo in ret if tlo.english != tlo.key}
         self.set_header("Content-Type", "application/json; charset=utf-8")
-        self.write(json.dumps(from_db))
+        self.write(json.dumps(from_db), ensure_ascii=0)
         self.finish()
 
 
@@ -284,7 +284,7 @@ class ObjectAPI(HandlerSyncedWithMaster, APIUtilMixin):
         if self.settings["is_dev"]:
             json.dump({"result": h(ids, cfg)}, self, ensure_ascii=0, sort_keys=1, indent=2)
         else:
-            json.dump({"result": h(ids, cfg)}, self)
+            json.dump({"result": h(ids, cfg)}, self, ensure_ascii=0)
 
 @route(r"/api/v1/list/card_t")
 class CardListAPI(HandlerSyncedWithMaster, APIUtilMixin):
@@ -333,7 +333,7 @@ class CardListAPI(HandlerSyncedWithMaster, APIUtilMixin):
         if self.settings["is_dev"]:
             json.dump({"result": list(roots)}, self, ensure_ascii=0, sort_keys=1, indent=2)
         else:
-            json.dump({"result": list(roots)}, self)
+            json.dump({"result": list(roots)}, self, ensure_ascii=0)
 
 @route(r"/api/v1/list/char_t")
 class CharListAPI(CardListAPI):
@@ -384,7 +384,7 @@ class HappeningAPI(HandlerSyncedWithMaster, APIUtilMixin):
         if self.settings["is_dev"]:
             json.dump(payload, self, ensure_ascii=0, sort_keys=1, indent=2, default=self.fix_datetime)
         else:
-            json.dump(payload, self, default=self.fix_datetime)
+            json.dump(payload, self, ensure_ascii=0, default=self.fix_datetime)
 
 @route(r"/api/private/va_table")
 class VATable(HandlerSyncedWithMaster):
