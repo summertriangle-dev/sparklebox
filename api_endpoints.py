@@ -42,7 +42,7 @@ class TranslateReadAPI(tornado.web.RequestHandler):
     def complete(self, ret):
         from_db = {tlo.key: tlo.english for tlo in ret if tlo.english != tlo.key}
         self.set_header("Content-Type", "application/json; charset=utf-8")
-        self.write(json.dumps(from_db), ensure_ascii=0)
+        json.dump(from_db, self, ensure_ascii=0)
         self.finish()
 
 
