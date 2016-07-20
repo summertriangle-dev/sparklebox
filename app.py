@@ -15,9 +15,11 @@ from collections import namedtuple
 import models
 import dispatch
 import endpoints
+import api_endpoints
 import enums
 import starlight
 import analytics
+import webutil
 from starlight import private_data_path
 
 def early_init():
@@ -93,10 +95,10 @@ def main():
         tle=models.TranslationEngine(starlight, use_satellite=1),
         enums=enums,
         starlight=starlight,
-        tlable=endpoints.tlable,
-        icon=endpoints.icon,
-        icon_ex=endpoints.icon_ex,
-        audio=endpoints.audio,
+        tlable=webutil.tlable,
+        icon=webutil.icon,
+        icon_ex=webutil.icon_ex,
+        audio=webutil.audio,
         analytics=analytics.Analytics())
     http_server = tornado.httpserver.HTTPServer(application, xheaders=1)
 

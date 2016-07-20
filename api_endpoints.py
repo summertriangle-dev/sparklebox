@@ -14,22 +14,6 @@ import enums
 from datetime import datetime, timedelta
 from functools import partial
 
-def tlable_make_assr(text):
-    if not text:
-        return "@!@!"
-    else:
-        salt = os.getenv("TLABLE_SALT").encode("utf8")
-        return base64.b64encode(hashlib.sha256(text.encode("utf8") + salt).digest()).decode("utf8")
-
-def tlable(text, write=1):
-    text = text.replace("\n", " ")
-    if write:
-        return """<span class="tlable" data-summertriangle-assr="{1}">{0}</span>""".format(
-            tornado.escape.xhtml_escape(text), tlable_make_assr(text))
-    else:
-        return """<span class="tlable">{0}</span>""".format(
-            tornado.escape.xhtml_escape(text))
-
 @route("/api/v1/read_tl")
 class TranslateReadAPI(tornado.web.RequestHandler):
     """ Queries database for cs translation entries """
