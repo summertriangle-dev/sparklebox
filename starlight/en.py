@@ -71,6 +71,9 @@ def describe_lead_skill(lskill):
     return REMOVE_HTML.sub("", describe_lead_skill_html(lskill))
 
 def describe_skill_html(skill):
+    if skill is None:
+        return "No effect"
+
     fire_interval = skill.condition
     effect_val = skill.value
     # TODO symbols
@@ -90,6 +93,9 @@ def describe_skill_html(skill):
 
 
 def describe_lead_skill_html(skill):
+    if skill is None:
+        return "No effect"
+
     if skill.up_type == 1 and skill.type == 20:
         target_attr = enums.lskill_target(skill.target_attribute)
         target_param = enums.lskill_param(skill.target_param)

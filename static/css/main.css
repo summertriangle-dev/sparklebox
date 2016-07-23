@@ -697,6 +697,7 @@ span.var {
 }
 .box > .content {
   padding: 5px;
+  overflow: scroll;
 }
 .box > .content > * {
   vertical-align: middle;

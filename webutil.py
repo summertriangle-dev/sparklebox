@@ -4,6 +4,7 @@ import base64
 import os
 import starlight
 import enums
+import struct
 
 def tlable_make_assr(text):
     if not text:
@@ -58,3 +59,69 @@ def audio(object_id, use, index):
     basename = hex(a)[2:]
 
     return "va2/{0}.mp3".format(basename)
+
+SHORT_MAX_ENCODABLE_ATTR = 3
+SHORT_MAX_ENCODABLE_UNIQ = 8191
+
+def encode_card_id_short(id_):
+    attr_part = id_ // 100000
+
+    if attr_part > SHORT_MAX_ENCODABLE_ATTR:
+        return encode_card_id_long(id_)
+
+    uniq_part = id_ % 100000
+
+    if uniq_part > SHORT_MAX_ENCODABLE_UNIQ:
+        return encode_card_id_long(id_)
+
+    pack = (0b1000000000000000 |
+               attr_part << 13 |
+                     uniq_part )
+
+    return struct.pack(">H", pack)
+
+def encode_card_id_long(id_):
+    if id_ >= 2 ** 31:
+        raise ValueError("unencodable id")
+
+    return struct.pack(">I", id_)
+
+def encode_cardlist(ids):
+    return base64.urlsafe_b64encode(b"".join(encode_card_id_short(x) for x in ids)).decode("ascii")
+
+def encode_card_structs(cards):
+    return encode_cardlist(card.id for card in cards)
+
+def decode_card_id_short(the_id):
+    packv, = struct.unpack(">H", the_id)
+    return (((packv >> 13) & 0b11) * 100000) + (packv & 8191)
+
+def decode_card_id_long(the_id):
+    return struct.unpack(">I", the_id)[0]
+
+def decode_cardlist(id_b):
+    lastgroup = len(id_b) % 4
+    if lastgroup == 2:
+        id_b += "=="
+    else:
+        id_b += "="
+
+    bytea = base64.urlsafe_b64decode(id_b.encode("ascii"))
+    result = []
+
+    while bytea:
+        if bytea[0] & 0x80:
+            if len(bytea) < 2:
+                raise ValueError("malformed card list")
+
+            result.append(decode_card_id_short(bytea[:2]))
+            advance = 2
+        else:
+            if len(bytea) < 4:
+                raise ValueError("malformed card list")
+
+            result.append(decode_card_id_long(bytea[:4]))
+            advance = 4
+
+        bytea = bytea[advance:]
+    return result

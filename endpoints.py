@@ -9,9 +9,10 @@ import time
 import pytz
 import itertools
 import enums
+import table
 from datetime import datetime, timedelta
 
-from webutil import *
+import webutil
 
 @route(r"/([0-9]+-[0-9]+-[0-9]+)?")
 class Home(HandlerSyncedWithMaster):
@@ -166,6 +167,37 @@ class Card(HandlerSyncedWithMaster):
             self.set_status(404)
             self.write("Not found.")
 
+@route(r"/table/([A-Za-z]+)/([0-9\,]+)")
+class CompareCard(HandlerSyncedWithMaster):
+    def get(self, dataset, card_idlist):
+        plus = bool(self.get_argument("plus", 0))
+
+        card_ids = [int(x) for x in card_idlist.strip(",").split(",")]
+
+        chains = [starlight.data.chain(id) for id in card_ids]
+        unique = []
+        for c in chains:
+            if c not in unique:
+                unique.append(c)
+
+        acard = []
+        for chain in unique:
+            acard.append(starlight.data.card(chain[-1 if plus else 0]))
+
+        filters, categories = table.select_categories(dataset.upper())
+
+        if acard:
+            self.set_header("Content-Type", "text/html")
+            self.render("generictable.html",
+                filters=filters,
+                categories=categories,
+                cards=acard,
+                original_dataset=dataset, **self.settings)
+            self.settings["analytics"].analyze_request(
+                self.request, self.__class__.__name__, {"card_id": card_idlist})
+        else:
+            self.set_status(404)
+            self.write("Not found.")
 
 @route(r"/sprite_go/([0-9]+).png")
 class SpriteRedirect(tornado.web.RequestHandler):
