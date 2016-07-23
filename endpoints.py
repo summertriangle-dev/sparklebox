@@ -75,11 +75,63 @@ class EventD(HandlerSyncedWithMaster):
             self.write("None")
 
 
-@route(r"/gacha")
+@route(r"/gacha(?:/([0-9]+))?")
 class GachaTable(HandlerSyncedWithMaster):
-    def get(self):
-        self.set_header("Content-Type", "text/plain; charset=utf-8")
-        self.write("Sorry, I'll get around to implementing this soon...")
+    def get(self, maybe_gachaid):
+
+        if maybe_gachaid:
+            maybe_gachaid = int(maybe_gachaid)
+            gachas = starlight.data.gacha_ids()
+
+            for gcid in gachas:
+                if gcid.id == maybe_gachaid:
+                    selected_gacha = gcid
+                    break
+            else:
+                selected_gacha = None
+        else:
+            now = pytz.utc.localize(datetime.utcnow())
+            gachas = starlight.data.gachas(now)
+
+            if gachas:
+                selected_gacha = gachas[0]
+            else:
+                selected_gacha = None
+
+        if selected_gacha is None:
+            self.set_status(404)
+            self.write("Not found.")
+
+        availability_list = starlight.data.available_cards([selected_gacha])[0]
+        availability_list.sort(key=lambda x: x[0] or 9001)
+        starlight.data.cards(av[1] for av in availability_list)
+
+        self.render("gacha_table2.html",
+                    cards=availability_list,
+                    gacha=selected_gacha,
+                    **self.settings)
+        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
+            {"gid": maybe_gachaid})
+
+@route(r"/t/([A-Za-z]+)/([^/]+)")
+class GTable(HandlerSyncedWithMaster):
+    def get(self, dataset, spec):
+        try:
+            idlist = webutil.decode_cardlist(spec)
+        except ValueError:
+            self.set_status(400)
+            self.write("The card list could not be parsed")
+            return
+
+        filters, categories = table.select_categories(dataset.upper())
+
+        self.render("generictable.html",
+                    filters=filters,
+                    categories=categories,
+                    cards=starlight.data.cards(idlist),
+                    original_dataset=dataset,
+                    **self.settings)
+        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 @route(r"/skill_table")
 class SkillTable(HandlerSyncedWithMaster):

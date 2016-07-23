@@ -134,9 +134,9 @@ class DataCache(object):
 
     def available_cards(self, gachas):
         current = gachas
-        query = "SELECT gacha_id, reward_id FROM gacha_available WHERE gacha_id IN ({0})".format(",".join("?" * len(current)))
+        query = "SELECT gacha_id, reward_id, limited_flag, recommend_order FROM gacha_available WHERE gacha_id IN ({0})".format(",".join("?" * len(current)))
         tmp = defaultdict(lambda: [])
-        [tmp[gid].append(reward) for gid, reward in self.hnd.execute(query, tuple(g.id for g in current))]
+        [tmp[gid].append((rec, reward, lim)) for gid, reward, lim, rec in self.hnd.execute(query, tuple(g.id for g in current))]
 
         self.primed_this["sel_ac"] += 1
         return [tmp[gacha.id] for gacha in current]

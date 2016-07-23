@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% if is_dev %}
+  <link rel="stylesheet/less" type="text/css" href="{{ handler.static_url("css/main.less") }}" />
+  <script type="text/javascript" src="{{ handler.static_url("js/less.js") }}"></script>
+  {% else %}
+  <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
+  {% end %}
+  <link rel="stylesheet" type="text/css" href="{{ image_host }}/icons2/icons.css?c={{ starlight.data.version }}" />
+  <link rel="stylesheet" type="text/css" href="{{ image_host }}/icons2/icons@2x.css?c={{ starlight.data.version }}" />
+  <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
+  <script type="text/javascript" src="{{ handler.static_url("js/skills.js") }}"></script>
+
+  <title>Cards by Centre Skill (sldb)</title>
+</head>
+
+<body>
+  {% include header.html %}
+
+  <div class="container">
+    <div class="stdcon chara_header">
+      {% for filter_ in filters %}
+      <table class="stats_table control_table">
+        <tr class="toggles_row">
+          <th>{{ _(filter_.name) }}</th>
+
+          {% for fopt in filter_.options %}
+
+          {% if fopt.kill_class %}
+          <td onclick="toggle_kill_css(this)" data-kill-class="{{ fopt.kill_class }}" class="vocal">X</td>
+          {% else %}
+          <td></td>
+          {% end %}
+
+          {% end %}
+        </tr>
+        <tr>
+          <th>&nbsp;</th>
+
+          {% for fopt in filter_.options %}
+
+          {% if fopt.kill_class %}
+          <th>{{ _(fopt.name) }}</th>
+          {% else %}
+          <th></th>
+          {% end %}
+
+          {% end %}
+        </tr>
+      </table>
+      {% end %}
+
+      <p>
+        <a href="/t/{{ original_dataset }}/{{ webutil.encode_card_structs(cards) }}">Short link</a>
+      </p>
+    </div>
+
+    <table class="table" style="width:100%">
+      <tr class="control_row">
+        {% for cat in categories %}
+
+        {% raw cat.make_headers() %}
+
+        {% end %}
+      </tr>
+      {% for card in cards %}
+      <tr class="{{ " ".join(filter(bool, (filt.gen_object_class(card) for filt in filters))) }}">
+        {% for cat in categories %}
+
+        {% raw cat.make_values(card) %}
+
+        {% end %}
+      </tr>
+      {% end %}
+    </table>
+  </div>
+
+  {% include footer.html %}
+  <script>tlinject_activate()</script>
+</body>
+</html>
