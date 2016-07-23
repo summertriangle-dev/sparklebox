@@ -134,6 +134,12 @@
 
     <p>Get time-sensitive information.</p>
 
+    <h3 id="toc_22">Information</h3>
+
+    <div><pre><code class="language-none">GET /api/v1/info</code></pre></div>
+
+    <p>Return a bit of information about this instance of ssdb as a JSON dictionary. Currently, only the <code>truth_version</code> key in included, which will tell you the game master version that ssdb's data is derived from.</p>
+
     <h2 id="toc_15">Misc.</h2>
 
     <h3 id="toc_16">URLs</h3>
@@ -151,6 +157,8 @@
     <h3 id="toc_17">Images</h3>
 
     <p>Some objects will have image URLs embedded in them. As a general rule, you can hotlink any image returned in an API response. However, if you expect a lot of traffic, you may want to mirror the images to your own server.</p>
+    
+    <p>Do not make any assumptions about the file hierarchy of hoshimoriuta.kirara.ca. I reserve the right to make any change to it at any time, which will probably break your hardcoded image URLs. (Links you find in API responses will remain valid for a reasonable amount of time, so you can still cache them.)</p>
 
     <h3 id="toc_18">Errors</h3>
 
@@ -162,7 +170,7 @@
 
     <h3 id="toc_19">Rate limiting</h3>
 
-    <p>There is none. If it does exist in the future, we will return an HTTP 429 status with the error object.</p>
+    <p>There is none currently. If it does exist in the future, we will return an HTTP 429 status with the error object.</p>
 
     <h3 id="toc_20">Attribution</h3>
 
