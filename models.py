@@ -14,6 +14,7 @@ import multiprocessing
 from tornado.ioloop import IOLoop
 from functools import partial
 from collections import defaultdict, namedtuple
+import starlight
 
 unknown_gacha_t = namedtuple("unknown_gacha_t", ("name"))
 
@@ -424,12 +425,10 @@ class TranslationEngine(TranslationSQL):
 
         self.cache_id = dv
 
-    def translate_name(self, kanji):
-        if self.cache_id != self.dsrc.data.version:
-            self.kill_caches(self.dsrc.data.version)
-
-        k = self.k2r.get(kanji, kanji)
-        return k
+    # TODO: remove
+    @staticmethod
+    def translate_name(kanji):
+        return starlight.data.translate_name(kanji)
 
     def get_history(self, nent):
         if self.cache_id != self.dsrc.data.version:
