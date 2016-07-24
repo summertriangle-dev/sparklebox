@@ -2,11 +2,15 @@ from collections import namedtuple
 import webutil
 import enums
 import starlight
+from tornado.escape import xhtml_escape
+
+E = xhtml_escape
+
+# TODO: for this entire file, extract all english strings and put them in starlight.en,
+# or maybe use tornado's localization module?
 
 option_t = namedtuple("option_t", ("name", "kill_class"))
 filter_t = namedtuple("filter_t", ("name", "options", "gen_object_class"))
-#cell_t = namedtuple("cell_t", ("content", "classes", "raw"))
-Datum = namedtuple("datum_t", ("make_headers", "make_values", "applicable_filters"))
 
 card_attribute = filter_t("Idol Attribute", (
     option_t("Cute",      "Cute_kc"),
@@ -70,15 +74,20 @@ class CardProfile(Datum):
 
     def make_headers(self):
         return (
-            """<th>Card</th> <th class="hides_under_mobile"></th>"""
+            """<th>Card</th><th></th>"""
         )
 
     def make_values(self, a_card):
         return (
             """<td class="{attr_class}"> <a href="/char/{card.chara_id}#c_{card.id}_head">{icon_id}</a> </td>"""
-            """<td class="{attr_class} hides_under_mobile"> <a href="/char/{card.chara_id}#c_{card.id}_head">{tle_translate}</a><br> <small>{tle_title}</small> </td>"""
-        ).format(card=a_card, tle_translate=a_card.name_only, tle_title=webutil.tlable(a_card.title) if a_card.title_flag else "",
-                icon_id=webutil.icon(a_card.id), attr_class=enums.attribute(a_card.attribute))
+            """<td class="{attr_class}"> <a href="/char/{card.chara_id}#c_{card.id}_head">{tle_translate}</a><br> <small>{tle_title}</small> </td>"""
+        ).format(
+            card=a_card,
+            tle_translate=starlight.data.translate_name(a_card.name_only),
+            tle_title=webutil.tlable(a_card.title) if a_card.title_flag else "",
+            icon_id=webutil.icon(a_card.id),
+            attr_class=E(enums.attribute(a_card.attribute))
+        )
 
 class SkillType(Datum):
     applicable_filters = [skill_type]
@@ -93,7 +102,7 @@ class SkillType(Datum):
         if a_card.skill:
             return (
                 """<td> <div class="icon {0}"></div> </td>"""
-            ).format(enums.skill_class(a_card.skill.skill_type))
+            ).format(E(enums.skill_class(a_card.skill.skill_type)))
         else:
             return """<td></td>"""
 
@@ -171,7 +180,7 @@ class HighStat(Datum):
     def make_values(self, a_card):
         return (
             """<td> <div class="icon {0}"></div> </td>"""
-        ).format(enums.stat_dot(a_card.best_stat))
+        ).format(E(enums.stat_dot(a_card.best_stat)))
 
 class AppealsHigh(Datum):
     applicable_filters = []
