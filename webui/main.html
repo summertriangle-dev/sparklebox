@@ -37,7 +37,7 @@
       <div class="header">
         <span class="item left">Event: <b>{% raw tlable(event.name) %}</b></span>
         <span class="item ext"></span>
-        <span class="item right">ends in <span class="counter" data-count-to="{{ event.end_date.timestamp() }}">meme</span></span>
+        <span class="item right">ends in <span class="counter" data-count-to="{{ event.end_date.timestamp() }}">(JS?)</span></span>
       </div>
       <div class="content" style="background:#333;">
         <div class="iconex_row">
@@ -57,7 +57,7 @@
         {% end %}
         <span class="item ext"></span>
         <span class="item right">
-          expires in <span class="counter" data-count-to="{{ gacha.end_date.timestamp() }}">meme</span>
+          expires in <span class="counter" data-count-to="{{ gacha.end_date.timestamp() }}">(JS?)</span>
           {% if gacha.rates != gacha.rates._REGULAR_RATES %}
           <small>rates: R {{ gacha.rates.r }}% / SR {{ gacha.rates.sr }}% / SSR {{ gacha.rates.ssr }}%</small>
           {% end %}
@@ -68,6 +68,10 @@
         {% for ent in available %}
         {% raw icon_ex(ent, request.is_low_bandwidth) %}
         {% end %}
+      </div>
+      {% else %}
+      <div class="content" style="background:#333;text-align:left;">
+        <a href="/gacha/{{ gacha.id }}">(full availability list)</a>
       </div>
       {% end %}
       {% end %}
