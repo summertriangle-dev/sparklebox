@@ -2,12 +2,17 @@
 
 {% block extra_header %}
 <div class="name_slab">
-  {% raw tlable(gacha.name) %} <small>(internally known as: {{ gacha.id }})</small>
+  {% raw tlable(gacha.name) %} <small>({{ gacha.id }})</small>
 </div>
 {% end %}
 
 {% block extra_info %}
-<p>
-  The "Lm?" column is whether the card is marked limited in this gacha.
-</p>
+<ul>
+  <li>This gacha ends in <span class="counter" data-count-to="{{ gacha.end_date.timestamp() }}">(JS?)</span>.</li>
+  {% if gacha.rates != gacha.rates._REGULAR_RATES %}
+  <li>This gacha has abnormal rates: R {{ gacha.rates.r }}% / SR {{ gacha.rates.sr }}% / SSR {{ gacha.rates.ssr }}%</li>
+  {% end %}
+</ul>
+
+<script> event_counter_init(); </script>
 {% end %}
