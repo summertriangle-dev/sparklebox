@@ -14,7 +14,7 @@
   <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
   <script type="text/javascript" src="{{ handler.static_url("js/skills.js") }}"></script>
 
-  <title>Cards by Centre Skill (sldb)</title>
+  <title>{{ table_name }} (sldb)</title>
 </head>
 
 <body>
@@ -22,6 +22,9 @@
 
   <div class="container">
     <div class="stdcon chara_header">
+      {% block extra_header %}
+      {% end %}
+
       {% for filter_ in filters %}
       <table class="stats_table control_table">
         <tr class="toggles_row">
@@ -53,29 +56,36 @@
       </table>
       {% end %}
 
+      {% if show_shortlink %}
       <p>
         <a href="/t/{{ original_dataset }}/{{ webutil.encode_card_structs(cards) }}">Short link</a>
       </p>
+      {% end %}
+
+      {% block extra_info %}
+      {% end %}
     </div>
 
-    <table class="table" style="width:100%">
-      <tr class="control_row">
-        {% for cat in categories %}
+    <div class="contains_large_table">
+      <table class="table" style="width:100%">
+        <tr class="control_row">
+          {% for cat in categories %}
 
-        {% raw cat.make_headers() %}
+          {% raw cat.make_headers() %}
 
+          {% end %}
+        </tr>
+        {% for card in cards %}
+        <tr class="{{ " ".join(filter(bool, (filt.gen_object_class(card) for filt in filters))) }}">
+          {% for cat in categories %}
+
+          {% raw cat.make_values(card) %}
+
+          {% end %}
+        </tr>
         {% end %}
-      </tr>
-      {% for card in cards %}
-      <tr class="{{ " ".join(filter(bool, (filt.gen_object_class(card) for filt in filters))) }}">
-        {% for cat in categories %}
-
-        {% raw cat.make_values(card) %}
-
-        {% end %}
-      </tr>
-      {% end %}
-    </table>
+      </table>
+    </div>
   </div>
 
   {% include footer.html %}

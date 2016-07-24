@@ -1,0 +1,13 @@
+{% extends "generictable.html" %}
+
+{% block extra_header %}
+<div class="name_slab">
+  {% raw tlable(gacha.name) %} <small>(internally known as: {{ gacha.id }})</small>
+</div>
+{% end %}
+
+{% block extra_info %}
+<p>
+  The "Lm?" column is whether the card is marked limited in this gacha.
+</p>
+{% end %}

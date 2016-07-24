@@ -74,83 +74,6 @@ class EventD(HandlerSyncedWithMaster):
         else:
             self.write("None")
 
-
-@route(r"/gacha(?:/([0-9]+))?")
-class GachaTable(HandlerSyncedWithMaster):
-    def get(self, maybe_gachaid):
-
-        if maybe_gachaid:
-            maybe_gachaid = int(maybe_gachaid)
-            gachas = starlight.data.gacha_ids()
-
-            for gcid in gachas:
-                if gcid.id == maybe_gachaid:
-                    selected_gacha = gcid
-                    break
-            else:
-                selected_gacha = None
-        else:
-            now = pytz.utc.localize(datetime.utcnow())
-            gachas = starlight.data.gachas(now)
-
-            if gachas:
-                selected_gacha = gachas[0]
-            else:
-                selected_gacha = None
-
-        if selected_gacha is None:
-            self.set_status(404)
-            self.write("Not found.")
-
-        availability_list = starlight.data.available_cards([selected_gacha])[0]
-        availability_list.sort(key=lambda x: x[0] or 9001)
-        starlight.data.cards(av[1] for av in availability_list)
-
-        self.render("gacha_table2.html",
-                    cards=availability_list,
-                    gacha=selected_gacha,
-                    **self.settings)
-        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
-            {"gid": maybe_gachaid})
-
-@route(r"/t/([A-Za-z]+)/([^/]+)")
-class GTable(HandlerSyncedWithMaster):
-    def get(self, dataset, spec):
-        try:
-            idlist = webutil.decode_cardlist(spec)
-        except ValueError:
-            self.set_status(400)
-            self.write("The card list could not be parsed")
-            return
-
-        filters, categories = table.select_categories(dataset.upper())
-
-        self.render("generictable.html",
-                    filters=filters,
-                    categories=categories,
-                    cards=starlight.data.cards(idlist),
-                    original_dataset=dataset,
-                    **self.settings)
-        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
-
-@route(r"/skill_table")
-class SkillTable(HandlerSyncedWithMaster):
-    def get(self):
-        self.render("skill_table.html",
-                    cards=starlight.data.cards(starlight.data.all_chain_ids()),
-                    **self.settings)
-        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
-
-
-@route(r"/lead_skill_table")
-class LeadSkillTable(HandlerSyncedWithMaster):
-    def get(self):
-        self.render("lead_skill_table.html",
-                    cards=starlight.data.cards(starlight.data.all_chain_ids()),
-                    **self.settings)
-        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
-
-
 @route(r"/char/([0-9]+)(/table)?")
 class Character(HandlerSyncedWithMaster):
     def get(self, chara_id, use_table):
@@ -219,6 +142,45 @@ class Card(HandlerSyncedWithMaster):
             self.set_status(404)
             self.write("Not found.")
 
+# all the table handlers go here
+
+@route(r"/t/([A-Za-z]+)/([^/]+)")
+class ShortlinkTable(HandlerSyncedWithMaster):
+    def rendertable(self, dataset, cards, allow_shortlink=1, table_name="Custom Table"):
+        filters, categories = table.select_categories(dataset)
+
+        self.render("generictable.html",
+                    filters=filters,
+                    categories=categories,
+                    cards=cards,
+                    original_dataset=dataset,
+                    show_shortlink=allow_shortlink,
+                    table_name=table_name,
+                    **self.settings)
+
+    def get(self, dataset, spec):
+        try:
+            idlist = webutil.decode_cardlist(spec)
+        except ValueError:
+            self.set_status(400)
+            self.write("The card list could not be parsed")
+            return
+
+        self.rendertable(dataset.upper(), starlight.data.cards(idlist))
+        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
+
+@route(r"/skill_table")
+class SkillTable(ShortlinkTable):
+    def get(self):
+        self.rendertable("CASDE", starlight.data.cards(starlight.data.all_chain_ids()), allow_shortlink=0, table_name="Cards by skill")
+        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
+
+@route(r"/lead_skill_table")
+class LeadSkillTable(ShortlinkTable):
+    def get(self):
+        self.rendertable("CAKL", starlight.data.cards(starlight.data.all_chain_ids()), allow_shortlink=0, table_name="Cards by lead skill")
+        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
+
 @route(r"/table/([A-Za-z]+)/([0-9\,]+)")
 class CompareCard(HandlerSyncedWithMaster):
     def get(self, dataset, card_idlist):
@@ -244,12 +206,70 @@ class CompareCard(HandlerSyncedWithMaster):
                 filters=filters,
                 categories=categories,
                 cards=acard,
-                original_dataset=dataset, **self.settings)
+                original_dataset=dataset,
+                table_name="Custom Table",
+                show_shortlink=1,
+                **self.settings)
             self.settings["analytics"].analyze_request(
                 self.request, self.__class__.__name__, {"card_id": card_idlist})
         else:
             self.set_status(404)
             self.write("Not found.")
+
+@route(r"/gacha(?:/([0-9]+))?")
+class GachaTable(HandlerSyncedWithMaster):
+    def get(self, maybe_gachaid):
+        if maybe_gachaid:
+            maybe_gachaid = int(maybe_gachaid)
+            gachas = starlight.data.gacha_ids()
+
+            for gcid in gachas:
+                if gcid.id == maybe_gachaid:
+                    selected_gacha = gcid
+                    break
+            else:
+                selected_gacha = None
+        else:
+            now = pytz.utc.localize(datetime.utcnow())
+            gachas = starlight.data.gachas(now)
+
+            if gachas:
+                selected_gacha = gachas[0]
+            else:
+                selected_gacha = None
+
+        if selected_gacha is None:
+            self.set_status(404)
+            self.write("Not found. If there's no gacha happening right now, you'll have to specify an ID.")
+            return
+
+        availability_list = starlight.data.available_cards([selected_gacha])[0]
+        availability_list.sort(key=lambda x: x[0] or 9001)
+
+        card_list = starlight.data.cards(av[1] for av in availability_list)
+        limited_flags = {av[1]: av[2] for av in availability_list}
+
+        filters, categories = table.select_categories("CASDE")
+
+        lim_cat = table.CustomBool()
+        lim_cat.header_text = "Lm?"
+        lim_cat.values = limited_flags
+        lim_cat.yes_text = "Yes"
+        lim_cat.no_text = "No"
+
+        categories.insert(0, lim_cat)
+
+        self.render("ext_gacha_table.html",
+            filters=filters,
+            categories=categories,
+            cards=card_list,
+            table_name="Custom Table",
+            show_shortlink=0,
+            gacha=selected_gacha,
+            **self.settings)
+        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
+            {"gid": maybe_gachaid})
+
 
 @route(r"/sprite_go/([0-9]+).png")
 class SpriteRedirect(tornado.web.RequestHandler):

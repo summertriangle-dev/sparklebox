@@ -213,6 +213,25 @@ class AppealsLow(Datum):
             """<td class="dance"> {a_card.dance_min} </td>"""
         ).format(a_card=a_card)
 
+class CustomBool(Datum):
+    applicable_filters = []
+    # can't be selected via url because only A-Za-z is allowed
+    uid = "_"
+
+    yes_text = "True"
+    no_text = "False"
+    header_text = ""
+
+    def make_headers(self):
+        return (
+            """<th>{0}</th>"""
+        ).format(E(self.header_text))
+
+    def make_values(self, a_card):
+        if self.values.get(a_card.id):
+            return """<td class="cb_true"> {0} </td>""".format(E(self.yes_text))
+        else:
+            return """<td class="cb_false"> {0} </td>""".format(E(self.no_text))
 
 uid_to_cls = {V.uid: V for V in Datum.__subclasses__()}
 
