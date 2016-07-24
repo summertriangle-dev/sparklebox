@@ -32,6 +32,9 @@
 @available_colour: lighten(#339933, 40%);
 @unavailable_colour: lighten(#ff0000, 40%);
 
+/* this is the point height (width in landscape) of the iPhone 6[s] plus */
+@big_table_min_width: 414px;
+
 * {
   -webkit-font-smoothing: antialiased;
   -webkit-font-size-adjust:none;
@@ -240,7 +243,7 @@ div.stdcon {
 
   height:100%;
   width:100%;
-  
+
   td {
     border:1px solid #ddd;
     padding:3px 6px;
@@ -260,16 +263,19 @@ td {
   &.vocal, &.vocal span {
     background-color:@vocal_colour;
     color:lighten(saturate(@vocal_colour, 10%), 40%);
+    border-color:darken(@vocal_colour, 10%);
     font-weight:normal;
   }
   &.dance, &.dance span {
     background-color:@dance_colour;
     color:lighten(saturate(@dance_colour, 10%), 40%);
+    border-color:darken(@dance_colour, 10%);
     font-weight:normal;
   }
   &.visual, &.visual span {
     background-color:@visual_colour;
     color:darken(saturate(@visual_colour, 10%), 40%);
+    border-color:darken(@visual_colour, 10%);
     font-weight:normal;
   }
   &.life, &.life span {
@@ -680,7 +686,7 @@ span.var {
       list-style-position:inside;
       padding-left:5px;
     }
-    
+
     overflow:scroll;
   }
 
@@ -918,13 +924,13 @@ span.var {
   vertical-align:bottom;
 }
 
-.ga_available td {
+td.cb_true {
   background-color:@available_colour;
-  border-color:darken(@available_colour, 20%);
+  border-color:darken(@available_colour, 10%);
 }
-.ga_unavailable td {
+td.cb_false {
   background-color:@unavailable_colour;
-  border-color:darken(@unavailable_colour, 20%);
+  border-color:darken(@unavailable_colour, 10%);
 }
 
 strong.ga_unavailable {
@@ -967,4 +973,14 @@ strong.ga_available {
       padding-left:8px;
     }
   }
+}
+
+.contains_large_table {
+  .table {
+    min-width:@big_table_min_width;
+  }
+
+  overflow-x:scroll;
+  -webkit-overflow-scrolling:touch;
+  overflow-scrolling:touch;
 }

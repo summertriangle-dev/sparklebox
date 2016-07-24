@@ -1,3 +1,4 @@
+/* this is the point height (width in landscape) of the iPhone 6[s] plus */
 * {
   -webkit-font-smoothing: antialiased;
   -webkit-font-size-adjust: none;
@@ -243,18 +244,21 @@ td.vocal,
 td.vocal span {
   background-color: #ed5469;
   color: #ffffff;
+  border-color: #e82641;
   font-weight: normal;
 }
 td.dance,
 td.dance span {
   background-color: #56b8e0;
   color: #ffffff;
+  border-color: #2ba6d8;
   font-weight: normal;
 }
 td.visual,
 td.visual span {
   background-color: #ff9a33;
   color: #663300;
+  border-color: #ff8100;
   font-weight: normal;
 }
 td.life,
@@ -916,13 +920,13 @@ span.var {
 .table .profile {
   vertical-align: bottom;
 }
-.ga_available td {
+td.cb_true {
   background-color: #b3e6b3;
-  border-color: #66cc66;
+  border-color: #8cd98c;
 }
-.ga_unavailable td {
+td.cb_false {
   background-color: #ffcccc;
-  border-color: #ff6666;
+  border-color: #ff9999;
 }
 strong.ga_unavailable {
   text-decoration: line-through;
@@ -957,4 +961,12 @@ strong.ga_available {
 .global_header a::after {
   content: "»";
   padding-left: 8px;
+}
+.contains_large_table {
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+}
+.contains_large_table .table {
+  min-width: 414px;
 }
