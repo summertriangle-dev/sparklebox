@@ -199,7 +199,6 @@ class AppealsHigh(Datum):
             """<td class="visual"> {visual_max} </td>"""
             """<td class="dance"> {dance_max} </td>"""
         ).format(
-            a_card=a_card,
             vocal_max=a_card.vocal_max + a_card.bonus_vocal,
             visual_max=a_card.visual_max + a_card.bonus_visual,
             dance_max=a_card.dance_max + a_card.bonus_dance
