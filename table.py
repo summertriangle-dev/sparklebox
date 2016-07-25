@@ -21,8 +21,8 @@ lambda card: enums.attribute(card.attribute) + "_kc")
 rarity = filter_t("Card Rarity", (
     option_t("SSR", "SSR_kc"),
     option_t("SR",  "SR_kc"),
-    option_t("R",   "R_kc"),
-    option_t("N",   "N_kc")),
+    option_t("R",   "Rare_kc"),
+    option_t("N",   "Normal_kc")),
 lambda card: enums.rarity(card.rarity) + "_kc")
 
 skill_type = filter_t("Skill Type", (
@@ -195,10 +195,15 @@ class AppealsHigh(Datum):
 
     def make_values(self, a_card):
         return (
-            """<td class="vocal"> {a_card.vocal_max} </td>"""
-            """<td class="visual"> {a_card.visual_max} </td>"""
-            """<td class="dance"> {a_card.dance_max} </td>"""
-        ).format(a_card=a_card)
+            """<td class="vocal"> {vocal_max} </td>"""
+            """<td class="visual"> {visual_max} </td>"""
+            """<td class="dance"> {dance_max} </td>"""
+        ).format(
+            a_card=a_card,
+            vocal_max=a_card.vocal_max + a_card.bonus_vocal,
+            visual_max=a_card.visual_max + a_card.bonus_visual,
+            dance_max=a_card.dance_max + a_card.bonus_dance
+        )
 
 class AppealsLow(Datum):
     applicable_filters = []
