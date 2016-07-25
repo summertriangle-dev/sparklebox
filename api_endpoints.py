@@ -13,6 +13,7 @@ import itertools
 import enums
 from datetime import datetime, timedelta
 from functools import partial
+import webutil
 
 @route("/api/v1/read_tl")
 class TranslateReadAPI(tornado.web.RequestHandler):
@@ -65,7 +66,7 @@ class TranslateWriteAPI(tornado.web.RequestHandler):
         s = load.get("tled", "").strip()
         assr = load.get("security")
         #print(key, s, assr)
-        if not (key and s and assr) or tlable_make_assr(key) != assr:
+        if not (key and s and assr) or webutil.tlable_make_assr(key) != assr:
             self.set_status(400)
             return
 
