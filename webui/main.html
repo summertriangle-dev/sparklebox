@@ -79,48 +79,13 @@
     {% end %}
   </div>
 
-  <div class="container" style="max-width:1280px; display:none">
-    <div class="box black">
-      <div class="contents">
-        <center id="splash"><p>This is your working space.<br>
-                   Card stats can be compared by searching for them above.</p>
-        </center>
-        <table id="workspace_table" class="table">
-          <tr>
-            <th colspan="2">Idol</th>
-            <th>Life</th>
-            <th>Vo</th>
-            <th>Vi</th>
-            <th>Da</th>
-            <th>Skill</th>
-          </tr>
-          <tr id="compare_idol_template" style="display:none">
-            <td id="ci_icon" style="width:1%">{% raw icon(0) %}</td>
-            <td id="ci_name" style="width:180px"></td>
-
-            <td class="life"   id="ci_li">Li</td>
-            <td class="vocal"  id="ci_vo">Vo</td>
-            <td class="visual" id="ci_vi">Vi</td>
-            <td class="dance"  id="ci_da">Da</td>
-            <td id="ci_sk" style="font-size:70%">Sk</td>
-          </tr>
-        </table>
-      </div>
-    </div>
+  <div class="container">
+    <!-- custom homepage text starts here. -->
+    {% include "frontpage_text.html" %}
+    <!-- custom homepage text ends here. -->
   </div>
 
   <div class="container">
-    <p><s>This is temporary while I sort stuff out...</s> There is nothing more permanent than temporary.</p>
-    <ul>
-      <li><a href="/skill_table">Skills table</a></li>
-      <li><a href="/lead_skill_table">Lead skills table</a></li>
-      <li><a href="https://twitter.com/n_triangle_dev">Follow the Holy Constituency on Twitter</a></li>
-      <li><a href="/static/api.html">Developers who don't want to maintain their own data should check out the API.</a></li>
-    </ul>
-  </div>
-
-  <div class="container">
-    <p><small><a target="_blank" href="{{ handler.static_url("dots.html") }}">What are those dots for?</a></small></p>
     <div class="box black">
     {% for new_list in history %}
     {% include new_list_partial.html %}
