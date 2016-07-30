@@ -6,7 +6,7 @@ import models
 import subprocess
 import sys
 from time import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pytz import timezone, utc
 from functools import lru_cache, partial
 from collections import defaultdict, namedtuple, Counter
@@ -82,6 +82,8 @@ gacha_rates_t = namedtuple("gacha_rates_t", ("r", "sr", "ssr"))
 # otherwise there may be a subtle difference between "8850/100" and "88.5"
 # and == will break.
 gacha_rates_t._REGULAR_RATES = gacha_rates_t(8850 / 100, 1000 / 100, 150 / 100)
+
+potential_birthday_t = namedtuple("potential_birthday_t", ("month", "day", "chara"))
 
 TITLE_ONLY_REGEX = r"^［(.+)］"
 NAME_ONLY_REGEX = r"^(?:［.+］)?(.+)$"
@@ -450,6 +452,39 @@ class DataCache(object):
 
     def translate_name(self, kanji):
         return self.kanji_to_name.get(kanji, kanji)
+
+    @lru_cache(1)
+    def birthdays(self):
+        return_value = defaultdict(lambda: [])
+
+        for month, day, chara_id in self.hnd.execute("SELECT birth_month, birth_day, chara_id FROM chara_data WHERE birth_month + birth_day > 0"):
+            return_value[(month, day)].append(chara_id)
+
+        self.primed_this["sel_birth"] += 1
+        return return_value
+
+    def potential_birthdays(self, date):
+        # the date changes depending on timezone.
+        # we can't assume everyone is in UTC, so we'll
+        # return every chara whose birthday is the day
+        # of, the day before, or the day after the date
+        # (UTC) specified in `date`.
+
+        # If you use this method, you should filter
+        # the returned values based on the actual date boundaries
+        # of the user's timezone, i.e. clientside.
+
+        yesterday = date.date() - timedelta(days=1)
+        today = date.date()
+        tomorrow = date.date() + timedelta(days=1)
+
+        pool = []
+
+        for d in [yesterday, today, tomorrow]:
+            char_ids_for_this_day = self.birthdays()[(d.month, d.day)]
+            pool.extend(char_ids_for_this_day)
+
+        return self.charas(pool)
 
     def __del__(self):
         self.hnd.close()

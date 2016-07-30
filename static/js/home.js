@@ -109,3 +109,16 @@ function event_counter_init() {
         }, 500);
     }
 }
+
+function birthday_hider_init() {
+    var els = document.querySelectorAll(".birthday_banner");
+    var today = new Date();
+    for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        var date = el.getAttribute("data-birthday").split("/");
+
+        if (parseInt(date[0]) == today.getMonth() + 1 && parseInt(date[1]) == today.getDate()) {
+            el.style.display = "block";
+        }
+    }
+}

@@ -42,7 +42,8 @@ class Home(HandlerSyncedWithMaster):
 
         self.render("main.html", history=recent_history,
             events=zip(events, event_rewards),
-            la_cards=zip(gachas, gacha_limited), **self.settings)
+            la_cards=zip(gachas, gacha_limited),
+            birthdays=starlight.data.potential_birthdays(now), **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 @route("/suggest")
