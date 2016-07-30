@@ -5,6 +5,7 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 import os
+import tornado.options
 import json
 import ipaddress
 import functools
@@ -85,6 +86,7 @@ def main():
     early_init()
     in_dev_mode = os.environ.get("DEV")
     image_server = os.environ.get("IMAGE_HOST", "")
+    tornado.options.parse_command_line()
     application = tornado.web.Application(dispatch.ROUTES,
         template_path="webui",
         static_path="static",
