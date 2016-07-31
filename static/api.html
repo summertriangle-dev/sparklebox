@@ -136,9 +136,23 @@
 
     <h3 id="toc_22">Information</h3>
 
-    <div><pre><code class="language-none">GET /api/v1/info</code></pre></div>
+    <div><pre><code class="language-none">GET /api/v1/info</code>
 
-    <p>Return a bit of information about this instance of ssdb as a JSON dictionary. Currently, only the <code>truth_version</code> key in included, which will tell you the game master version that ssdb's data is derived from.</p>
+{
+  "api_major": 1,
+  "api_revision": 2,
+  "truth_version": "10017160"
+}
+</pre></div>
+
+    <p>Return a bit of information about this instance of ssdb as a JSON dictionary. The following keys are available:</p>
+
+    <ul>
+      <li>api_major: The major version of the API as an int. Assume a value of 1 if it doesn't exist.</li>
+      <li>api_revision: The minor revision of the API as an int. Assume a value of 1 if it doesn't exist.
+        When new things are added (that don't break the API for existing users), the revision will be bumped.</li>
+      <li>truth_version: The version game data that ssdb derives data from.</li>
+    </ul>
 
     <h2 id="toc_15">Misc.</h2>
 
@@ -157,7 +171,7 @@
     <h3 id="toc_17">Images</h3>
 
     <p>Some objects will have image URLs embedded in them. As a general rule, you can hotlink any image returned in an API response. However, if you expect a lot of traffic, you may want to mirror the images to your own server.</p>
-    
+
     <p>Do not make any assumptions about the file hierarchy of hoshimoriuta.kirara.ca. I reserve the right to make any change to it at any time, which will probably break your hardcoded image URLs. (Links you find in API responses will remain valid for a reasonable amount of time, so you can still cache them.)</p>
 
     <h3 id="toc_18">Errors</h3>
@@ -180,6 +194,19 @@
 
     <p><a href="https://github.com/summertriangle-dev/sparklebox/issues">File an issue here</a> if you have any problems with using the API.</p>
 
+
+    <h2 id="toc_23">Changelog</h2>
+    <ul>
+      <li>1.2:
+        <ul>
+          <li>Added the icon_image_ref key, containing a URL to the object's icon, added to card_t and char_t objects.<br>
+              (Note: the images are 124x124 and 88x88 for card_t and char_t, respectively. They may be changed by Namco, so don't rely on this being true always.)</li>
+        </ul>
+      </li>
+      <li>1.1:
+        <ul><li>Initial release of the API.</li></ul>
+      </li>
+    </ul>
   </div>
 <body>
 </html>

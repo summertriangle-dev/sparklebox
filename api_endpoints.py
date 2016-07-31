@@ -117,10 +117,12 @@ def extend_card(self, d):
         if d["has_spread"] else None
     d["card_image_ref"] = "/".join((self.settings["image_host"], "card", "{0}.png".format(d["id"])))
     d["sprite_image_ref"] = "/".join((self.settings["image_host"], "chara2", str(d["chara_id"]), "{0}.png".format(d["pose"])))
+    d["icon_image_ref"] = "/".join((self.settings["image_host"], "icon_card", "{0}.png".format(d["id"])))
     d["attribute"] = enums.api_char_type(d["attribute"])
 
 def extend_char(self, d):
     d["type"] = enums.api_char_type(d["type"])
+    d["icon_image_ref"] = "/".join((self.settings["image_host"], "icon_char", "{0}.png".format(d["chara_id"])))
 
 EXTEND_FUNC = {"skill_data_t": extend_skill,
                "leader_skill_data_t": extend_lead_skill,
@@ -377,7 +379,9 @@ class InformationAPI(HandlerSyncedWithMaster):
         self.set_header("Content-Type", "application/json; charset=utf-8")
 
         payload = {
-            "truth_version": starlight.data.version
+            "truth_version": starlight.data.version,
+            "api_major": 1,
+            "api_revision": 2,
         }
 
         if self.settings["is_dev"]:
