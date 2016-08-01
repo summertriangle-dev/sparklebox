@@ -289,7 +289,7 @@ function st_sort_table_interactive(that) {
 function st_init() {
     var the_table = get_table();
 
-    the_table.querySelectorAll(".sort_key").forEach(function(th) {
+    Array.prototype.slice.call(the_table.querySelectorAll(".sort_key")).forEach(function(th) {
         th.setAttribute("onclick", 'st_sort_table_interactive(this)');
     });
 }
