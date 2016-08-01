@@ -32,8 +32,7 @@
 @available_colour: lighten(#339933, 40%);
 @unavailable_colour: lighten(#ff0000, 40%);
 
-/* this is the point height (width in landscape) of the iPhone 6[s] plus */
-@big_table_min_width: 414px;
+@big_table_min_width: 768px;
 
 * {
   -webkit-font-smoothing: antialiased;
@@ -247,6 +246,9 @@ div.stdcon {
   td {
     border:1px solid #ddd;
     padding:3px 6px;
+
+    /* helps with overflow... */
+    border-right-width: 0px!important;
   }
   tr:nth-child(even) {
     background-color:#eee;
@@ -1052,5 +1054,18 @@ strong.ga_available {
 
     background-image:url("../img/sribbons@2x.png")!important;
     background-size:96px 96px!important;
+  }
+}
+
+.sort_key {
+  text-decoration:underline;
+  &.in_use {
+    color:lighten(@passion_colour, 25%);
+  }
+  &[data-sort-reverse="yes"]::before {
+    content: "▾ ";
+  }
+  &[data-sort-reverse="no"]::before {
+    content: "▴ ";
   }
 }
