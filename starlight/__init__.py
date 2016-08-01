@@ -244,7 +244,9 @@ class DataCache(object):
 
         self._skills = self.keyed_prime_from_table("skill_data",
             chance=lambda obj: partial(skill_chance, prob_def, obj.probability_type),
-            dur=lambda obj: partial(skill_dur, time_def, obj.available_time_type))
+            dur=lambda obj: partial(skill_dur, time_def, obj.available_time_type),
+            max_chance=lambda obj: prob_def[obj.probability_type].probability_max,
+            max_duration=lambda obj: time_def[obj.available_time_type].available_time_max)
         self._lead_skills = self.keyed_prime_from_table("leader_skill_data")
         self.rarity_dep = self.keyed_prime_from_table("card_rarity")
 

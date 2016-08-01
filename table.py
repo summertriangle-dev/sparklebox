@@ -74,7 +74,7 @@ class CardProfile(Datum):
 
     def make_headers(self):
         return (
-            """<th>Card</th><th></th>"""
+            """<th></th><th class="sort_key" data-sort-key="STCardNumberDatum">Card</th>"""
         )
 
     def make_values(self, a_card):
@@ -129,13 +129,26 @@ class SkillEffect(Datum):
 
     def make_headers(self):
         return (
-            """<th>Effect</th>"""
+            """<th>Effect (sort: """
+            """<span class="sort_key" data-sort-key="STSkillTimeDatum">time window</span>, """
+            """<span class="sort_key" data-sort-key="STSkillProcChanceDatum">% chance</span>, """
+            """<span class="sort_key" data-sort-key="STSkillDurationDatum">duration</span>, """
+            """<span class="sort_key" data-sort-key="STSkillEffectiveValueDatum">effect val.</span>"""
+            """)</th>"""
         )
 
     def make_values(self, a_card):
-        return (
-            """<td> <small>{0}</small> </td>"""
-        ).format(starlight.en.describe_skill_html(a_card.skill))
+        fmt = """<td class="skill_effect" data-m-proc="{1}" data-m-dur="{2}" data-tw="{3}" data-ef="{4}"> <small>{0}</small> </td>"""
+        if a_card.skill:
+            return fmt.format(
+                starlight.en.describe_skill_html(a_card.skill),
+                a_card.skill.max_chance,
+                a_card.skill.max_duration,
+                a_card.skill.condition,
+                a_card.skill.value,
+            )
+        else:
+            return fmt.format(starlight.en.describe_skill_html(a_card.skill), 0, 0, 0, 0)
 
 class LSkillName(Datum):
     applicable_filters = [ls_target_stat, ls_target_type]
@@ -160,13 +173,16 @@ class LSkillEffect(Datum):
 
     def make_headers(self):
         return (
-            """<th>Effect</th>"""
+            """<th>Effect (sort: <span class="sort_key" data-sort-key="STLeadSkillUpDatum">% up</span>)</th>"""
         )
 
     def make_values(self, a_card):
         return (
-            """<td> <small>{0}</small> </td>"""
-        ).format(starlight.en.describe_lead_skill_html(a_card.lead_skill))
+            """<td class="lead_skill_effect" data-pup="{1}"> <small>{0}</small> </td>"""
+        ).format(
+            starlight.en.describe_lead_skill_html(a_card.lead_skill),
+            a_card.lead_skill.up_value if a_card.lead_skill else 0
+        )
 
 class HighStat(Datum):
     applicable_filters = [high_stat]
@@ -188,9 +204,9 @@ class AppealsHigh(Datum):
 
     def make_headers(self):
         return (
-            """<th>Vo</th>"""
-            """<th>Vi</th>"""
-            """<th>Da</th>"""
+            """<th class="sort_key" data-sort-key="STVocalStatDatum">Vo</th>"""
+            """<th class="sort_key" data-sort-key="STVisualStatDatum">Vi</th>"""
+            """<th class="sort_key" data-sort-key="STDanceStatDatum">Da</th>"""
         )
 
     def make_values(self, a_card):

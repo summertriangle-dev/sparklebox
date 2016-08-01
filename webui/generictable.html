@@ -13,7 +13,7 @@
   <link rel="stylesheet" type="text/css" href="{{ image_host }}/icons2/icons@2x.css?c={{ starlight.data.version }}" />
   <script type="text/javascript" src="{{ handler.static_url("js/home.js") }}"></script>
   <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
-  <script type="text/javascript" src="{{ handler.static_url("js/skills.js") }}"></script>
+  <script type="text/javascript" src="{{ handler.static_url("js/sort_table.js") }}"></script>
 
   <title>{{ table_name }} (sldb)</title>
 </head>
@@ -59,7 +59,11 @@
 
       {% if show_shortlink %}
       <p>
-        <a href="/t/{{ original_dataset }}/{{ webutil.encode_card_structs(cards) }}">Short link</a>
+        <a href="/t/{{ original_dataset }}/{{ webutil.encode_card_structs(cards) }}">(Short link)</a>
+      </p>
+      <p>
+        Click on an underlined table header to sort the table by that value.
+        Do note that you should apply filters before using the skill-based sorts, as you can't really compare skill effects.
       </p>
       {% end %}
 
@@ -68,28 +72,33 @@
     </div>
 
     <div class="contains_large_table">
-      <table class="table" style="width:100%">
-        <tr class="control_row">
-          {% for cat in categories %}
+      <table id="sort_target" class="table" style="width:100%">
+        <thead>
+          <tr class="control_row">
+            {% for cat in categories %}
 
-          {% raw cat.make_headers() %}
+            {% raw cat.make_headers() %}
 
+            {% end %}
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for card in cards %}
+          <tr data-cid="{{ card.id }}" class="row_data {{ " ".join(filter(bool, (filt.gen_object_class(card) for filt in filters))) }}">
+            {% for cat in categories %}
+
+            {% raw cat.make_values(card) %}
+
+            {% end %}
+          </tr>
           {% end %}
-        </tr>
-        {% for card in cards %}
-        <tr class="{{ " ".join(filter(bool, (filt.gen_object_class(card) for filt in filters))) }}">
-          {% for cat in categories %}
-
-          {% raw cat.make_values(card) %}
-
-          {% end %}
-        </tr>
-        {% end %}
+        </tbody>
       </table>
     </div>
   </div>
 
   {% include footer.html %}
-  <script>tlinject_activate()</script>
+  <script>tlinject_activate(); st_init();</script>
 </body>
 </html>
