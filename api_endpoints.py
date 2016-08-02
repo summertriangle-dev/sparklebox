@@ -401,4 +401,4 @@ class VATable(HandlerSyncedWithMaster):
         has_title_call = load["has_title_call"]
         va_ids = load["va_ids"]
         unique = list(set(va_ids))
-        self.render("va_table_partial.html", include_title_call=has_title_call, va_id=unique, **self.settings)
+        self.render("partials/va_table_partial.html", include_title_call=has_title_call, va_id=unique, **self.settings)

@@ -21,12 +21,12 @@
   <div class="container">
     <div class="box black">
     {% for new_list in history %}
-    {% include new_list_partial.html %}
+    {% include partials/new_list_partial.html %}
     {% end %}
     </div>
   </div>
 
-  {% include footer.html %}
+  {% include partials/footer.html %}
   <script> tlinject_activate() </script>
 </body>
 </html>

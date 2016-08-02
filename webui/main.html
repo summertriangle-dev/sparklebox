@@ -92,14 +92,14 @@
 
   <div class="container">
     <!-- custom homepage text starts here. -->
-    {% include "frontpage_text.html" %}
+    {% include "partials/frontpage_text.html" %}
     <!-- custom homepage text ends here. -->
   </div>
 
   <div class="container">
     <div class="box black">
     {% for new_list in history %}
-    {% include new_list_partial.html %}
+    {% include partials/new_list_partial.html %}
     {% end %}
     </div>
   </div>
@@ -108,7 +108,7 @@
     <p><a href="/history">&gt; Previous additions</a></p>
   </div>
 
-  {% include footer.html %}
+  {% include partials/footer.html %}
   <script> tlinject_activate(); </script>
   <script> event_counter_init(); </script>
 </body>

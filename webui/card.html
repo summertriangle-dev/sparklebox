@@ -40,11 +40,11 @@
     <div class="container tight">
         {% set card_id = chain[0].id %}
         {% set card = chain[0] %}
-        {% include card_partial.html %}
+        {% include partials/card_box.html %}
     </div>
     {% end %}
 
-    {% include footer.html %}
+    {% include partials/footer.html %}
     <script>tlinject_activate(); sound_inliner_init();</script>
 </body>
 </html>
