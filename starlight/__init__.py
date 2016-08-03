@@ -420,6 +420,10 @@ class DataCache(object):
         va_list = self.hnd.execute("SELECT id, use_type, `index`, voice_flag, discription, 0 AS n1 FROM card_comments WHERE id = ?", (id,))
         self.primed_this["sel_valist"] += 1
         ret = list(self.prime_from_cursor("va_data_t", va_list))
+
+        if len(ret) == 0:
+            return []
+
         r_va_data_t, va_data_t = self.class_cache.get("va_data_t")
 
         # used in Lives, not recorded in mdb though
