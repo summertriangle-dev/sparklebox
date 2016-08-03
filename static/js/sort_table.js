@@ -209,14 +209,10 @@ function save_pre_sort_order() {
     a = Array.prototype.slice.call(a);
 
     var order = a.map(function(v) {
-        v.getAttribute("data-cid");
+        return v.getAttribute("data-cid");
     });
 
     document.preserved_sort_order = order;
-}
-
-function st_unsort_table() {
-    commit_dom(document.preserved_sort_order);
 }
 
 function commit_dom(order) {
@@ -243,6 +239,33 @@ function commit_dom(order) {
     });
 }
 
+function parse_hash() {
+    var the_table = get_table();
+
+    var h = window.location.hash;
+    var matched = /sort\:(.+)_(asc|desc)/.exec(h);
+
+    if (!matched) return;
+
+    var datum = matched[1];
+    var direction = matched[2];
+    var current_table_is_sortable_by_this_datum = false;
+
+    Array.prototype.slice.call(the_table.querySelectorAll(".sort_key")).forEach(function(th) {
+        if (th.getAttribute("data-sort-key") == datum) current_table_is_sortable_by_this_datum = true;
+    });
+
+    if (!current_table_is_sortable_by_this_datum) return;
+
+    sort_table_and_update_ui(datum, (direction == "asc")? 0 : 1);
+}
+
+function st_unsort_table() {
+    if (document.preserved_sort_order === undefined) return;
+
+    commit_dom(document.preserved_sort_order);
+    window.location.hash = "";
+}
 
 function st_sort_table(by_datum, descending) {
     save_pre_sort_order();
@@ -261,7 +284,26 @@ function st_sort_table(by_datum, descending) {
         sorted.reverse();
 
     commit_dom(extract_ids(sorted));
+
+    window.location.hash = "sort:" + by_datum + "_" + (descending? "desc" : "asc");
 }
+
+function sort_table_and_update_ui(by_datum, descending) {
+    // Remove the indicators from the other headers.
+    Array.prototype.slice.call(document.querySelectorAll(".sort_key.in_use")).forEach(function(v) {
+        v.removeAttribute("data-sort-reverse");
+        v.classList.remove("in_use");
+    });
+
+    var that = document.querySelector(".sort_key[data-sort-key='" + by_datum + "']");
+
+    // Add indicator...
+    that.setAttribute("data-sort-reverse", descending? "yes" : "no");
+    that.classList.add("in_use");
+
+    st_sort_table(by_datum, descending);
+}
+
 
 function st_sort_table_interactive(that) {
     var datum_name = that.getAttribute("data-sort-key");
@@ -272,18 +314,8 @@ function st_sort_table_interactive(that) {
     if (reversed === "yes")
         reverse_the_sort = false;
 
-    // Remove the indicators from the other headers.
-    Array.prototype.slice.call(document.querySelectorAll(".sort_key.in_use")).forEach(function(v) {
-        v.removeAttribute("data-sort-reverse");
-        v.classList.remove("in_use");
-    })
-
-    // Add indicator...
-    that.setAttribute("data-sort-reverse", reverse_the_sort? "yes" : "no");
-    that.classList.add("in_use");
-
     // then sort it.
-    st_sort_table(datum_name, reverse_the_sort);
+    sort_table_and_update_ui(datum_name, reverse_the_sort);
 }
 
 function st_init() {
@@ -292,4 +324,6 @@ function st_init() {
     Array.prototype.slice.call(the_table.querySelectorAll(".sort_key")).forEach(function(th) {
         th.setAttribute("onclick", 'st_sort_table_interactive(this)');
     });
+
+    parse_hash();
 }
