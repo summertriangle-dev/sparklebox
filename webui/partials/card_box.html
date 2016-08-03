@@ -3,7 +3,7 @@
   {% if not card.has_spread %}
   <div class="card_left">
     <div class="rel">
-      <img class="card_image" src="{{ image_host }}/card/{{ card.id }}.png" />
+      <img alt="thumbnail for card #{{ card.id }}" class="card_image" src="{{ image_host }}/card/{{ card.id }}.png" />
       <div class="hang_inside">
         <a class="image_switch" href="javascript:void(0);" onclick="toggle_transform_state(this, pn(this, 4))">{{ _("Swap costume") }}</a>
       </div>
@@ -104,7 +104,7 @@
         <div class="header">
           <span class="item left">{{ _("Skill") }}</span>
           <span class="item ext"></span>
-          <div class="item right">{% raw tlable(card.skill.skill_name) %}</span>
+          <div class="item right">{% raw tlable(card.skill.skill_name) %}
             <div class="stepper" data-stepper-max="10">
               <button onclick="skill_step(this, {{ card.id }}, -1)">-</button>
               <input class="skill_step" onchange="skill_onchange(this)" type="text" value="All" />
