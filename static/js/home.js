@@ -110,15 +110,49 @@ function event_counter_init() {
     }
 }
 
+// TODO: is there a way to ask the browser for this value instead of hardcoding it here?
+JST_MINUTES_LEFT_OF_UTC = -540;
+MINUTES_TO_MILLIS = 60 * 1000;
+
+A_SECOND_BEFORE_MINAMIS_BIRTHDAY = new Date(2016, 6, 26, 7, 59, 59, 0);
+ACTUALLY_MINAMIS_BIRTHDAY = new Date(2016, 6, 26, 8, 0, 0, 0);
+
 function birthday_hider_init() {
     var els = document.querySelectorAll(".birthday_banner");
-    var today = new Date();
+
+    // don't even bother trying to trigger this.
+    // you need to be in PDT and have the server give you the birthday code.
+    var today;
+    if (window.location.hash == "#testbirthdaypls")
+        today = A_SECOND_BEFORE_MINAMIS_BIRTHDAY;
+    else if (window.location.hash == "#testarealbirthdaypls")
+        today = ACTUALLY_MINAMIS_BIRTHDAY;
+    else
+        today = new Date();
+
+    // here, we calculate the current JST date
+    // basically, javascript date arithmetic sucks ass
+    var minutes_left_of_utc = today.getTimezoneOffset();
+    // we're going right, not left
+    var jst_minute_offset = -(JST_MINUTES_LEFT_OF_UTC - minutes_left_of_utc);
+
+    console.log("we're " + minutes_left_of_utc + " minutes off UTC");
+    console.log("we need to add " + jst_minute_offset + " min to our time to get to JST");
+
+    // this date will have the wrong timezone, but we do not care
+    var jsttoday = new Date(today.getTime() + (jst_minute_offset * MINUTES_TO_MILLIS));
+    console.log("it's " + jsttoday + " in Japan");
+
     for (var i = 0; i < els.length; i++) {
         var el = els[i];
         var date = el.getAttribute("data-birthday").split("/");
 
-        if (parseInt(date[0]) == today.getMonth() + 1 && parseInt(date[1]) == today.getDate()) {
+        if (parseInt(date[0]) == jsttoday.getMonth() + 1 && parseInt(date[1]) == jsttoday.getDate()) {
             el.style.display = "block";
+            el.querySelector(".where_the_birthday_is").textContent = "in Japan";
+        } else if (parseInt(date[0]) == today.getMonth() + 1 && parseInt(date[1]) == today.getDate()) {
+            el.style.display = "block";
+            el.querySelector(".where_the_birthday_is").textContent = "in your time";
         }
     }
 }

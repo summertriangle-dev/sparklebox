@@ -32,7 +32,9 @@
     <div class="birthday_banner r_{{ enums.attribute(char.type) }}" style="display:none" data-birthday="{{ char.birth_month }}/{{ char.birth_day }}">
       <div class="ribbon r_{{ enums.attribute(char.type) }}"></div>
       <div class="icon icon_{{ starlight.data.cards_belonging_to_char(char.chara_id)[-1] }}" style="position:absolute;top:5px;left:5px;"></div>
-      Today is <a href="/char/{{ char.chara_id }}">{{ starlight.en.westernized_name(char).split()[0] }}</a>'s birthday! Happy birthday. ({{ char.birth_month }}/{{ char.birth_day }})
+      Today is <a href="/char/{{ char.chara_id }}">{{ starlight.en.westernized_name(char).split()[0] }}</a>'s
+      birthday (<span class="where_the_birthday_is"><!-- strings in home.js  --></span>)!
+      Happy birthday. ({{ char.birth_month }}/{{ char.birth_day }})
     </div>
     {% end %}
     <script> birthday_hider_init(); </script>
