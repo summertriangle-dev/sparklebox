@@ -318,17 +318,6 @@ class History(HandlerSyncedWithMaster):
         self.render("history.html", history=all_history, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
-@route(r"/dbgva/([^/]+)")
-@dev_mode_only
-class DebugViewVA(HandlerSyncedWithMaster):
-    def get(self, db):
-        loaded = list(starlight.card_va_by_object_id(int(db)))
-        fields = loaded[0].__class__._fields
-
-        self.set_header("Content-Type", "text/html")
-        self.render("debug_view_database.html", data=loaded,
-                    fields=fields, **self.settings)
-
 @route(r"/tl_cacheall")
 @dev_mode_only
 class DebugTLCacheUpdate(tornado.web.RequestHandler):
