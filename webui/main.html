@@ -76,9 +76,12 @@
       </div>
       {% if available %}
       <div class="content" style="background:#333;text-align:left;">
-        {% for ent in available %}
-        {% raw icon_ex(ent, request.is_low_bandwidth) %}
-        {% end %}
+        <div class="iconex_row">
+          {% for ent in available %}
+          {% raw icon_ex(ent, request.is_low_bandwidth) %}
+          {% end %}
+        </div>
+        <a href="/gacha/{{ gacha.id }}">(full availability list)</a>
       </div>
       {% else %}
       <div class="content" style="background:#333;text-align:left;">
