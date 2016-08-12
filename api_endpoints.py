@@ -15,8 +15,17 @@ from datetime import datetime, timedelta
 from functools import partial
 import webutil
 
+class CORSBlessMixin(object):
+    """ Implements HTTP OPTIONS to allow requests via XHR on modern browsers. """
+    def options(self, *args, **kwargs):
+        self.set_status(204)
+        self.set_cors_policy()
+
+    def set_cors_policy(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+
 @route("/api/v1/read_tl")
-class TranslateReadAPI(tornado.web.RequestHandler):
+class TranslateReadAPI(CORSBlessMixin, tornado.web.RequestHandler):
     """ Queries database for cs translation entries """
 
     @tornado.web.asynchronous
@@ -56,6 +65,8 @@ class TranslateWriteAPI(tornado.web.RequestHandler):
     BAD_WORDS = ["undefined", "null", ""]
 
     def post(self):
+        self.set_cors_policy()
+
         try:
             load = json.loads(self.request.body.decode("utf8"))
         except ValueError:
@@ -183,7 +194,7 @@ class APIUtilMixin(object):
                 yield obj
 
 @route(r"/api/v1/([a-z_]+)_t/(.+)")
-class ObjectAPI(HandlerSyncedWithMaster, APIUtilMixin):
+class ObjectAPI(CORSBlessMixin, HandlerSyncedWithMaster, APIUtilMixin):
     SELECTOR_ALL = object()
     SELECTOR_RANDOM = object()
 
@@ -198,6 +209,8 @@ class ObjectAPI(HandlerSyncedWithMaster, APIUtilMixin):
         return real_spec
 
     def get(self, objectid, spec):
+        self.set_cors_policy()
+
         try:
             ids = self.expand_spec(spec)
         except Exception as e:
@@ -274,7 +287,7 @@ class ObjectAPI(HandlerSyncedWithMaster, APIUtilMixin):
             json.dump({"result": h(ids, cfg)}, self, ensure_ascii=0)
 
 @route(r"/api/v1/list/card_t")
-class CardListAPI(HandlerSyncedWithMaster, APIUtilMixin):
+class CardListAPI(CORSBlessMixin, HandlerSyncedWithMaster, APIUtilMixin):
     KEYS = ["id", "chara_id", "attribute", "has_spread", "pose", "title", "name_only",
         "hp_min", "hp_max", "vocal_min", "vocal_max", "visual_min", "visual_max",
         "dance_min", "dance_max", "bonus_hp", "bonus_dance", "bonus_vocal", "bonus_visual",
@@ -308,6 +321,8 @@ class CardListAPI(HandlerSyncedWithMaster, APIUtilMixin):
         return starlight.data.cards([chain[0] for _, chain in starlight.data.id_chain.items()])
 
     def get(self):
+        self.set_cors_policy()
+
         ks_raw = self.get_argument("keys", "")
         if ks_raw:
             normalized = (x.lower().strip() for x in ks_raw.split(","))
@@ -335,7 +350,7 @@ class CharListAPI(CardListAPI):
         base["cards"] = starlight.data.cards_belonging_to_char(obj.chara_id)
 
 @route(r"/api/v1/happening/(now|-?[0-9+])")
-class HappeningAPI(HandlerSyncedWithMaster, APIUtilMixin):
+class HappeningAPI(CORSBlessMixin, HandlerSyncedWithMaster, APIUtilMixin):
     def fix_datetime(self, obj):
         if isinstance(obj, datetime):
             fmt = self.get_argument("datetime", "unix")
@@ -347,6 +362,8 @@ class HappeningAPI(HandlerSyncedWithMaster, APIUtilMixin):
         raise TypeError()
 
     def get(self, timespec):
+        self.set_cors_policy()
+
         if timespec == "now":
             timespec = datetime.utcnow()
         else:
@@ -374,8 +391,9 @@ class HappeningAPI(HandlerSyncedWithMaster, APIUtilMixin):
             json.dump(payload, self, ensure_ascii=0, default=self.fix_datetime)
 
 @route(r"/api/v1/info")
-class InformationAPI(HandlerSyncedWithMaster):
+class InformationAPI(CORSBlessMixin, HandlerSyncedWithMaster):
     def get(self):
+        self.set_cors_policy()
         self.set_header("Content-Type", "application/json; charset=utf-8")
 
         payload = {
