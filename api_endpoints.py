@@ -30,6 +30,8 @@ class TranslateReadAPI(CORSBlessMixin, tornado.web.RequestHandler):
 
     @tornado.web.asynchronous
     def post(self):
+        self.set_cors_policy()
+
         try:
             load = json.loads(self.request.body.decode("utf8"))
         except ValueError:
@@ -65,8 +67,6 @@ class TranslateWriteAPI(tornado.web.RequestHandler):
     BAD_WORDS = ["undefined", "null", ""]
 
     def post(self):
-        self.set_cors_policy()
-
         try:
             load = json.loads(self.request.body.decode("utf8"))
         except ValueError:
