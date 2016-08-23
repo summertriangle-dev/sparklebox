@@ -181,11 +181,16 @@ class DataCache(object):
 
         return select
 
+    # Sometimes this method will return more events than you asked for.
+    # Make sure to filter the results on the caller side.
     def event_rewards(self, events):
-        select = [event.id for event in events]
+        select = [event.id for event in events if event.id not in self.overridden_events]
         query = "SELECT event_id, reward_id FROM event_available WHERE event_id IN ({0})".format(",".join("?" * len(select)))
         tmp = defaultdict(lambda: [])
         [tmp[event].append(reward) for event, reward in self.hnd.execute(query, select)]
+
+        for event, reward in self.ea_overrides:
+            tmp[event].append(reward)
 
         self.primed_this["sel_evtreward"] += 1
         return [tmp[event.id] for event in events]
