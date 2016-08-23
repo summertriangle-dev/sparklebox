@@ -257,7 +257,7 @@ class DataCache(object):
 
         self.chain_id = {}
         self.id_chain = defaultdict(lambda: [])
-        chain_cur = self.hnd.execute("SELECT id, series_id FROM card_data")
+        chain_cur = self.hnd.execute("SELECT id, series_id FROM card_data WHERE album_id > 0")
         for p in self.prime_from_cursor("chain_id_t", chain_cur):
             self.chain_id[p.id] = p.series_id
             self.id_chain[p.series_id].append(p.id)
