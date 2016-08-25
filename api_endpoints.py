@@ -349,7 +349,7 @@ class CharListAPI(CardListAPI):
     def post_stubbing(self, base, obj):
         base["cards"] = starlight.data.cards_belonging_to_char(obj.chara_id)
 
-@route(r"/api/v1/happening/(now|-?[0-9+])")
+@route(r"/api/v1/happening/(now|-?[0-9]+)")
 class HappeningAPI(CORSBlessMixin, HandlerSyncedWithMaster, APIUtilMixin):
     def fix_datetime(self, obj):
         if isinstance(obj, datetime):
