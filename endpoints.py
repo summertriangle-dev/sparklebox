@@ -145,19 +145,30 @@ class Card(HandlerSyncedWithMaster):
 
 # all the table handlers go here
 
+# Try to use ShortlinkTable.rendertable instead of directly rendering
+# a table template whenever possible, so we can make enhancements to
+# it apply globally to all tables.
+
 @route(r"/t/([A-Za-z]+)/([^/]+)")
 class ShortlinkTable(HandlerSyncedWithMaster):
-    def rendertable(self, dataset, cards, allow_shortlink=1, table_name="Custom Table"):
-        filters, categories = table.select_categories(dataset)
+    def rendertable(self, dataset, cards,
+                    allow_shortlink=1, table_name="Custom Table",
+                    template="generictable.html", **extra):
+        if isinstance(dataset, str):
+            filters, categories = table.select_categories(dataset)
+        else:
+            filters, categories = dataset
 
-        self.render("generictable.html",
+        extra.update(self.settings)
+
+        self.render(template,
                     filters=filters,
                     categories=categories,
                     cards=cards,
                     original_dataset=dataset,
                     show_shortlink=allow_shortlink,
                     table_name=table_name,
-                    **self.settings)
+                    **extra)
 
     def get(self, dataset, spec):
         try:
@@ -218,7 +229,7 @@ class CompareCard(HandlerSyncedWithMaster):
             self.write("Not found.")
 
 @route(r"/gacha(?:/([0-9]+))?")
-class GachaTable(HandlerSyncedWithMaster):
+class GachaTable(ShortlinkTable):
     def get(self, maybe_gachaid):
         if maybe_gachaid:
             maybe_gachaid = int(maybe_gachaid)
@@ -260,14 +271,12 @@ class GachaTable(HandlerSyncedWithMaster):
 
         categories.insert(0, lim_cat)
 
-        self.render("ext_gacha_table.html",
-            filters=filters,
-            categories=categories,
+        self.rendertable( (filters, categories),
             cards=card_list,
-            table_name="Custom Table",
-            show_shortlink=0,
-            gacha=selected_gacha,
-            **self.settings)
+            allow_shortlink=0,
+            table_name="Gacha: {0}".format(selected_gacha.name),
+            template="ext_gacha_table.html",
+            gacha=selected_gacha)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
             {"gid": maybe_gachaid})
 
