@@ -19,11 +19,11 @@ card_attribute = filter_t("Idol Attribute", (
 lambda card: enums.attribute(card.attribute) + "_kc")
 
 rarity = filter_t("Card Rarity", (
-    option_t("SSR", "SSR_kc"),
-    option_t("SR",  "SR_kc"),
-    option_t("R",   "Rare_kc"),
-    option_t("N",   "Normal_kc")),
-lambda card: enums.rarity(card.rarity) + "_kc")
+    option_t("SSR", "ssr_kc"),
+    option_t("SR",  "sr_kc"),
+    option_t("R",   "r_kc"),
+    option_t("N",   "n_kc")),
+lambda card: enums.floor_rarity(card.rarity) + "_kc")
 
 skill_type = filter_t("Skill Type", (
     option_t("Perf. Lock*", "s_pl"),

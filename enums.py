@@ -165,6 +165,17 @@ stat_en = enum([
     7, "This card's stats are mostly balanced (Vocal high)"
 ])
 
+floor_rarity = enum([
+    1, "n",
+    2, "n",
+    3, "r",
+    4, "r",
+    5, "sr",
+    6, "sr",
+    7, "ssr",
+    8, "ssr",
+])
+
 # TODO need enum defs for
 # constellation
 # blood_type
