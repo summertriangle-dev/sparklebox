@@ -166,7 +166,7 @@ class ShortlinkTable(HandlerSyncedWithMaster):
 
         should_switch_chain_head = self.get_argument("plus", "NO") == "YES"
         if should_switch_chain_head:
-            cards = map(self.flip_chain, cards)
+            cards = list(map(self.flip_chain, cards))
 
         extra.update(self.settings)
 
@@ -208,34 +208,20 @@ class LeadSkillTable(ShortlinkTable):
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 @route(r"/table/([A-Za-z]+)/([0-9\,]+)")
-class CompareCard(HandlerSyncedWithMaster):
+class CompareCard(ShortlinkTable):
     def get(self, dataset, card_idlist):
-        plus = bool(self.get_argument("plus", 0))
-
         card_ids = [int(x) for x in card_idlist.strip(",").split(",")]
 
         chains = [starlight.data.chain(id) for id in card_ids]
         unique = []
         for c in chains:
-            if c not in unique:
-                unique.append(c)
+            if c[0] not in unique:
+                unique.append(c[0])
 
-        acard = []
-        for chain in unique:
-            acard.append(starlight.data.card(chain[-1 if plus else 0]))
-
-        filters, categories = table.select_categories(dataset.upper())
+        acard = starlight.data.cards(unique)
 
         if acard:
-            self.set_header("Content-Type", "text/html")
-            self.render("generictable.html",
-                filters=filters,
-                categories=categories,
-                cards=acard,
-                original_dataset=dataset,
-                table_name="Custom Table",
-                show_shortlink=1,
-                **self.settings)
+            self.rendertable(dataset.upper(), acard, table_name="Custom Table")
             self.settings["analytics"].analyze_request(
                 self.request, self.__class__.__name__, {"card_id": card_idlist})
         else:
