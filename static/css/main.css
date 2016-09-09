@@ -1040,3 +1040,15 @@ strong.ga_available {
 .sort_key[data-sort-reverse="no"]::before {
   content: "▴ ";
 }
+td.filter_switch {
+  background-color: #777777;
+}
+td.filter_switch.enabled {
+  background-color: #44aa55;
+}
+a.fill_cell {
+  display: block;
+  width: 100%;
+  color: white;
+  text-decoration: none;
+}

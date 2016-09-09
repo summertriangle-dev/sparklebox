@@ -34,7 +34,7 @@
           {% for fopt in filter_.options %}
 
           {% if fopt.kill_class %}
-          <td onclick="toggle_kill_css(this)" data-kill-class="{{ fopt.kill_class }}" class="vocal">X</td>
+          <td onclick="toggle_kill_css(this)" data-kill-class="{{ fopt.kill_class }}" class="filter_switch enabled">X</td>
           {% else %}
           <td></td>
           {% end %}
@@ -57,19 +57,46 @@
       </table>
       {% end %}
 
+      <table class="stats_table control_table">
+        <tr class="toggles_row">
+          <th>Awakened?</th>
+
+          {# yes_symbol and no_symbol are raw html. beware of accidental injections. #}
+          {% if is_displaying_awake_forms %}
+            {% set yes_symbol = "X"      %}
+            {% set no_symbol  = "&nbsp;" %}
+          {% else %}
+            {% set yes_symbol = "&nbsp;" %}
+            {% set no_symbol  = "X"      %}
+          {% end %}
+
+          <td class="filter_switch {% if is_displaying_awake_forms %} enabled {% end %}">
+            <a class="fill_cell" href="?plus=YES">{% raw yes_symbol %}</a>
+          </td>
+          <td class="filter_switch {% if not is_displaying_awake_forms %} enabled {% end %}">
+            <a class="fill_cell" href="?plus=NO">{% raw no_symbol %}</a>
+          </td>
+        </tr>
+        <tr>
+          <th>&nbsp;</th>
+          <th>Yes</th>
+          <th>No</th>
+        </tr>
+      </table>
+
       {% if show_shortlink %}
       <p>
         <a href="/t/{{ original_dataset }}/{{ webutil.encode_card_structs(cards) }}">(Short link)</a>
       </p>
       {% end %}
 
-      <p>
-        Click on an underlined table header to sort the table by that value.
-        Do note that you should apply filters before using the skill-based sorts, as you can't really compare skill effects.
-      </p>
-
       {% block extra_info %}
       {% end %}
+
+      <small>
+        Click on an underlined table header to sort the table by that value.
+        Do note that you should apply filters before using the skill-based sorts, as you can't really compare skill effects.
+      </small>
     </div>
 
     <div class="contains_large_table">

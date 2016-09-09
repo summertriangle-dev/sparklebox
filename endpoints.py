@@ -164,8 +164,8 @@ class ShortlinkTable(HandlerSyncedWithMaster):
         else:
             filters, categories = dataset
 
-        should_switch_chain_head = self.get_argument("plus", None)
-        if should_switch_chain_head == "YES":
+        should_switch_chain_head = self.get_argument("plus", "NO") == "YES"
+        if should_switch_chain_head:
             cards = map(self.flip_chain, cards)
 
         extra.update(self.settings)
@@ -177,6 +177,7 @@ class ShortlinkTable(HandlerSyncedWithMaster):
                     original_dataset=dataset,
                     show_shortlink=allow_shortlink,
                     table_name=table_name,
+                    is_displaying_awake_forms=should_switch_chain_head,
                     **extra)
 
     def get(self, dataset, spec):
