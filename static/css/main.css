@@ -962,13 +962,15 @@ strong.ga_available {
   content: "»";
   padding-left: 8px;
 }
-.contains_large_table {
-  overflow-x: scroll;
-  -webkit-overflow-scrolling: touch;
-  overflow-scrolling: touch;
-}
 .contains_large_table .table {
   min-width: 768px;
+}
+@media screen and (max-width: 768px) {
+  .contains_large_table {
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
 }
 .birthday_banner {
   position: relative;

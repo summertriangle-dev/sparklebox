@@ -980,9 +980,11 @@ strong.ga_available {
     min-width:@big_table_min_width;
   }
 
-  overflow-x:scroll;
-  -webkit-overflow-scrolling:touch;
-  overflow-scrolling:touch;
+  @media screen and (max-width:@big_table_min_width) {
+    overflow-x:scroll;
+    -webkit-overflow-scrolling:touch;
+    overflow-scrolling:touch;
+  }
 }
 
 @alt_cute_colour: #ff6bec;
