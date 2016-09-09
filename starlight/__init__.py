@@ -316,11 +316,13 @@ class DataCache(object):
         self.primed_this["prm_char_calls"] += 1
 
     def cache_cards(self, idl):
-        normalized_idl = []
+        normalized_idl = set()
         for id in idl:
             a = self.chain_id.get(id)
             if a:
-                normalized_idl.append(a)
+                normalized_idl.add(a)
+
+        idl = list(normalized_idl)
 
         query_preload_chars = "SELECT DISTINCT chara_id FROM card_data WHERE id IN ({0})".format(",".join("?" * len(idl)))
         self.cache_chars(list(map(lambda x: x[0], self.hnd.execute(query_preload_chars, idl))))
