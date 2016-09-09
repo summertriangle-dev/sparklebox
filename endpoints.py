@@ -151,6 +151,11 @@ class Card(HandlerSyncedWithMaster):
 
 @route(r"/t/([A-Za-z]+)/([^/]+)")
 class ShortlinkTable(HandlerSyncedWithMaster):
+    # This shouldn't take too long.
+    # The full chain is pre-emptively loaded when any member is requested
+    def flip_chain(self, card):
+        return starlight.data.card(starlight.data.chain(card.series_id)[-1])
+
     def rendertable(self, dataset, cards,
                     allow_shortlink=1, table_name="Custom Table",
                     template="generictable.html", **extra):
@@ -158,6 +163,10 @@ class ShortlinkTable(HandlerSyncedWithMaster):
             filters, categories = table.select_categories(dataset)
         else:
             filters, categories = dataset
+
+        should_switch_chain_head = self.get_argument("plus", None)
+        if should_switch_chain_head == "YES":
+            cards = map(self.flip_chain, cards)
 
         extra.update(self.settings)
 
@@ -184,13 +193,17 @@ class ShortlinkTable(HandlerSyncedWithMaster):
 @route(r"/skill_table")
 class SkillTable(ShortlinkTable):
     def get(self):
-        self.rendertable("CASDE", starlight.data.cards(starlight.data.all_chain_ids()), allow_shortlink=0, table_name="Cards by skill")
+        self.rendertable("CASDE", starlight.data.cards(starlight.data.all_chain_ids()),
+            allow_shortlink=0,
+            table_name="Cards by skill")
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 @route(r"/lead_skill_table")
 class LeadSkillTable(ShortlinkTable):
     def get(self):
-        self.rendertable("CAKL", starlight.data.cards(starlight.data.all_chain_ids()), allow_shortlink=0, table_name="Cards by lead skill")
+        self.rendertable("CAKL", starlight.data.cards(starlight.data.all_chain_ids()),
+            allow_shortlink=0,
+            table_name="Cards by lead skill")
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 @route(r"/table/([A-Za-z]+)/([0-9\,]+)")
