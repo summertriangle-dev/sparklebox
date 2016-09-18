@@ -425,11 +425,6 @@ class TranslationEngine(TranslationSQL):
 
         self.cache_id = dv
 
-    # TODO: remove
-    @staticmethod
-    def translate_name(kanji):
-        return starlight.data.translate_name(kanji)
-
     def get_history(self, nent):
         if self.cache_id != self.dsrc.data.version:
             self.kill_caches(self.dsrc.data.version)

@@ -27,7 +27,7 @@
         <span class="icon {{ enums.skill_class(card.skill.skill_type) }}"
               title="{{ _(enums.skill_type(card.skill.skill_type)) }}"></span>
         {% end %}
-        {{ tle.translate_name(card.name_only) }}
+        {{ starlight.data.translate_name(card.name_only) }}
         <small>[{{ enums.rarity(card.rarity) }}]</small>
       </span>
     </div>
@@ -65,7 +65,7 @@
           </div>
         </div>
         <div class="content">
-          {% raw icon(_card.id) %}
+          {% raw webutil.icon(_card.id) %}
           <table class="stats_table" style="display:inline-table">
             <tr>
               <td rowspan="2" style="padding:0;"></td>

@@ -56,7 +56,7 @@
         <div class="iconex_row">
           <span>You'd better start spending. <br> Event rewards:</span>
           {% for cid in reward_list %}
-          {% raw icon_ex(cid, request.is_low_bandwidth) %}
+          {% raw webutil.icon_ex(cid, request.is_low_bandwidth) %}
           {% end %}
         </div>
       </div>
@@ -80,7 +80,7 @@
       <div class="content" style="background:#333;text-align:left;">
         <div class="iconex_row">
           {% for ent in available %}
-          {% raw icon_ex(ent, request.is_low_bandwidth) %}
+          {% raw webutil.icon_ex(ent, request.is_low_bandwidth) %}
           {% end %}
         </div>
         <a href="/gacha/{{ gacha.id }}">(full availability list)</a>
