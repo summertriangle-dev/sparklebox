@@ -94,7 +94,7 @@ def main():
         autoreload=1 if in_dev_mode else 0,
         is_dev=in_dev_mode,
 
-        tle=models.TranslationEngine(starlight, use_satellite=1),
+        tle=models.TranslationEngine(starlight),
         enums=enums,
         starlight=starlight,
         tlable=webutil.tlable,

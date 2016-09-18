@@ -519,7 +519,7 @@ def do_preswitch_tasks(new_db_path, old_db_path):
                 old_db_path,
                 new_db_path])
             if history_json:
-                models.TranslationSQL(use_satellite=1).push_history(os.path.getmtime(new_db_path), history_json)
+                models.TranslationSQL().push_history(os.path.getmtime(new_db_path), history_json)
         subprocess.call(["toolchain/make_contiguous_gacha.py",
             old_db_path,
             new_db_path])

@@ -50,7 +50,7 @@ def main(file1, file2):
     ksa, ksb = map(lambda x: set([y.id for y in x]), (gacha_ids_a, gacha_ids_b))
     added = ksb - ksa
 
-    m = models.TranslationSQL(use_satellite=1)
+    m = models.TranslationSQL()
     m.add_reward_tracking_entries(available(file2, added))
 
     prev = gacha_ids_b[0]

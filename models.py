@@ -142,7 +142,7 @@ class GachaPresenceEntry(Base):
     avail_end = Column(Integer, nullable=False)
 
 class TranslationSQL(object):
-    def __init__(self, use_satellite, override_url=None):
+    def __init__(self, override_url=None):
         self.really_connected = 0
         self.session_nest = []
         self.connect_url = override_url
@@ -409,8 +409,8 @@ class TranslationSQL(object):
             yield from gv
 
 class TranslationEngine(TranslationSQL):
-    def __init__(self, data_source, use_satellite, override_url=None):
-        super().__init__(use_satellite, override_url)
+    def __init__(self, data_source, override_url=None):
+        super().__init__(override_url)
         self.dsrc = data_source
         self.cache_id = -1
         self.k2r = {}
