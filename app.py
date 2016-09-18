@@ -25,23 +25,8 @@ from starlight import private_data_path
 
 def early_init():
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
-    if os.environ.get("CRED_FILE", ""):
-        with open(os.environ.get("CRED_FILE"), "r") as f:
-            for k, v in json.load(f)["CONFIG"]["CONFIG_VARS"].items():
-                os.environ[k] = v
 
-    if os.environ.get("DEV", ""):
-        # load template from disk every time it's rendered.
-        # helpful for development, but is slow.
-        def _swizzle_BaseLoader_load(self, name, parent_path=None):
-            name = self.resolve_path(name, parent_path=parent_path)
-            return self._create_template(name)
-
-        def _swizzle_StaticFileHandler_should_return_304(self):
-            return 0
-        tornado.template.BaseLoader.load = _swizzle_BaseLoader_load
-        tornado.web.StaticFileHandler.should_return_304 = _swizzle_StaticFileHandler_should_return_304
-    elif not os.environ.get("DISABLE_HTTPS_ENFORCEMENT", ""):
+    if not os.environ.get("DISABLE_HTTPS_ENFORCEMENT", "") and not os.environ.get("DEV", ""):
         # production mode: force https usage due to local storage issues
         # also we don't want the NSA knowing you play chinese cartoon games
         def _swizzle_RequestHandler_prepare(self):
@@ -91,7 +76,7 @@ def main():
         template_path="webui",
         static_path="static",
         image_host=image_server,
-        autoreload=1 if in_dev_mode else 0,
+        debug=in_dev_mode,
         is_dev=in_dev_mode,
 
         tle=models.TranslationEngine(starlight),
