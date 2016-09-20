@@ -514,7 +514,7 @@ class TranslationSQL(object):
     def _get_history(self, nent):
         print("trace _get_history")
         with self as s:
-            rows = s.query(HistoryEntry).order_by(HistoryEntry.time.desc())
+            rows = s.query(HistoryEventEntry).order_by(HistoryEventEntry.start_time.desc())
 
             if nent:
                 rows = rows.limit(nent)

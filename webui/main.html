@@ -102,15 +102,23 @@
   </div>
 
   <div class="container">
-    <div class="box black">
-    {% for new_list in history %}
-    {% include partials/new_list_partial.html %}
+    {% for history_entry in history %}
+
+    {% if history_entry.type() == 2 %}
+      {% include partials/hist_event.html %}
+    {% elif history_entry.type() == 3 %}
+      {% include partials/hist_gacha.html %}
+    {% elif history_entry.type() == 4 %}
+      {% include partials/hist_new_ns.html %}
+    {% else %}
+      {# omitted #}
     {% end %}
-    </div>
+
+    {% end %}
   </div>
 
   <div class="container">
-    <p><a href="/history">&gt; Previous additions</a></p>
+    <p><a href="/history">More history</a></p>
   </div>
 
   {% include partials/footer.html %}

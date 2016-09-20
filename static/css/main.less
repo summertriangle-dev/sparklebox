@@ -188,7 +188,7 @@ footer {
   @media only screen and (-webkit-min-device-pixel-ratio: 1.3),
       only screen and (-o-min-device-pixel-ratio: 13/10),
       only screen and (min-resolution: 120dpi) {
-    border-radius:3px;
+    border-radius:4px;
     &.icon_event, &.icon_n, &.icon_r, &.icon_sr, &.icon_ssr, &.m_vi,
     &.m_da, &.m_vo, &.s_pl, &.s_cprot, &.s_combobonus, &.s_scorebonus,
     &.s_heal, &.s_life, &.s_overload, &.m_ba {
@@ -588,9 +588,9 @@ span.var {
   border: 1px solid;
   vertical-align:top;
 
-  small {
+/*  small {
     vertical-align:bottom;
-  }
+  }*/
 
   &.col2 {
     /* don't know why but it works
@@ -1085,4 +1085,70 @@ a.fill_cell {
   width:100%;
   color:white;
   text-decoration:none;
+}
+
+.box.history_ev {
+  margin-bottom:10px;
+
+  & > .contents {
+    padding:6px;
+  }
+}
+
+.box.he_new_idols {
+  background-color:#333333;
+  border-color:lighten(#333333, 10%);
+
+  & > .header {
+    background-color: #333333;
+    color:white;
+    .left { background-color: lighten(#333333, 10%); }
+    .ext { border-top-color: lighten(#333333, 10%); border-left-color: lighten(#333333, 10%); }
+  }
+}
+
+.box.he_event {
+  background-color:#333333;
+  border-color:lighten(#0066ff, 10%);
+
+  & > .header {
+    background-color: #333333;
+    color:white;
+    .left { background-color: lighten(#0066ff, 10%); }
+    .ext { border-top-color: lighten(#0066ff, 10%); border-left-color: lighten(#0066ff, 10%); }
+  }
+}
+
+.box.he_gacha {
+  background-color:#333333;
+  border-color:lighten(#997a00, 15%);
+
+  & > .header {
+    background-color: #333333;
+    color:black;
+    .left { background-color: lighten(#997a00, 15%); }
+    .ext { border-top-color: lighten(#997a00, 15%); border-left-color: lighten(#997a00, 15%); }
+  }
+
+  &.he_limited {
+    border-color:lighten(#ffb3b3, 3%);
+    .left { background-color:lighten(#ffb3b3, 3%); }
+    .ext { border-top-color:lighten(#ffb3b3, 3%); border-left-color:lighten(#ffb3b3, 3%); }
+  }
+}
+
+.he_divider {
+  font-weight:bold;
+  font-size:70%;
+  text-transform:uppercase;
+  display:block;
+  margin-bottom:6px;
+}
+.he_divider_line {
+  border-color:lighten(#333333, 5%);
+  border-style:solid;
+}
+
+.he_icx_limited {
+  background-color:#664444;
 }

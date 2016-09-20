@@ -1,0 +1,21 @@
+<div class="box history_ev he_new_idols">
+  <div class="header">
+    <span class="item left">New idols!</span>
+    <span class="item ext"></span>
+    <span class="item right">
+      <span class="time_localize" data-ts="{{ history_entry.start_time }}" data-fmt="date">{{ history_entry.start_dt_string() }}</span>
+    </span>
+  </div>
+  <div class="contents" style="">
+    <div class="iconex_row">
+    {% for card in history_entry.category_card_list("new") %}
+      {% raw webutil.icon_ex(card, request.is_low_bandwidth) %}
+    {% end %}
+    </div>
+
+    <small>
+      <a href="/card/{{ history_entry.card_urlspec() }}">Batch</a>,
+      <a href="/table/CASDE/{{ history_entry.card_urlspec() }}">Table</a>
+    </small>
+  </div>
+</div>

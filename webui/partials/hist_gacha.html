@@ -1,0 +1,42 @@
+<div class="box history_ev he_gacha {{ "he_limited" if history_entry.gacha_is_limited() else "he_perma" }}">
+  <div class="header">
+    <span class="item left">Gacha: <strong>{% raw tlable(history_entry.event_name) %}</strong></span>
+    <span class="item ext"></span>
+  </div>
+  <div class="contents" style="">
+
+    {% if history_entry.added_cards %}
+
+    {% if history_entry.category_card_list("limited") %}
+    <small class="he_divider">Limited</small>
+    <div class="iconex_row">
+    {% for card in history_entry.category_card_list("limited") %}
+      {% raw webutil.icon_ex(card, request.is_low_bandwidth, classes="he_icx_limited") %}
+    {% end %}
+    </div>
+    {% end %}
+
+    {% if history_entry.card_list_has_more_than_one_category() %} <hr class="he_divider_line" /> {% end %}
+    <div class="iconex_row">
+    {% for card in history_entry.category_card_list("other") %}
+      {% raw webutil.icon_ex(card, request.is_low_bandwidth) %}
+    {% end %}
+    </div>
+
+    {% end %}
+
+    <small>
+      {% if history_entry.added_cards %}
+      <a href="/card/{{ history_entry.card_urlspec() }}">Batch</a>,
+      <a href="/table/CASDE/{{ history_entry.card_urlspec() }}">Table</a>,
+      {% end %}
+      <a href="/gacha/{{ history_entry.referred_id() }}">Full availability list</a>
+      -
+      Gacha available from
+      <span class="time_localize" data-ts="{{ history_entry.start_time }}" data-fmt="date">{{ history_entry.start_dt_string() }}</span>
+      to
+      <span class="time_localize" data-ts="{{ history_entry.end_time }}" data-fmt="date">{{ history_entry.end_dt_string() }}</span>
+      ({{ "{:.1f}".format(history_entry.length_in_days()) }} days).
+    </small>
+  </div>
+</div>

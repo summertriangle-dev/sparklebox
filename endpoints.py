@@ -34,13 +34,12 @@ class Home(HandlerSyncedWithMaster):
         gachas = starlight.data.gachas(now)
         gacha_limited = starlight.data.limited_availability_cards(gachas)
 
-        recent_history = self.settings["tle"].get_history(5)
+        recent_history = self.settings["tle"].get_history(10)
 
         # cache priming has a high overhead so prime all icons at once
         preprime_set = set()
-        for h in [x.asdict() for x in recent_history]:
-            for k in ["n", "r", "sr", "ssr", "event"]:
-                preprime_set.update(h.get(k, ()))
+        for h in recent_history:
+            preprime_set.update(h.card_list())
         starlight.data.cards(preprime_set)
 
         self.render("main.html", history=recent_history,
@@ -322,9 +321,8 @@ class History(HandlerSyncedWithMaster):
         all_history = self.settings["tle"].get_history(nent=None)
 
         preprime_set = set()
-        for h in [x.asdict() for x in all_history]:
-            for k in ["n", "r", "sr", "ssr", "event"]:
-                preprime_set.update(h.get(k, ()))
+        for h in all_history:
+            preprime_set.update(h.card_list())
         starlight.data.cards(preprime_set)
 
         self.render("history.html", history=all_history, **self.settings)
