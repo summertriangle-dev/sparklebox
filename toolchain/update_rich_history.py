@@ -144,6 +144,7 @@ def log_gachas(have_logged, seen, local, remote):
         for a_card, lim_flag, order in local.execute(QUERY_GET_GACHA_REWARD_META, (gid,)):
             my_add_set["limited" if lim_flag else "other"].append(a_card)
 
+            seen.add(a_card)
             try:
                 orphans.remove(a_card)
             except KeyError:
@@ -172,6 +173,7 @@ def log_gachas(have_logged, seen, local, remote):
             # print("orphan:", orphan)
             continue
 
+        seen.add(orphan)
         add_sets[gid]["other"].append(orphan)
 
     with remote as s:
@@ -195,6 +197,7 @@ def log_lastresort(have_logged, seen, local, remote):
     spec = ",".join(map(str, orphans))
     for card, datestr in local.execute(QUERY_GET_STORY_START_DATES.format(spec)):
         buckets[starlight.JST(datestr).timestamp()].append(card)
+        seen.add(card)
 
     with remote as s:
         for time in buckets:
