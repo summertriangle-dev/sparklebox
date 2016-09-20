@@ -106,22 +106,6 @@ class TranslationCache(Base):
     def __repr__(self):
         return "<TL entry {x.id} '{x.english}'>".format(x=self)
 
-class HistoryEntry(Base):
-    __tablename__ = TABLE_PREFIX + "_history"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    time = Column(Integer)
-    payload = Column(LargeBinary)
-
-    def dt_string(self):
-        return self.datetime().strftime("%Y-%m-%d")
-
-    def datetime(self):
-        return datetime.fromtimestamp(self.time)
-
-    def asdict(self):
-        return json.loads(self.payload.decode("ascii"))
-
 class GachaRewardEntry(Base):
     __tablename__ = TABLE_PREFIX + "_gacha_available_ex"
 
