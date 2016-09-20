@@ -1,3 +1,5 @@
+import models
+
 def enum(kv):
     i = iter(kv)
     dic = dict(zip(i, i))
@@ -174,6 +176,13 @@ floor_rarity = enum([
     6, "sr",
     7, "ssr",
     8, "ssr",
+])
+
+he_event_class = enum([
+    models.EVENT_TYPE_TOKEN, "hev_token",
+    models.EVENT_TYPE_CARAVAN, "hev_caravan",
+    models.EVENT_TYPE_GROOVE, "hev_groove",
+    models.EVENT_TYPE_PARTY, "hev_party",
 ])
 
 # TODO need enum defs for

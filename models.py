@@ -6,7 +6,7 @@ from time import time as _time
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, UnicodeText, LargeBinary
+from sqlalchemy import Column, Integer, String, UnicodeText, LargeBinary, SmallInteger
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, aliased, load_only
 from sqlalchemy import func
@@ -140,6 +140,119 @@ class GachaPresenceEntry(Base):
     gacha_id_last = Column(Integer, nullable=False)
     avail_start = Column(Integer, nullable=False)
     avail_end = Column(Integer, nullable=False)
+
+HISTORY_TYPE_EVENT = 2
+HISTORY_TYPE_GACHA = 3
+HISTORY_TYPE_ADD_N = 4
+HISTORY_TYPE_EVENT_END = 5
+HISTORY_TYPE_GACHA_END = 6
+
+EVENT_TYPE_TOKEN = 0
+EVENT_TYPE_CARAVAN = 1
+EVENT_TYPE_GROOVE = 2
+EVENT_TYPE_PARTY = 3
+
+EVENT_ATTR_NONE = 0
+EVENT_ATTR_CU = 1
+EVENT_ATTR_CO = 2
+EVENT_ATTR_PA = 3
+
+EVENT_STAT_NONE = 0
+EVENT_STAT_VO = 1
+EVENT_STAT_VI = 2
+EVENT_STAT_DA = 3
+
+class HistoryEventEntry(Base):
+    __tablename__ = TABLE_PREFIX + "_history_ex"
+
+    # event type/id
+    descriptor = Column(Integer, primary_key=True)
+    extra_type_info = Column(SmallInteger)
+    # card ids added, as a comma separated list
+    added_cards = Column(utext())
+    event_name = Column(utext())
+
+    start_time = Column(Integer)
+    end_time = Column(Integer)
+
+    # the top 4 bits of .descriptor denote the type of history
+    # event, the others are for the underlying event id, gacha id,
+    # etc.
+
+    def type(self):
+        return (self.descriptor & 0xF0000000) >> 28
+
+    # gacha id, event id, etc
+    def referred_id(self):
+        return self.descriptor & 0x0FFFFFFF
+
+    def ensure_parsed_changelist(self):
+        if not hasattr(self, "parsed_changelist"):
+            if self.added_cards:
+                self.parsed_changelist = json.loads(self.added_cards)
+            else:
+                self.parsed_changelist = {}
+
+        return self.parsed_changelist
+
+    def category_card_list(self, cat):
+        return self.ensure_parsed_changelist().get(cat, [])
+
+    def card_list(self):
+        cl = self.ensure_parsed_changelist()
+
+        ret = []
+        for k in sorted(cl.keys()):
+            ret.extend(cl[k])
+
+        return ret
+
+    def card_list_has_more_than_one_category(self):
+        return len(self.ensure_parsed_changelist()) > 1
+
+    def card_urlspec(self):
+        return ",".join( map(str, self.card_list()) )
+
+    def start_dt_string(self):
+        return self.start_datetime().strftime("%Y-%m-%d")
+
+    def end_dt_string(self):
+        return self.end_datetime().strftime("%Y-%m-%d")
+
+    def start_datetime(self):
+        return datetime.fromtimestamp(self.start_time)
+
+    def end_datetime(self):
+        return datetime.fromtimestamp(self.end_time)
+
+    def length_in_days(self):
+        secs = (self.end_time - self.start_time)
+        return secs / (60 * 60 * 24)
+
+    # -- extra_type_info bitfields for events:
+    # (these are binary digits, not hex)
+    #      00000000 0SSAATTT
+    # SS: Focus stat (for grooves), 0-4
+    # AA: Attribute (for tokens), 0-4
+    # TTT: Event type, 0-7
+
+    def event_type(self):
+        return self.extra_type_info & 0x7
+
+    # don't use these for now
+    # def event_attribute(self):
+    #     return (self.extra_type_info & 0x18) >> 3
+    #
+    # def groove_stat(self):
+    #     return (self.extra_type_info & 0x60) >> 5
+
+    # -- extra_type_info bitfields for gachas:
+    # (these are binary digits, not hex)
+    #      00000000 0000000L
+    # L: limited?, 0-1
+
+    def gacha_is_limited(self):
+        return self.extra_type_info & 0x1
 
 class TranslationSQL(object):
     def __init__(self, override_url=None):
