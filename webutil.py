@@ -25,14 +25,14 @@ def tlable(text, write=1):
 def icon(css_class):
     return """<div class="icon icon_{0}"></div>""".format(css_class)
 
-def icon_ex(card_id, is_lowbw=0, collapsible=0):
+def icon_ex(card_id, is_lowbw=0, collapsible=0, classes=""):
     rec = starlight.data.card(card_id)
     if not rec:
         btext = "(?) bug:{0}".format(card_id)
-        ish = """<div class="profile">
+        ish = """<div class="profile {1}">
             <div class="icon icon_unknown"></div>
             <div class="profile_text {0}"><b>Mysterious Kashikoi Person</b><br>{btext}</div>
-        </div>""".format("hides_under_mobile" if collapsible else "", btext=btext)
+        </div>""".format("hides_under_mobile" if collapsible else "", classes, btext=btext)
         return """<a class="noline">{ish}</a>""".format(ish=ish)
     else:
         if not is_lowbw:
@@ -41,13 +41,14 @@ def icon_ex(card_id, is_lowbw=0, collapsible=0):
             link = "/card/{rec.id}".format(rec=rec)
 
         btext = "({0}) {1}".format(enums.rarity(rec.rarity), tlable(rec.title, write=0) if rec.title_flag else "")
-        ish = """<div class="profile">
+        ish = """<div class="profile {4}">
             <div class="icon icon_{rec.id} msprites m{1} {2}"></div>
             <div class="profile_text {3}"><b>{0}</b><br>{btext}</div>
         </div>""".format(tornado.escape.xhtml_escape(rec.chara.conventional),
             enums.stat_dot(rec.best_stat),
             "m" + enums.skill_class(rec.skill.skill_type) if rec.skill else "",
             "hides_under_mobile" if collapsible else "",
+            classes,
             rec=rec, btext=btext)
         return """<a href="{link}" class="noline">{ish}</a>""".format(rec=rec, ish=ish, link=link)
 
