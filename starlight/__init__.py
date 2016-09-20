@@ -599,11 +599,16 @@ data = None
 def init():
     global data
     available_mdbs = sorted(list(filter(lambda x: x.endswith(".mdb"), os.listdir(transient_data_path()))), reverse=1)
-    if available_mdbs:
-        try:
-            explicit_vers = int(sys.argv[1])
-        except (ValueError, IndexError):
+
+    try:
+        explicit_vers = int(sys.argv[1])
+    except (ValueError, IndexError):
+        if available_mdbs:
             explicit_vers = available_mdbs[0].split(".")[0]
+        else:
+            explicit_vers = 0
+
+    if explicit_vers and os.path.exists(transient_data_path("{0}.mdb".format(explicit_vers))):
         print("Loading mdb:", explicit_vers)
         data = DataCache(explicit_vers)
     else:
