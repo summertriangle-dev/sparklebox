@@ -169,7 +169,7 @@ def log_gachas(have_logged, seen, local, remote):
             if gid in havers:
                 break
         else:
-            print("orphan:", orphan)
+            # print("orphan:", orphan)
             continue
 
         add_sets[gid]["other"].append(orphan)
@@ -230,6 +230,9 @@ def main(new_db):
     log_events(have_logged, seen, local, remote)
     log_gachas(have_logged, seen, local, remote)
     log_lastresort(have_logged, seen, local, remote)
+
+    print("final orphaned set:", set(k for k, in local.execute(QUERY_GET_ROOTS).fetchall()) - seen)
+    print("if the above set isn't empty, file a bug because i missed something")
 
 if __name__ == '__main__':
     main(*sys.argv[1:])
