@@ -1104,14 +1104,14 @@ a.fill_cell {
   border-left-color: #e5b700;
 }
 .box.he_gacha.he_limited {
-  border-color: #ffc2c2;
+  border-color: #ffa9a9;
 }
 .box.he_gacha.he_limited .left {
-  background-color: #ffc2c2;
+  background-color: #ffa9a9;
 }
 .box.he_gacha.he_limited .ext {
-  border-top-color: #ffc2c2;
-  border-left-color: #ffc2c2;
+  border-top-color: #ffa9a9;
+  border-left-color: #ffa9a9;
 }
 .he_divider {
   font-weight: bold;
