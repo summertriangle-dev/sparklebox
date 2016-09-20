@@ -1,7 +1,6 @@
 import csvloader
 import functools
 import os
-import enums
 import re
 
 NO_STRING_FMT = "<Voice ID {0}:6:{1} has no transcript, but you can still submit a translation for it.>"
@@ -92,13 +91,29 @@ def describe_skill_html(skill):
     return " ".join((interval_clause, probability_clause, effect_clause, length_clause))
 
 
+LEADER_SKILL_TARGET = {
+    1: "all Cute",
+    2: "all Cool",
+    3: "all Passion",
+    4: "all",
+}
+
+LEADER_SKILL_PARAM = {
+    1: "the Vocal appeal",
+    2: "the Visual appeal",
+    3: "the Dance appeal",
+    4: "all appeals",
+    5: "the life",
+    6: "the skill probability",
+}
+
 def describe_lead_skill_html(skill):
     if skill is None:
         return "No effect"
 
     if skill.up_type == 1 and skill.type == 20:
-        target_attr = enums.lskill_target(skill.target_attribute)
-        target_param = enums.lskill_param(skill.target_param)
+        target_attr = LEADER_SKILL_TARGET.get(skill.target_attribute, "<unknown>")
+        target_param = LEADER_SKILL_PARAM.get(skill.target_param, "<unknown>")
 
         effect_clause = """Raises {0} of {1} members by <span class="let">{2}</span>%""".format(
             target_param, target_attr, skill.up_value)
