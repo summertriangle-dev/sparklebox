@@ -183,6 +183,7 @@ he_event_class = enum([
     models.EVENT_TYPE_CARAVAN, "hev_caravan",
     models.EVENT_TYPE_GROOVE, "hev_groove",
     models.EVENT_TYPE_PARTY, "hev_party",
+    models.EVENT_TYPE_TOUR, "hev_tour",
 ])
 
 # TODO need enum defs for
