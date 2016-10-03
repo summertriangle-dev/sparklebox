@@ -118,7 +118,7 @@ def log_events(have_logged, seen, local, remote):
         #     ))
         s.commit()
 
-def log_gachas(have_logged, seen, local, remote):
+def log_gachas(have_logged, seen, seen_in_gacha, local, remote):
     # code sucks
     # TODO clean up and refactor everything after this line
     have_gacha_set = set( map( lambda x: internal_id(x),
@@ -133,7 +133,7 @@ def log_gachas(have_logged, seen, local, remote):
     new_gachas = set(gachas.keys()) - have_gacha_set
     gachas_in_chrono_order = sorted(new_gachas, key=lambda x: starlight.JST(gachas[x].start_date))
 
-    orphans = set(k for k, in local.execute(QUERY_GET_ROOTS).fetchall()) - seen
+    orphans = set(k for k, in local.execute(QUERY_GET_ROOTS).fetchall()) - seen_in_gacha
 
     is_limited = {}
     # check limited/featured
@@ -145,6 +145,7 @@ def log_gachas(have_logged, seen, local, remote):
             my_add_set["limited" if lim_flag else "other"].append(a_card)
 
             seen.add(a_card)
+            seen_in_gacha.add(a_card)
             try:
                 orphans.remove(a_card)
             except KeyError:
@@ -174,6 +175,7 @@ def log_gachas(have_logged, seen, local, remote):
             continue
 
         seen.add(orphan)
+        seen_in_gacha.add(orphan)
         add_sets[gid]["other"].append(orphan)
 
     with remote as s:
@@ -220,6 +222,7 @@ def main(new_db):
     remote = models.TranslationSQL()
 
     seen = set()
+    seen_in_gacha = set()
     have_logged = set()
 
     with remote as s:
@@ -228,10 +231,15 @@ def main(new_db):
             if payload:
                 for each_list in json.loads(payload).values():
                     seen.update(each_list)
+            
+            if htype(descriptor) == models.HISTORY_TYPE_GACHA:
+                for each_list in json.loads(payload).values():
+                    seen_in_gacha.update(each_list)
+            
             have_logged.add(descriptor)
 
     log_events(have_logged, seen, local, remote)
-    log_gachas(have_logged, seen, local, remote)
+    log_gachas(have_logged, seen, seen_in_gacha, local, remote)
     log_lastresort(have_logged, seen, local, remote)
 
     print("final orphaned set:", set(k for k, in local.execute(QUERY_GET_ROOTS).fetchall()) - seen)
