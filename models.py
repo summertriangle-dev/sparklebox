@@ -14,7 +14,6 @@ import multiprocessing
 from tornado.ioloop import IOLoop
 from functools import partial
 from collections import defaultdict, namedtuple
-import starlight
 
 unknown_gacha_t = namedtuple("unknown_gacha_t", ("name"))
 

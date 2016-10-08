@@ -2,7 +2,6 @@ import re
 import sqlite3
 import pickle
 import os
-import models
 import subprocess
 import sys
 from time import time
