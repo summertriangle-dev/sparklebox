@@ -82,6 +82,9 @@ gacha_rates_t = namedtuple("gacha_rates_t", ("r", "sr", "ssr"))
 # and == will break.
 gacha_rates_t._REGULAR_RATES = gacha_rates_t(8850 / 100, 1000 / 100, 150 / 100)
 
+gacha_single_reward_t = namedtuple("gacha_single_reward_t",
+    ("card_id", "is_limited", "sort_order", "relative_odds", "gsr_relative_odds"))
+
 potential_birthday_t = namedtuple("potential_birthday_t", ("month", "day", "chara"))
 
 TITLE_ONLY_REGEX = r"^［(.+)］"
@@ -134,14 +137,10 @@ class DataCache(object):
                 select.append(stub)
         return select
 
-    def available_cards(self, gachas):
-        current = gachas
-        query = "SELECT gacha_id, reward_id, limited_flag, recommend_order FROM gacha_available WHERE gacha_id IN ({0})".format(",".join("?" * len(current)))
-        tmp = defaultdict(lambda: [])
-        [tmp[gid].append((rec, reward, lim)) for gid, reward, lim, rec in self.hnd.execute(query, tuple(g.id for g in current))]
-
+    def available_cards(self, gacha):
+        query = "SELECT reward_id, limited_flag, (CASE WHEN recommend_order == 0 THEN 9999 ELSE recommend_order END), relative_odds, relative_sr_odds FROM gacha_available WHERE gacha_id = ?"
         self.primed_this["sel_ac"] += 1
-        return [tmp[gacha.id] for gacha in current]
+        return [gacha_single_reward_t(*r) for r in self.hnd.execute(query, (gacha.id,)).fetchall()]
 
     def limited_availability_cards(self, gachas):
         select = [gacha.id for gacha in gachas]

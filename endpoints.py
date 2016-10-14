@@ -257,11 +257,12 @@ class GachaTable(ShortlinkTable):
             self.write("Not found. If there's no gacha happening right now, you'll have to specify an ID.")
             return
 
-        availability_list = starlight.data.available_cards([selected_gacha])[0]
-        availability_list.sort(key=lambda x: x[0] or 9001)
+        availability_list = starlight.data.available_cards(selected_gacha)
+        availability_list.sort(key=lambda x: x.sort_order)
 
-        card_list = starlight.data.cards(av[1] for av in availability_list)
-        limited_flags = {av[1]: av[2] for av in availability_list}
+        card_list = starlight.data.cards(gr.card_id for gr in availability_list)
+        limited_flags = {gr.card_id: gr.is_limited for gr in availability_list}
+        rel_odds = {gr.card_id: gr.relative_odds / 10000 for gr in availability_list}
 
         filters, categories = table.select_categories("CASDE")
 
@@ -271,6 +272,9 @@ class GachaTable(ShortlinkTable):
         lim_cat.yes_text = "Yes"
         lim_cat.no_text = "No"
 
+        odds_cat = table.CustomNumber(rel_odds, header_text="Chance", format="{0:.3f}%")
+
+        categories.insert(0, odds_cat)
         categories.insert(0, lim_cat)
 
         self.rendertable( (filters, categories),

@@ -236,7 +236,7 @@ class AppealsLow(Datum):
 class CustomBool(Datum):
     applicable_filters = []
     # can't be selected via url because only A-Za-z is allowed
-    uid = "_"
+    uid = "?"
 
     yes_text = "True"
     no_text = "False"
@@ -252,6 +252,31 @@ class CustomBool(Datum):
             return """<td class="cb_true"> {0} </td>""".format(E(self.yes_text))
         else:
             return """<td class="cb_false"> {0} </td>""".format(E(self.no_text))
+
+class CustomNumber(Datum):
+    applicable_filters = []
+    # can't be selected via url because only A-Za-z is allowed
+    uid = "#"
+
+    format = "{0}"
+    header_text = ""
+
+    def __init__(self, values, header_text="", format=None):
+        self.header_text = header_text
+        self.values = values
+
+        if format is not None:
+            self.format = "<td>" + format + "</td>"
+        else:
+            self.format = "<td>{0}</td>"
+
+    def make_headers(self):
+        return (
+            """<th>{0}</th>"""
+        ).format(E(self.header_text))
+
+    def make_values(self, a_card):
+        return self.format.format(self.values[a_card.id])
 
 uid_to_cls = {V.uid: V for V in Datum.__subclasses__()}
 
