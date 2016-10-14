@@ -504,6 +504,9 @@ class DataCache(object):
     def __del__(self):
         self.hnd.close()
 
+def display_app_ver():
+    return os.environ.get("VC_APP_VER", "(unset)")
+
 def do_preswitch_tasks(new_db_path, old_db_path):
     print("trace do_preswitch_tasks", new_db_path, old_db_path)
     subprocess.call(["toolchain/name_finder.py",

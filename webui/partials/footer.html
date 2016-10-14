@@ -1,8 +1,12 @@
 <footer>
-    <small>truth version {{ starlight.data.version }} opened at {{ starlight.data.load_date }}<br>
+    <small>render time (so far): {{ request.request_time() * 1000 }} (ms)<br>
+       --- the information below is only useful for devs, please ignore it ---<br><br>
+
+           truth version {{ starlight.data.version }},
+           opened at {{ starlight.data.load_date }},
+           app version {{ starlight.display_app_ver() }}<br>
            did this page trigger a versioncheck? {{ "yes" if starlight.data.vc_this else "no" }}<br>
            did this page generate primes? {{ starlight.data.primed_this }}<br>
-           render time (so far): {{ request.request_time() * 1000 }} (ms)
            {% if starlight.is_updating_to_new_truth %}
            <br>checking for truth updates... performance may be degraded for a few seconds.
            {% end %}
