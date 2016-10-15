@@ -263,6 +263,8 @@ class GachaTable(ShortlinkTable):
         card_list = starlight.data.cards(gr.card_id for gr in availability_list)
         limited_flags = {gr.card_id: gr.is_limited for gr in availability_list}
         rel_odds = {gr.card_id: gr.relative_odds / 10000 for gr in availability_list}
+        rel_odds.update({self.flip_chain(starlight.data.card(gr.card_id)).id:
+            rel_odds[gr.card_id] for gr in availability_list})
 
         filters, categories = table.select_categories("CASDE")
 
