@@ -437,7 +437,7 @@ class DataCache(object):
             if id in self.char_cache:
                 yield from extra_va_tables.char_voices(va_data_t, id)
             else:
-                yield from extra_va_tables.card_voices(va_data_t, id, self.id_chain[id])
+                yield from extra_va_tables.card_voices(va_data_t, id, self.chain_id[id])
 
         yield from ret
 
