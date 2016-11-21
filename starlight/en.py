@@ -3,7 +3,7 @@ import functools
 import os
 import re
 
-NO_STRING_FMT = "<Voice ID {0}:6:{1} has no transcript, but you can still submit a translation for it.>"
+NO_STRING_FMT = "<Voice ID {0}:{1}:{2} has no transcript, but you can still submit a translation for it.>"
 
 def westernized_name(chara):
     """Our conventionals are ordered Last First, but project-imas uses First Last."""
