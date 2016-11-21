@@ -99,7 +99,7 @@ class TranslationSQL(object):
     def set_translation(self, key, eng, sender, force_time=None):
         with self as s:
             s.add(TranslationEntry(key=key, english=eng,
-                                   submitter=sender, submit_utc=force_time or time()))
+                                   submitter=sender, submit_utc=force_time or int_time()))
             try:
                 thing_to_update = s.query(TranslationCache).filter(TranslationCache.key == key).one()
             except NoResultFound:
