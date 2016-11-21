@@ -228,6 +228,8 @@ def main(new_db):
     with remote as s:
         raw = s.query(models.HistoryEventEntry.descriptor, models.HistoryEventEntry.added_cards).all()
         for descriptor, payload in raw:
+            have_logged.add(descriptor)
+
             if not payload:
                 continue
 
@@ -237,8 +239,6 @@ def main(new_db):
             if htype(descriptor) == models.HISTORY_TYPE_GACHA:
                 for each_list in json.loads(payload).values():
                     seen_in_gacha.update(each_list)
-
-            have_logged.add(descriptor)
 
     log_events(have_logged, seen, local, remote)
     log_gachas(have_logged, seen, seen_in_gacha, local, remote)
