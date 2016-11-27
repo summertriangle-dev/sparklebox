@@ -34,6 +34,11 @@ class Home(HandlerSyncedWithMaster):
         gachas = starlight.data.gachas(now)
         gacha_limited = starlight.data.limited_availability_cards(gachas)
 
+        # Show only cu/co/pa chara birthdays. Chihiro is a minefield and causes
+        # problems
+        bd = list(filter(lambda char: 0 < char.type < 4,
+                         starlight.data.potential_birthdays(now)))
+
         recent_history = self.settings["tle"].get_history(10)
 
         # cache priming has a high overhead so prime all icons at once
@@ -45,7 +50,7 @@ class Home(HandlerSyncedWithMaster):
         self.render("main.html", history=recent_history,
             events=zip(events, event_rewards),
             la_cards=zip(gachas, gacha_limited),
-            birthdays=starlight.data.potential_birthdays(now), **self.settings)
+            birthdays=bd, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 @route("/suggest")
