@@ -15,13 +15,7 @@ from pytz import timezone, utc
 from collections import namedtuple
 import models
 
-_JST = timezone("Asia/Tokyo")
-def JST(date, to_utc=1):
-    time = _JST.localize(datetime.strptime(date.replace("-02-29 ", "-03-01 "), "%Y-%m-%d %H:%M:%S"))
-    if to_utc:
-        return time.astimezone(utc)
-    else:
-        return time
+from starlight import JST
 
 gacha_stub_t = namedtuple("gacha_stub_t", ("id", "name", "start_date", "end_date", "type", "subtype"))
 
