@@ -28,7 +28,12 @@ _JST = timezone("Asia/Tokyo")
 def JST(date, to_utc=1):
     # this is here because some datetime calls were throwing on 29 Feb.
     # TODO in 4 years, check if this is still needed
-    time = _JST.localize(datetime.strptime(date.replace("-02-29 ", "-03-01 "), "%Y-%m-%d %H:%M:%S"))
+    try:
+        time = _JST.localize(datetime.strptime(date.replace("-02-29 ", "-03-01 "), "%Y-%m-%d %H:%M:%S"))
+    except ValueError:
+        # and this is here because the date format changed starting 10021500
+        time = _JST.localize(datetime.strptime(date.replace("/02/29 ", "/03/01 "), "%Y/%m/%d %H:%M:%S"))
+
     if to_utc:
         return time.astimezone(utc)
     else:
