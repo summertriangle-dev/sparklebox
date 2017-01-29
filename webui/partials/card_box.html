@@ -161,7 +161,7 @@
     <tr><td colspan="2"><b>This table is for human reference.
         If you want to access this information programmatically, consider using the <a href="/static/api.html">API</a> instead.
         It will save you the trouble of parsing this table.</b></td></tr>
-    {% for key, value in card.__dict__.items() %}
+    {% for key, value in card._asdict().items() %}
     <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
     {% end %}
   </table>
