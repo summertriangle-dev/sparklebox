@@ -53,6 +53,8 @@ skill_type = enum([
     17, "Healer",
     18, "Healer",
     19, "Healer",
+
+    24, "Combo Bonus/Heal"
 ])
 
 skill_probability = enum([
@@ -145,6 +147,8 @@ skill_class = enum([
     17, "s_heal",
     18, "s_heal",
     19, "s_heal",
+
+    24, "s_combobonus",
 ])
 
 stat_dot = enum([

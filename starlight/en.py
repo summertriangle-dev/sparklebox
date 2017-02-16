@@ -59,6 +59,7 @@ SKILL_DESCRIPTIONS = {
     17: """Perfect notes will restore <span class="let">{0}</span> health""",
     18: """Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
     19: """Nice/Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
+    24: """you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will restore <span class="let">{2}</span> health"""
 }
 
 REMOVE_HTML = re.compile(r"</?span[^>]*>")
@@ -76,11 +77,11 @@ def describe_skill_html(skill):
     fire_interval = skill.condition
     effect_val = skill.value
     # TODO symbols
-    if skill.skill_type in [1, 2, 3, 4, 14]:
+    if skill.skill_type in [1, 2, 3, 4, 14, 24]:
         effect_val -= 100
 
     effect_clause = SKILL_DESCRIPTIONS.get(
-        skill.skill_type, "").format(effect_val, skill.skill_trigger_value)
+        skill.skill_type, "").format(effect_val, skill.skill_trigger_value, skill.value_2)
     interval_clause = """Every <span class="let">{0}</span> seconds:""".format(
         fire_interval)
     probability_clause = """there is a <span class="var">{0}</span>% chance that""".format(
