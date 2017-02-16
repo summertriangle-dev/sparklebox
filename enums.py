@@ -148,7 +148,7 @@ skill_class = enum([
     18, "s_heal",
     19, "s_heal",
 
-    24, "s_combobonus",
+    24, "s_allround",
 ])
 
 stat_dot = enum([

@@ -184,6 +184,9 @@ footer {
   &.s_overload {
     .stitches-marker(0, -26px, 24px, 24px);
   }
+  &.s_allround {
+    .stitches-marker(-108px, -52px, 24px, 24px);
+  }
 
   @media only screen and (-webkit-min-device-pixel-ratio: 1.3),
       only screen and (-o-min-device-pixel-ratio: 13/10),
@@ -191,7 +194,7 @@ footer {
     border-radius:4px;
     &.icon_event, &.icon_n, &.icon_r, &.icon_sr, &.icon_ssr, &.m_vi,
     &.m_da, &.m_vo, &.s_pl, &.s_cprot, &.s_combobonus, &.s_scorebonus,
-    &.s_heal, &.s_life, &.s_overload, &.m_ba {
+    &.s_heal, &.s_life, &.s_overload, &.m_ba, &.s_allround {
       background-image:url(../img/smarkers@2x.png);
       background-size: 202px 144px;
       border-radius:0px;
@@ -858,7 +861,7 @@ span.var {
     left:1px; top:1px;
     display:block;
     width:9px; height:9px;
-    background: url("../img/smarkers.png") -115px -50px no-repeat;
+    background: url("../img/smarkers.png") -115px -26px no-repeat;
 
     content:"";
   }
@@ -884,7 +887,7 @@ span.var {
     left:1px; top:10px;
     display:block;
     width:9px; height:9px;
-    background: url("../img/smarkers.png") -115px -50px no-repeat;
+    background: url("../img/smarkers.png") -115px -26px no-repeat;
 
     content:"";
   }
@@ -909,6 +912,9 @@ span.var {
   }
   &.ms_overload::after {
     background-position: -105px -11px;
+  }
+  &.ms_allround::after {
+    background-position: -116px -11px;
   }
   @media only screen and (-webkit-min-device-pixel-ratio: 1.3),
       only screen and (-o-min-device-pixel-ratio: 13/10),

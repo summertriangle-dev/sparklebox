@@ -164,6 +164,11 @@ footer {
   width: 24px;
   height: 24px;
 }
+.icon.s_allround {
+  background-position: -108px -52px;
+  width: 24px;
+  height: 24px;
+}
 @media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 13/10), only screen and (min-resolution: 120dpi) {
   .icon {
     border-radius: 4px;
@@ -183,7 +188,8 @@ footer {
   .icon.s_heal,
   .icon.s_life,
   .icon.s_overload,
-  .icon.m_ba {
+  .icon.m_ba,
+  .icon.s_allround {
     background-image: url(../img/smarkers@2x.png);
     background-size: 202px 144px;
     border-radius: 0px;
@@ -863,7 +869,7 @@ span.var {
   display: block;
   width: 9px;
   height: 9px;
-  background: url("../img/smarkers.png") -115px -50px no-repeat;
+  background: url("../img/smarkers.png") -115px -26px no-repeat;
   content: "";
 }
 .icon.msprites.mm_vi::before {
@@ -885,7 +891,7 @@ span.var {
   display: block;
   width: 9px;
   height: 9px;
-  background: url("../img/smarkers.png") -115px -50px no-repeat;
+  background: url("../img/smarkers.png") -115px -26px no-repeat;
   content: "";
 }
 .icon.msprites.ms_pl::after {
@@ -908,6 +914,9 @@ span.var {
 }
 .icon.msprites.ms_overload::after {
   background-position: -105px -11px;
+}
+.icon.msprites.ms_allround::after {
+  background-position: -116px -11px;
 }
 @media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 13/10), only screen and (min-resolution: 120dpi) {
   .icon.msprites::after,
