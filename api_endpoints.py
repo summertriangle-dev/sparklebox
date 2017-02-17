@@ -102,6 +102,7 @@ class objproxy(object):
 
 def extend_skill(self, d):
     d["explain_en"] = starlight.en.describe_skill(objproxy(d))
+    d["skill_type_id"] = d["skill_type"]
     d["skill_type"] = enums.skill_type(d["skill_type"])
 
     duration_table = d["dur"].args[0]
@@ -399,7 +400,7 @@ class InformationAPI(CORSBlessMixin, HandlerSyncedWithMaster):
         payload = {
             "truth_version": starlight.data.version,
             "api_major": 1,
-            "api_revision": 2,
+            "api_revision": 4,
         }
 
         if self.settings["is_dev"]:
