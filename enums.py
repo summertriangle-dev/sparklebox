@@ -54,7 +54,7 @@ skill_type = enum([
     18, "Healer",
     19, "Healer",
 
-    24, "Combo Bonus/Heal"
+    24, "All-Round"
 ])
 
 skill_probability = enum([
