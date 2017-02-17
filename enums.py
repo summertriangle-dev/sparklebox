@@ -50,6 +50,9 @@ skill_type = enum([
     13, "Unconditional Healer",
     14, "Overload",
 
+    15, "Perfect Elegance",
+    16, "Mimic",
+
     17, "Healer",
     18, "Healer",
     19, "Healer",
@@ -143,6 +146,9 @@ skill_class = enum([
     12, "s_life",
     13, "s_heal",
     14, "s_overload",
+
+    15, "s_perfelegant",
+    16, "s_mimic",
 
     17, "s_heal",
     18, "s_heal",

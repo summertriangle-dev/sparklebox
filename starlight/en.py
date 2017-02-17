@@ -56,6 +56,8 @@ SKILL_DESCRIPTIONS = {
     12: """you will not lose health""",
     13: """all notes will restore <span class="let">{0}</span> health""", #provisional
     14: """<span class="let">{1}</span> life will be consumed, then: Perfect notes receive a <span class="let">{0}</span>% score bonus, and Nice/Bad notes will not break combo""",
+    15: """something interesting will happen""", #provisional
+    16: """something interesting will happen""", #provisional
     17: """Perfect notes will restore <span class="let">{0}</span> health""",
     18: """Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
     19: """Nice/Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
