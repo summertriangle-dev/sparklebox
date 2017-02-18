@@ -83,8 +83,10 @@ def describe_skill_html(skill):
     fire_interval = skill.condition
     effect_val = skill.value
     # TODO symbols
-    if skill.skill_type in [1, 2, 3, 4, 14, 24]:
+    if skill.skill_type in [1, 2, 3, 4, 14, 15, 21, 22, 23, 24]:
         effect_val -= 100
+    elif skill.skill_type in [20]:
+        effect_val = (effect_val//10) - 100
 
     effect_clause = SKILL_DESCRIPTIONS.get(
         skill.skill_type, "").format(effect_val, skill.skill_trigger_value, skill.value_2)
