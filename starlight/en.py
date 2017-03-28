@@ -61,7 +61,7 @@ SKILL_DESCRIPTIONS = {
     17: """Perfect notes will restore <span class="let">{0}</span> health""",
     18: """Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
     19: """Nice/Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
-    20: """your currently activating skills will receive a boost effect""", # depending on skill type? provisional
+    20: """currently active skills will be boosted""", # depending on skill type? provisional
     21: """when there are only Cute idols on the team, you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will receive a <span class="let">{2}</span>% score bonus""",# if they don't mistake. provisional
     22: """when there are only Cool idols on the team, you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will receive a <span class="let">{2}</span>% score bonus""",# if they don't mistake. provisional
     23: """when there are only Passion idols on the team, you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will receive a <span class="let">{2}</span>% score bonus""",# if they don't mistake. provisional
@@ -87,9 +87,13 @@ def describe_skill_html(skill):
         effect_val -= 100
     elif skill.skill_type in [20]:
         effect_val = (effect_val//10) - 100
+    
+    value_2 = skill.value_2
+    if skill.skill_type in [21, 22, 23]:
+        value_2 -= 100
 
     effect_clause = SKILL_DESCRIPTIONS.get(
-        skill.skill_type, "").format(effect_val, skill.skill_trigger_value, skill.value_2)
+        skill.skill_type, "").format(effect_val, skill.skill_trigger_value, value_2)
     interval_clause = """Every <span class="let">{0}</span> seconds:""".format(
         fire_interval)
     probability_clause = """there is a <span class="var">{0}</span>% chance that""".format(
