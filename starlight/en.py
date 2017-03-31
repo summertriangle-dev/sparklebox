@@ -140,8 +140,11 @@ def describe_lead_skill_html(skill):
             need_list.append("Passion")
 
         if need_list:
-            need_str = ", ".join(need_list[:-1])
-            need_str = "{0}, and {1}".format(need_str, need_list[-1])
+            if len(need_list) == 1:
+                need_str = need_list[0]
+            else:
+                need_str = ", ".join(need_list[:-1])
+                need_str = "{0}, and {1}".format(need_str, need_list[-1])
             predicate_clause = """when there are {0} idols on the team.""".format(need_str)
             built = " ".join((effect_clause, predicate_clause))
         else:
