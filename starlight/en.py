@@ -61,10 +61,10 @@ SKILL_DESCRIPTIONS = {
     17: """Perfect notes will restore <span class="let">{0}</span> health""",
     18: """Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
     19: """Nice/Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
-    20: """currently active skills will be boosted""", # depending on skill type? provisional
-    21: """when there are only Cute idols on the team, you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will receive a <span class="let">{2}</span>% score bonus""",# if they don't mistake. provisional
-    22: """when there are only Cool idols on the team, you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will receive a <span class="let">{2}</span>% score bonus""",# if they don't mistake. provisional
-    23: """when there are only Passion idols on the team, you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will receive a <span class="let">{2}</span>% score bonus""",# if they don't mistake. provisional
+    20: """currently active skills will be boosted""", 
+    21: """when there are only Cute idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
+    22: """when there are only Cool idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
+    23: """when there are only Passion idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
     24: """you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will restore <span class="let">{2}</span> health"""
 }
 
