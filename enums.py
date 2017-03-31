@@ -56,6 +56,12 @@ skill_type = enum([
     17, "Healer",
     18, "Healer",
     19, "Healer",
+    
+    20, "Skill Boost",
+
+    21, "Focus (Cute)",
+    22, "Focus (Cool)",
+    23, "Focus (Passion)",
 
     20, "Skill Boost",
 
