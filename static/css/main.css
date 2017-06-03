@@ -217,17 +217,20 @@ footer {
     border-radius: 0px;
   }
 }
-.Cute .icon.s_focus {
+.Cute .icon.s_focus,
+.Cute_kc .icon.s_focus {
   background-position: -26px -161px;
   width: 24px;
   height: 24px;
 }
-.Cool .icon.s_focus {
+.Cool .icon.s_focus,
+.Cool_kc .icon.s_focus {
   background-position: -51px -161px;
   width: 24px;
   height: 24px;
 }
-.Passion .icon.s_focus {
+.Passion .icon.s_focus,
+.Passion_kc .icon.s_focus {
   background-position: -76px -161px;
   width: 24px;
   height: 24px;
