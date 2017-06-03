@@ -174,6 +174,16 @@ footer {
   width: 24px;
   height: 24px;
 }
+.icon.s_sb {
+  background-position: 0px -161px;
+  width: 24px;
+  height: 24px;
+}
+.icon.s_focus {
+  background-position: 0px -143px;
+  width: 24px;
+  height: 1px;
+}
 .icon.s_unknown {
   background-position: 0px -143px;
   width: 24px;
@@ -199,11 +209,28 @@ footer {
   .icon.s_life,
   .icon.s_overload,
   .icon.m_ba,
-  .icon.s_allround {
+  .icon.s_allround,
+  .icon.s_focus,
+  .icon.s_sb {
     background-image: url(../img/smarkers@2x.png);
-    background-size: 202px 144px;
+    background-size: 202px 288px;
     border-radius: 0px;
   }
+}
+.Cute .icon.s_focus {
+  background-position: -26px -161px;
+  width: 24px;
+  height: 24px;
+}
+.Cool .icon.s_focus {
+  background-position: -51px -161px;
+  width: 24px;
+  height: 24px;
+}
+.Passion .icon.s_focus {
+  background-position: -76px -161px;
+  width: 24px;
+  height: 24px;
 }
 div.stdcon {
   /*padding:8px 16px*/
@@ -931,6 +958,12 @@ span.var {
 .icon.msprites.ms_perfelegant::after {
   background-position: -134px -22px;
 }
+.icon.msprites.ms_sb::after {
+  background-position: 0px -151px;
+}
+.icon.msprites.ms_focus::after {
+  background-position: -26px -151px;
+}
 .icon.msprites.ms_unknown::after {
   background-position: -145px -22px;
 }
@@ -938,7 +971,7 @@ span.var {
   .icon.msprites::after,
   .icon.msprites::before {
     background-image: url("../img/smarkers@2x.png") !important;
-    background-size: 202px 144px!important;
+    background-size: 202px 288px!important;
   }
 }
 .table .icon,

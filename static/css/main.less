@@ -190,6 +190,12 @@ footer {
   &.s_perfelegant {
     .stitches-marker(-108px, -26px, 24px, 24px);
   }
+  &.s_sb {
+    .stitches-marker(0px, -161px, 24px, 24px);
+  }
+  &.s_focus {
+    .stitches-marker(0px, -143px, 24px, 1px);
+  }
   &.s_unknown {
     .stitches-marker(0px, -143px, 24px, 1px);
   }
@@ -200,12 +206,23 @@ footer {
     border-radius:4px;
     &.icon_event, &.icon_n, &.icon_r, &.icon_sr, &.icon_ssr, &.m_vi,
     &.m_da, &.m_vo, &.s_pl, &.s_cprot, &.s_combobonus, &.s_scorebonus,
-    &.s_heal, &.s_life, &.s_overload, &.m_ba, &.s_allround {
+    &.s_heal, &.s_life, &.s_overload, &.m_ba, &.s_allround, &.s_focus,
+    &.s_sb {
       background-image:url(../img/smarkers@2x.png);
-      background-size: 202px 144px;
+      background-size: 202px 288px;
       border-radius:0px;
     }
   }
+}
+
+.Cute .icon.s_focus {
+  .stitches-marker(-26px, -161px, 24px, 24px);
+}
+.Cool .icon.s_focus {
+  .stitches-marker(-51px, -161px, 24px, 24px);
+}
+.Passion .icon.s_focus {
+  .stitches-marker(-76px, -161px, 24px, 24px);
 }
 
 div.stdcon {
@@ -925,6 +942,12 @@ span.var {
   &.ms_perfelegant::after {
     background-position: -134px -22px;
   }
+  &.ms_sb::after {
+    background-position: 0px -151px;
+  }
+  &.ms_focus::after {
+    background-position: -26px -151px;
+  }
   &.ms_unknown::after {
     background-position: -145px -22px;
   }
@@ -933,7 +956,7 @@ span.var {
       only screen and (min-resolution: 120dpi) {
     &::after, &::before {
       background-image:url("../img/smarkers@2x.png")!important;
-      background-size:202px 144px!important;
+      background-size:202px 288px!important;
     }
   }
 }
