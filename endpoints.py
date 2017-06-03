@@ -201,7 +201,8 @@ class ShortlinkTable(HandlerSyncedWithMaster):
 @route(r"/skill_table")
 class SkillTable(ShortlinkTable):
     def get(self):
-        self.rendertable("CASDE", starlight.data.cards(starlight.data.all_chain_ids()),
+        ds = filter(lambda C: C.skill is not None, starlight.data.cards(starlight.data.all_chain_ids()))
+        self.rendertable("CASDE", ds,
             allow_shortlink=0,
             table_name="Cards by skill")
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
@@ -209,7 +210,8 @@ class SkillTable(ShortlinkTable):
 @route(r"/lead_skill_table")
 class LeadSkillTable(ShortlinkTable):
     def get(self):
-        self.rendertable("CAKL", starlight.data.cards(starlight.data.all_chain_ids()),
+        ds = filter(lambda C: C.lead_skill is not None, starlight.data.cards(starlight.data.all_chain_ids()))
+        self.rendertable("CAKL", ds,
             allow_shortlink=0,
             table_name="Cards by lead skill")
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
