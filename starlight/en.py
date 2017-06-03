@@ -61,7 +61,7 @@ SKILL_DESCRIPTIONS = {
     17: """Perfect notes will restore <span class="let">{0}</span> health""",
     18: """Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
     19: """Nice/Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
-    20: """currently active skills will be boosted""", 
+    20: """currently active skills will be boosted""",
     21: """when there are only Cute idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
     22: """when there are only Cool idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
     23: """when there are only Passion idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
@@ -87,7 +87,7 @@ def describe_skill_html(skill):
         effect_val -= 100
     elif skill.skill_type in [20]:
         effect_val = (effect_val//10) - 100
-    
+
     value_2 = skill.value_2
     if skill.skill_type in [21, 22, 23]:
         value_2 -= 100
@@ -145,12 +145,22 @@ def describe_lead_skill_html(skill):
             else:
                 need_str = ", ".join(need_list[:-1])
                 need_str = "{0}, and {1}".format(need_str, need_list[-1])
+
+            # FIXME: consider values of need_x in leader_skill_t
+            #   Rei_Fan49 - Today at 5:36 PM
+            #   princess and focus only works for single color
+            #   it requires 5 or 6 per color
+            #   which implies monocolor team or no activation
+            #   cinfest team requires 1 each color (according to internal data)
+            if len(need_list) < 3:
+                need_str = "only " + need_str
+
             predicate_clause = """when there are {0} idols on the team.""".format(need_str)
             built = " ".join((effect_clause, predicate_clause))
         else:
             built = effect_clause + "."
         return built
     else:
-        return """I don't know how to describe this leader skill. Please report this as a bug. (up_type: {0}, type: {1})""".format(
+        return """I don't know how to describe this leader skill. This is a bug, please report it. (up_type: {0}, type: {1})""".format(
             skill.up_type, skill.type
         )
