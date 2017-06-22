@@ -75,10 +75,10 @@ def acquire_manifest(version, platform, asset_qual, sound_qual, dest_file, callb
             return callback(None)
 
         abso = "/".join(( DBMANIFEST.format(version), get_file ))
-        cl.fetch(abso, read_manifest)
+        cl.fetch(abso, read_manifest, headers={"X-Unity-Version": "5.1.2f1"})
 
     meta = "/".join(( DBMANIFEST.format(version), "all_dbmanifest" ))
-    cl.fetch(meta, read_meta_manifest)
+    cl.fetch(meta, read_meta_manifest, headers={"X-Unity-Version": "5.1.2f1"})
 
 def get_master(res_ver, to_path, done):
     print("trace get_master", res_ver, to_path, done)
@@ -118,6 +118,6 @@ def get_master(res_ver, to_path, done):
 
         url = SQLBASEURL.format(hash)
         cl = httpclient.AsyncHTTPClient()
-        cl.fetch(url, got_master)
+        cl.fetch(url, got_master, headers={"X-Unity-Version": "5.1.2f1"})
 
     read_manifest(res_ver, "Android", "High", "High", got_manifest)
