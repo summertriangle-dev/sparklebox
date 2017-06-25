@@ -79,7 +79,7 @@ class ApiClient(object):
             "RES_VER": str(self.res_ver),
             "IP_ADDRESS": "127.0.0.1",
             "DEVICE_NAME": "Nexus 42",
-            "X-Unity-Version": "5.1.2f1",
+            "X-Unity-Version": os.environ.get("VC_UNITY_VER", "5.4.5p1"),
             "SID": hashlib.md5(bytes(sid, "ascii") + SID_KEY()).hexdigest(),
             "GRAPHICS_DEVICE_NAME": "3dfx Voodoo2 (TM)",
             "DEVICE_ID": hashlib.md5(b"Totally a real Android").hexdigest(),

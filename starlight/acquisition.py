@@ -18,6 +18,9 @@ try:
 except FileExistsError:
     pass
 
+def extra_acquisition_headers():
+    return {"X-Unity-Version": os.environ.get("VC_UNITY_VER", "5.4.5p1")}
+
 def filename(version, platform, asset_qual, sound_qual):
     return "{0}_{1}_{2}_{3}".format(version, platform, asset_qual, sound_qual)
 
@@ -75,10 +78,10 @@ def acquire_manifest(version, platform, asset_qual, sound_qual, dest_file, callb
             return callback(None)
 
         abso = "/".join(( DBMANIFEST.format(version), get_file ))
-        cl.fetch(abso, read_manifest, headers={"X-Unity-Version": "5.1.2f1"})
+        cl.fetch(abso, read_manifest, headers=extra_acquisition_headers())
 
     meta = "/".join(( DBMANIFEST.format(version), "all_dbmanifest" ))
-    cl.fetch(meta, read_meta_manifest, headers={"X-Unity-Version": "5.1.2f1"})
+    cl.fetch(meta, read_meta_manifest, headers=extra_acquisition_headers())
 
 def get_master(res_ver, to_path, done):
     print("trace get_master", res_ver, to_path, done)
@@ -118,6 +121,6 @@ def get_master(res_ver, to_path, done):
 
         url = SQLBASEURL.format(hash)
         cl = httpclient.AsyncHTTPClient()
-        cl.fetch(url, got_master, headers={"X-Unity-Version": "5.1.2f1"})
+        cl.fetch(url, got_master, headers=extra_acquisition_headers())
 
     read_manifest(res_ver, "Android", "High", "High", got_manifest)

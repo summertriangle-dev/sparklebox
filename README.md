@@ -80,6 +80,8 @@ $VC_APP_VER - Game version (not data version), e.g. "1.9.1". Used for automatic 
     The game will reject version checks with an outdated client, so it's important to
     keep this up to date.
 
+$VC_UNITY_VER - Unity engine version, e.g. "5.4.5p1".
+
 $TLE_DISABLE_CACHES - Disable local caching of TranslationEngine data. Set this to a
     non-blank string if DB query speed doesn't matter (e.g. you use SQLite, or mysqld
     is running on the same server as the app)
