@@ -86,7 +86,7 @@ gacha_rates_t = namedtuple("gacha_rates_t", ("r", "sr", "ssr"))
 # to be safe: define as exprs of int so the resulting floats will compare properly.
 # otherwise there may be a subtle difference between "8850/100" and "88.5"
 # and == will break.
-gacha_rates_t._REGULAR_RATES = gacha_rates_t(8850 / 100, 1000 / 100, 150 / 100)
+gacha_rates_t._REGULAR_RATES = gacha_rates_t(8500 / 100, 1200 / 100, 300 / 100)
 
 gacha_single_reward_t = namedtuple("gacha_single_reward_t",
     ("card_id", "is_limited", "sort_order", "relative_odds", "gsr_relative_odds"))
