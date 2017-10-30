@@ -22,10 +22,12 @@ class Home(HandlerSyncedWithMaster):
 
     @tornado.web.asynchronous
     def get(self, pretend_date):
+        actually_now = pytz.utc.localize(datetime.utcnow())
+
         if pretend_date:
             now = pytz.utc.localize(datetime.strptime(pretend_date, "%Y-%m-%d"))
         else:
-            now = pytz.utc.localize(datetime.utcnow())
+            now = actually_now
 
         if now.day == 29 and now.month == 2:
             now += timedelta(days=1)
@@ -52,7 +54,10 @@ class Home(HandlerSyncedWithMaster):
         self.rates = {}
         self.complete = 0
         for gacha in self.gachas:
-            starlight.data.live_gacha_rates(gacha, self.receive_live_gacha_rate)
+            if (now >= gacha.start_date) and (now <= gacha.end_date):
+                starlight.data.live_gacha_rates(gacha, self.receive_live_gacha_rate)
+            else:
+                self.complete += 1
 
     def receive_live_gacha_rate(self, rate):
         if rate:
@@ -308,7 +313,7 @@ class GachaTable(ShortlinkTable):
         if is_current:
             starlight.data.live_gacha_rates(self.selected_gacha, self.complete_with_rel_odds)
         else:
-            self.complete_with_rel_odds()
+            self.complete_with_rel_odds(None)
 
     def complete_with_rel_odds(self, live_info):
         if live_info:
