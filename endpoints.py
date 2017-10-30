@@ -239,6 +239,7 @@ class CompareCard(ShortlinkTable):
 
 @route(r"/gacha(?:/([0-9]+))?")
 class GachaTable(ShortlinkTable):
+    @tornado.web.asynchronous
     def get(self, maybe_gachaid):
         now = pytz.utc.localize(datetime.utcnow())
 
@@ -263,40 +264,52 @@ class GachaTable(ShortlinkTable):
         if selected_gacha is None:
             self.set_status(404)
             self.write("Not found. If there's no gacha happening right now, you'll have to specify an ID.")
-            return
+            return self.finish()
 
         is_current = (now >= selected_gacha.start_date) and (now <= selected_gacha.end_date)
 
-        availability_list = starlight.data.available_cards(selected_gacha)
-        availability_list.sort(key=lambda x: x.sort_order)
+        self.availability_list = starlight.data.available_cards(selected_gacha)
+        self.availability_list.sort(key=lambda x: x.sort_order)
 
-        card_list = starlight.data.cards(gr.card_id for gr in availability_list)
-        limited_flags = {gr.card_id: gr.is_limited for gr in availability_list}
+        self.selected_gacha = selected_gacha
+        self.card_list = starlight.data.cards(gr.card_id for gr in self.availability_list)
+        limited_flags = {gr.card_id: gr.is_limited for gr in self.availability_list}
 
-        filters, categories = table.select_categories("CASDE")
-
-        if is_current:
-            rel_odds = {gr.card_id: gr.relative_odds / 10000 for gr in availability_list}
-            rel_odds.update({self.flip_chain(starlight.data.card(gr.card_id)).id:
-                rel_odds[gr.card_id] for gr in availability_list})
-            odds_cat = table.CustomNumber(rel_odds, header_text="Chance", format="{0:.3f}%")
-            categories.insert(0, odds_cat)
+        self.filters, self.categories = table.select_categories("CASDE")
 
         lim_cat = table.CustomBool()
         lim_cat.header_text = "Lm?"
         lim_cat.values = limited_flags
         lim_cat.yes_text = "Yes"
         lim_cat.no_text = "No"
-        categories.insert(0, lim_cat)
+        self.categories.insert(0, lim_cat)
 
-        self.rendertable( (filters, categories),
-            cards=card_list,
+        if is_current:
+            starlight.data.live_gacha_rates(self.selected_gacha, self.complete_with_rel_odds)
+        else:
+            self.complete_with_rel_odds()
+
+    def complete_with_rel_odds(self, live_info):
+        if live_info:
+            rel_odds = live_info["indiv"].copy()
+            rel_odds.update({self.flip_chain(starlight.data.card(gr.card_id)).id:
+                rel_odds.get(gr.card_id, 0.0) for gr in self.availability_list})
+            odds_cat = table.CustomNumber(rel_odds, header_text="Chance", format="{0:.3f}%")
+            self.categories.insert(1, odds_cat)
+
+            live_rates = live_info["rates"]
+        else:
+            live_rates = None
+
+        self.rendertable( (self.filters, self.categories),
+            cards=self.card_list,
             allow_shortlink=0,
-            table_name="Gacha: {0}".format(selected_gacha.name),
+            table_name="Gacha: {0}".format(self.selected_gacha.name),
             template="ext_gacha_table.html",
-            gacha=selected_gacha)
-        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
-            {"gid": maybe_gachaid})
+            gacha=self.selected_gacha,
+            rates=live_rates)
+        # self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
+        #     {"gid": maybe_gachaid})
 
 
 @route(r"/sprite_go/([0-9]+).png")
@@ -393,6 +406,16 @@ class DebugKillCache(tornado.web.RequestHandler):
         starlight.data = starlight.DataCache(starlight.data.version)
 
         self.write("ok.")
+
+@route(r"/test_gacha_rate")
+@dev_mode_only
+class DebugAPIGachaRate(tornado.web.RequestHandler):
+    def get(self):
+        def done(a, b):
+            print(b)
+            print(a)
+
+        starlight.apiclient.gacha_rates(30180, done)
 
 @route(r"/ping")
 class Ping(tornado.web.RequestHandler):

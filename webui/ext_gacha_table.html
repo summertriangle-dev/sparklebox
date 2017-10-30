@@ -9,7 +9,7 @@
 {% block extra_info %}
 <ul>
   <li>This gacha ends in <span class="counter" data-count-to="{{ gacha.end_date.timestamp() }}">(JS?)</span>.</li>
-  {% if gacha.rates != gacha.rates._REGULAR_RATES %}
+  {% if rates and rates != gacha.rates._REGULAR_RATES %}
   <li>This gacha has abnormal rates: R {{ gacha.rates.r }}% / SR {{ gacha.rates.sr }}% / SSR {{ gacha.rates.ssr }}%</li>
   {% end %}
 </ul>

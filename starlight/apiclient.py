@@ -39,8 +39,23 @@ def encrypt_cbc(s, iv, key):
         out.append(rijndael.encrypt(key, blk))
     return b"".join(out[1:])
 
+def is_usable():
+    return all([x in os.environ for x in ["VC_ACCOUNT", "VC_AES_KEY", "VC_SID_SALT"]]) \
+        and not os.getenv("DISABLE_AUTO_UPDATES", None)
+
 class ApiClient(object):
     BASE = "https://game.starlight-stage.jp"
+    SHARED_INSTANCE = None
+
+    @classmethod
+    def shared(cls):
+        if cls.SHARED_INSTANCE is None:
+            print("ApiClient.shared is creating the shared instance")
+            user_id, viewer_id, udid = os.getenv("VC_ACCOUNT", "::").split(":")
+            the_client = cls(user_id, viewer_id, udid)
+            cls.SHARED_INSTANCE = the_client
+        return cls.SHARED_INSTANCE
+
     def __init__(self, user, viewer_id, udid, res_ver="10013600"):
         self.user = user
         self.viewer_id = viewer_id
@@ -109,8 +124,7 @@ class ApiClient(object):
         return callback
 
 def versioncheck(callback):
-    user_id, viewer_id, udid = os.getenv("VC_ACCOUNT", "::").split(":")
-    client = ApiClient(user_id, viewer_id, udid)
+    client = ApiClient.shared()
     args = {
         "campaign_data": "",
         "campaign_user": 1337,
@@ -118,3 +132,11 @@ def versioncheck(callback):
         "app_type": 0,
     }
     client.call("/load/check", args, callback)
+
+def gacha_rates(gacha_id, callback):
+    client = ApiClient.shared()
+    args = {
+        "gacha_id": gacha_id,
+        "timezone": "-07:00:00",
+    }
+    client.call("/gacha/get_rate", args, callback)
