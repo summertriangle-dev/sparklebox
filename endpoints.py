@@ -16,9 +16,11 @@ import webutil
 
 @route(r"/([0-9]+-[0-9]+-[0-9]+)?")
 class Home(HandlerSyncedWithMaster):
+    @tornado.web.asynchronous
     def head(self, pretend_date):
         return self.get(pretend_date)
 
+    @tornado.web.asynchronous
     def get(self, pretend_date):
         if pretend_date:
             now = pytz.utc.localize(datetime.strptime(pretend_date, "%Y-%m-%d"))
@@ -28,29 +30,48 @@ class Home(HandlerSyncedWithMaster):
         if now.day == 29 and now.month == 2:
             now += timedelta(days=1)
 
-        events = starlight.data.events(now)
-        event_rewards = starlight.data.event_rewards(events)
+        self.events = starlight.data.events(now)
+        self.event_rewards = starlight.data.event_rewards(self.events)
 
-        gachas = starlight.data.gachas(now)
-        gacha_limited = starlight.data.limited_availability_cards(gachas)
+        self.gachas = starlight.data.gachas(now)
+        self.gacha_limited = starlight.data.limited_availability_cards(self.gachas)
 
         # Show only cu/co/pa chara birthdays. Chihiro is a minefield and causes
         # problems
-        bd = list(filter(lambda char: 0 < char.type < 4,
-                         starlight.data.potential_birthdays(now)))
+        self.birthdays = list(filter(lambda char: 0 < char.type < 4,
+                                     starlight.data.potential_birthdays(now)))
 
-        recent_history = self.settings["tle"].get_history(10)
+        self.recent_history = self.settings["tle"].get_history(10)
 
         # cache priming has a high overhead so prime all icons at once
         preprime_set = set()
-        for h in recent_history:
+        for h in self.recent_history:
             preprime_set.update(h.card_list())
         starlight.data.cards(preprime_set)
 
-        self.render("main.html", history=recent_history,
-            events=zip(events, event_rewards),
-            la_cards=zip(gachas, gacha_limited),
-            birthdays=bd, **self.settings)
+        self.rates = {}
+        self.complete = 0
+        for gacha in self.gachas:
+            starlight.data.live_gacha_rates(gacha, self.receive_live_gacha_rate)
+
+    def receive_live_gacha_rate(self, rate):
+        if rate:
+            try:
+                self.rates[rate["gacha"]] = rate["rates"]
+            finally:
+                self.complete += 1
+        else:
+            self.complete += 1
+
+        if self.complete == len(self.gachas):
+            self.complete_for_real()
+
+    def complete_for_real(self):
+        self.render("main.html", history=self.recent_history,
+            events=zip(self.events, self.event_rewards),
+            la_cards=zip(self.gachas, self.gacha_limited),
+            live_gacha_rates=self.rates,
+            birthdays=self.birthdays, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 @route("/suggest")
