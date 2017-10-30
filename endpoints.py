@@ -240,6 +240,8 @@ class CompareCard(ShortlinkTable):
 @route(r"/gacha(?:/([0-9]+))?")
 class GachaTable(ShortlinkTable):
     def get(self, maybe_gachaid):
+        now = pytz.utc.localize(datetime.utcnow())
+
         if maybe_gachaid:
             maybe_gachaid = int(maybe_gachaid)
             gachas = starlight.data.gacha_ids()
@@ -251,7 +253,6 @@ class GachaTable(ShortlinkTable):
             else:
                 selected_gacha = None
         else:
-            now = pytz.utc.localize(datetime.utcnow())
             gachas = starlight.data.gachas(now)
 
             if gachas:
@@ -264,26 +265,28 @@ class GachaTable(ShortlinkTable):
             self.write("Not found. If there's no gacha happening right now, you'll have to specify an ID.")
             return
 
+        is_current = (now >= selected_gacha.start_date) and (now <= selected_gacha.end_date)
+
         availability_list = starlight.data.available_cards(selected_gacha)
         availability_list.sort(key=lambda x: x.sort_order)
 
         card_list = starlight.data.cards(gr.card_id for gr in availability_list)
         limited_flags = {gr.card_id: gr.is_limited for gr in availability_list}
-        rel_odds = {gr.card_id: gr.relative_odds / 10000 for gr in availability_list}
-        rel_odds.update({self.flip_chain(starlight.data.card(gr.card_id)).id:
-            rel_odds[gr.card_id] for gr in availability_list})
 
         filters, categories = table.select_categories("CASDE")
+
+        if is_current:
+            rel_odds = {gr.card_id: gr.relative_odds / 10000 for gr in availability_list}
+            rel_odds.update({self.flip_chain(starlight.data.card(gr.card_id)).id:
+                rel_odds[gr.card_id] for gr in availability_list})
+            odds_cat = table.CustomNumber(rel_odds, header_text="Chance", format="{0:.3f}%")
+            categories.insert(0, odds_cat)
 
         lim_cat = table.CustomBool()
         lim_cat.header_text = "Lm?"
         lim_cat.values = limited_flags
         lim_cat.yes_text = "Yes"
         lim_cat.no_text = "No"
-
-        odds_cat = table.CustomNumber(rel_odds, header_text="Chance", format="{0:.3f}%")
-
-        categories.insert(0, odds_cat)
         categories.insert(0, lim_cat)
 
         self.rendertable( (filters, categories),
