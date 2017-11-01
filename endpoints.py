@@ -59,6 +59,10 @@ class Home(HandlerSyncedWithMaster):
             else:
                 self.complete += 1
 
+        # case where we don't make any calls to live_gacha_rates
+        if self.complete == len(self.gachas):
+            self.complete_for_real()
+
     def receive_live_gacha_rate(self, rate):
         if rate:
             try:
