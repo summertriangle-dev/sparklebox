@@ -72,7 +72,7 @@
         <span class="item right">
           expires in <span class="counter" data-count-to="{{ gacha.end_date.timestamp() }}">(JS?)</span>
           {% if live_gacha_rates.get(gacha.id) and live_gacha_rates[gacha.id] != gacha.rates._REGULAR_RATES %}
-          <small>rates: R {{ gacha.rates.r }}% / SR {{ gacha.rates.sr }}% / SSR {{ gacha.rates.ssr }}%</small>
+          <small>rates: R {{ live_gacha_rates[gacha.id].r }}% / SR {{ live_gacha_rates[gacha.id].sr }}% / SSR {{ live_gacha_rates[gacha.id].ssr }}%</small>
           {% end %}
         </span>
       </div>
