@@ -51,7 +51,7 @@ skill_type = enum([
     14, "Overload",
 
     15, "Concentration",
-    16, "Mimic",
+    16, "Encore",
 
     17, "Healer",
     18, "Healer",
@@ -69,7 +69,8 @@ skill_type = enum([
     22, "Deep Cool",
     23, "Deep Passion",
 
-    24, "All-Round"
+    24, "All-Round",
+    25, "Life Sparkle"
 ])
 
 skill_probability = enum([
@@ -173,6 +174,7 @@ skill_class = enum([
     23, "s_focus",
 
     24, "s_allround",
+    25, "s_cbonus_based_life",
 ])
 
 stat_dot = enum([

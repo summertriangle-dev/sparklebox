@@ -42,30 +42,31 @@ def gap_date_range(a):
 # skill describer
 
 SKILL_DESCRIPTIONS = {
-    1: """Perfect notes will receive a <span class="let">{0}</span>% score bonus""",
-    2: """Great/Perfect notes will receive a <span class="let">{0}</span>% score bonus""",
-    3: """Nice/Great/Perfect notes will receive a <span class="let">{0}</span>% score bonus""", #provisional
-    4: """you will gain an extra <span class="let">{0}</span>% combo bonus""",
-    5: """Great notes will become Perfect notes""",
-    6: """Nice/Great notes will become Perfect notes""",
-    7: """Bad/Nice/Great notes will become Perfect notes""",
-    8: """all notes will become Perfect notes""", #provisional
-    9: """Nice notes will not break combo""",
-    10: """Bad/Nice notes will not break combo""", #provisional
-    11: """your combo will not be broken""", #provisional
-    12: """you will not lose health""",
-    13: """all notes will restore <span class="let">{0}</span> health""", #provisional
-    14: """<span class="let">{1}</span> life will be consumed, then: Perfect notes receive a <span class="let">{0}</span>% score bonus, and Nice/Bad notes will not break combo""",
-    15: """Perfect notes will receive a <span class="let">{0}</span>% score bonus, but become harder to hit""", #provisional
-    16: """something interesting will happen""", #provisional
-    17: """Perfect notes will restore <span class="let">{0}</span> health""",
-    18: """Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
-    19: """Nice/Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
-    20: """currently active skills will be boosted""",
-    21: """when there are only Cute idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
-    22: """when there are only Cool idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
-    23: """when there are only Passion idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
-    24: """you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will restore <span class="let">{2}</span> health"""
+    1: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus""",
+    2: """that Great/Perfect notes will receive a <span class="let">{0}</span>% score bonus""",
+    3: """that Nice/Great/Perfect notes will receive a <span class="let">{0}</span>% score bonus""", #provisional
+    4: """that you will gain an extra <span class="let">{0}</span>% combo bonus""",
+    5: """that Great notes will become Perfect notes""",
+    6: """that Nice/Great notes will become Perfect notes""",
+    7: """that Bad/Nice/Great notes will become Perfect notes""",
+    8: """that all notes will become Perfect notes""", #provisional
+    9: """that Nice notes will not break combo""",
+    10: """that Bad/Nice notes will not break combo""", #provisional
+    11: """that your combo will not be broken""", #provisional
+    12: """that you will not lose health""",
+    13: """that all notes will restore <span class="let">{0}</span> health""", #provisional
+    14: """that <span class="let">{1}</span> life will be consumed, then: Perfect notes receive a <span class="let">{0}</span>% score bonus, and Nice/Bad notes will not break combo""",
+    15: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, but become harder to hit""", #provisional
+    16: """to activate the previous skill again""",
+    17: """that Perfect notes will restore <span class="let">{0}</span> health""",
+    18: """that Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
+    19: """that Nice/Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
+    20: """that currently active skills will be boosted""",
+    21: """that when there are only Cute idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
+    22: """that when there are only Cool idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
+    23: """that when there are only Passion idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
+    24: """that you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will restore <span class="let">{2}</span> health""",
+    25: """that you will gain an extra combo bonus based on your current health""",
 }
 
 REMOVE_HTML = re.compile(r"</?span[^>]*>")
@@ -96,7 +97,7 @@ def describe_skill_html(skill):
         skill.skill_type, "").format(effect_val, skill.skill_trigger_value, value_2)
     interval_clause = """Every <span class="let">{0}</span> seconds:""".format(
         fire_interval)
-    probability_clause = """there is a <span class="var">{0}</span>% chance that""".format(
+    probability_clause = """there is a <span class="var">{0}</span>% chance""".format(
         skill.chance())
     length_clause = """for <span class="var">{0}</span> seconds.""".format(
         skill.dur())
@@ -120,6 +121,36 @@ LEADER_SKILL_PARAM = {
     6: "the skill probability",
 }
 
+def build_lead_skill_predicate(skill):
+    need_list = []
+    if skill.need_cute:
+        need_list.append("Cute")
+    if skill.need_cool:
+        need_list.append("Cool")
+    if skill.need_passion:
+        need_list.append("Passion")
+
+    if not need_list:
+        return None
+
+    if len(need_list) == 1:
+        need_str = need_list[0]
+    else:
+        need_str = ", ".join(need_list[:-1])
+        need_str = "{0}, and {1}".format(need_str, need_list[-1])
+
+    # FIXME: consider values of need_x in leader_skill_t
+    #   Rei_Fan49 - Today at 5:36 PM
+    #   princess and focus only works for single color
+    #   it requires 5 or 6 per color
+    #   which implies monocolor team or no activation
+    #   cinfest team requires 1 each color (according to internal data)
+    if len(need_list) < 3:
+        need_str = "only " + need_str
+
+    predicate_clause = """when there are {0} idols on the team.""".format(need_str)
+    return predicate_clause
+
 def describe_lead_skill_html(skill):
     if skill is None:
         return "No effect"
@@ -131,31 +162,17 @@ def describe_lead_skill_html(skill):
         effect_clause = """Raises {0} of {1} members by <span class="let">{2}</span>%""".format(
             target_param, target_attr, skill.up_value)
 
-        need_list = []
-        if skill.need_cute:
-            need_list.append("Cute")
-        if skill.need_cool:
-            need_list.append("Cool")
-        if skill.need_passion:
-            need_list.append("Passion")
+        predicate_clause = build_lead_skill_predicate(skill)
+        if predicate_clause:
+            built = " ".join((effect_clause, predicate_clause))
+        else:
+            built = effect_clause + "."
+        return built
+    elif skill.up_type == 1 and skill.type == 30:
+        effect_clause = "Gives extra rewards when you finish a live"
 
-        if need_list:
-            if len(need_list) == 1:
-                need_str = need_list[0]
-            else:
-                need_str = ", ".join(need_list[:-1])
-                need_str = "{0}, and {1}".format(need_str, need_list[-1])
-
-            # FIXME: consider values of need_x in leader_skill_t
-            #   Rei_Fan49 - Today at 5:36 PM
-            #   princess and focus only works for single color
-            #   it requires 5 or 6 per color
-            #   which implies monocolor team or no activation
-            #   cinfest team requires 1 each color (according to internal data)
-            if len(need_list) < 3:
-                need_str = "only " + need_str
-
-            predicate_clause = """when there are {0} idols on the team.""".format(need_str)
+        predicate_clause = build_lead_skill_predicate(skill)
+        if predicate_clause:
             built = " ".join((effect_clause, predicate_clause))
         else:
             built = effect_clause + "."

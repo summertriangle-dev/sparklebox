@@ -79,7 +79,7 @@ footer {
 /* chara_partial */
 .icon {
   display: inline-block;
-  background-image: url(../img/smarkers.png?v2);
+  background-image: url(../img/smarkers.png?v3);
   background-position: -48px -76px;
   width: 48px;
   height: 48px;
@@ -184,6 +184,16 @@ footer {
   width: 24px;
   height: 1px;
 }
+.icon.s_cbonus_based_life {
+  background-position: -26px -187px;
+  width: 24px;
+  height: 24px;
+}
+.icon.s_mimic {
+  background-position: 0px -187px;
+  width: 24px;
+  height: 24px;
+}
 .icon.s_unknown {
   background-position: 0px -143px;
   width: 24px;
@@ -212,8 +222,10 @@ footer {
   .icon.s_allround,
   .icon.s_focus,
   .icon.s_perfelegant,
-  .icon.s_sb {
-    background-image: url(../img/smarkers@2x.png?v2);
+  .icon.s_sb,
+  .icon.s_cbonus_based_life,
+  .icon.s_mimic {
+    background-image: url(../img/smarkers@2x.png?v3);
     background-size: 202px 288px;
     border-radius: 0px;
   }
@@ -932,7 +944,7 @@ span.var {
   display: block;
   width: 9px;
   height: 9px;
-  background: url("../img/smarkers.png?v2") -145px -22px no-repeat;
+  background: url("../img/smarkers.png?v3") -145px -22px no-repeat;
   content: "";
 }
 .icon.msprites.ms_pl::after {
@@ -968,13 +980,19 @@ span.var {
 .icon.msprites.ms_focus::after {
   background-position: -26px -151px;
 }
+.icon.msprites.ms_cbonus_based_life::after {
+  background-position: -36px -151px;
+}
+.icon.msprites.ms_mimic::after {
+  background-position: -10px -151px;
+}
 .icon.msprites.ms_unknown::after {
   background-position: -145px -22px;
 }
 @media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 13/10), only screen and (min-resolution: 120dpi) {
   .icon.msprites::after,
   .icon.msprites::before {
-    background-image: url("../img/smarkers@2x.png?v2") !important;
+    background-image: url("../img/smarkers@2x.png?v3") !important;
     background-size: 202px 288px!important;
   }
 }
