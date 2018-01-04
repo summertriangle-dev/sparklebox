@@ -44,10 +44,17 @@ function submit_tl_string(node, text) {
     xhr.setRequestHeader("X-Blessing",
         "This request bears the blessing of an Ascended Constituent of the Summer Triangle, granting it the entitlement of safe passage.")
     xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var table = {}
-            table[text] = sub;
-            set_strings_by_table(table)
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                var table = {}
+                table[text] = sub;
+                set_strings_by_table(table);
+            } else {
+                var j = JSON.parse(xhr.responseText);
+                if (j.error) {
+                    alert('Failed to submit translation. The server said: "' + j.error + '"');
+                }
+            }
         }
     }
     xhr.send(JSON.stringify({key: text, tled: sub, security: node.getAttribute("data-summertriangle-assr")}))

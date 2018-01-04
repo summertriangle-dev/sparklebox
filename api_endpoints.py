@@ -65,11 +65,37 @@ class TranslateWriteAPI(tornado.web.RequestHandler):
         but otherwise all strings will be accepted. """
 
     BAD_WORDS = ["undefined", "null", ""]
+    BAD_RANGES = None
+
+    @classmethod
+    def load_bad_ranges_file(cls):
+        br = set()
+        try:
+            with open(starlight.private_data_path("tlwrite_blocked_ranges.txt"), "r") as cf:
+                for line in cf:
+                    br.add(ipaddress.ip_network(line.strip()))
+        except OSError:
+            pass
+        cls.BAD_RANGES = br
+
+    def is_address_blocked(self, addr):
+        if TranslateWriteAPI.BAD_RANGES is None:
+            self.load_bad_ranges_file()
+
+        for net in TranslateWriteAPI.BAD_RANGES:
+            if ipaddress.ip_address(addr) in net:
+                return 1
+
+        return 0
 
     def post(self):
         try:
             load = json.loads(self.request.body.decode("utf8"))
         except ValueError:
+            self.set_status(400)
+            return
+
+        if self.is_address_blocked(self.request.remote_ip):
             self.set_status(400)
             return
 
