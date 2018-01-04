@@ -185,12 +185,12 @@ footer {
   height: 1px;
 }
 .icon.s_cbonus_based_life {
-  background-position: -26px -187px;
+  background-position: 0px -187px;
   width: 24px;
   height: 24px;
 }
 .icon.s_mimic {
-  background-position: 0px -187px;
+  background-position: -26px -187px;
   width: 24px;
   height: 24px;
 }
