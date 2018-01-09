@@ -1,6 +1,7 @@
 import tornado.web
 import tornado.template
 import tornado.escape
+import tornado.ioloop
 from dispatch import *
 import os
 import json
@@ -61,7 +62,8 @@ class Home(HandlerSyncedWithMaster):
 
         # case where we don't make any calls to live_gacha_rates
         if self.complete == len(self.gachas):
-            self.complete_for_real()
+            # we need to return to the ioloop or else a bogus exception gets raised
+            tornado.ioloop.IOLoop.current().add_callback(self.complete_for_real)
 
     def receive_live_gacha_rate(self, rate):
         if rate:

@@ -520,9 +520,9 @@ class DataCache(object):
             if apiclient.is_usable():
                 apiclient.gacha_rates(gacha_t.id, update_livecache_for_gacha_rates)
             else:
-                done(None)
+                ioloop.IOLoop.current().add_callback(done, None)
         else:
-            done(cached)
+            ioloop.IOLoop.current().add_callback(done, cached)
 
     def __del__(self):
         self.hnd.close()
