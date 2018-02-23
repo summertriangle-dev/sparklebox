@@ -8,6 +8,13 @@ from email.utils import mktime_tz, parsedate_tz
 from collections import namedtuple
 from tornado import httpclient
 
+try:
+    lz4_decompress = lz4.loads
+    print("Warning: You're using an outdated LZ4 library. Please update it with pip.")
+except AttributeError:
+    import lz4.block
+    lz4_decompress = lz4.block.decompress
+
 DBMANIFEST = "http://storage.game.starlight-stage.jp/dl/{0}/manifests"
 ASSETBBASEURL = "http://storage.game.starlight-stage.jp/dl/resources/High/AssetBundles/Android"
 SOUNDBASEURL = "http://storage.game.starlight-stage.jp/dl/resources/High/Sound/Common"
@@ -53,7 +60,7 @@ def acquire_manifest(version, platform, asset_qual, sound_qual, dest_file, callb
         bio = io.BytesIO()
         bio.write(buf[4:8])
         bio.write(buf[16:])
-        data = lz4.loads(bio.getvalue())
+        data = lz4_decompress(bio.getvalue())
         with open(dest_file, "wb") as write_db:
             write_db.write(data)
 
@@ -96,7 +103,7 @@ def get_master(res_ver, to_path, done):
         bio = io.BytesIO()
         bio.write(buf[4:8])
         bio.write(buf[16:])
-        data = lz4.loads(bio.getvalue())
+        data = lz4_decompress(bio.getvalue())
         with open(to_path, "wb") as write_db:
             write_db.write(data)
 
