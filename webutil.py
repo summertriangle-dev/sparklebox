@@ -5,13 +5,11 @@ import os
 import starlight
 import enums
 import struct
+import hmac
 
 def tlable_make_assr(text):
-    if not text:
-        return "@!@!"
-    else:
-        salt = os.getenv("TLABLE_SALT").encode("utf8")
-        return base64.b64encode(hashlib.sha256(text.encode("utf8") + salt).digest()).decode("utf8")
+    salt = os.getenv("TLABLE_SALT").encode("utf8")
+    return base64.b64encode(hmac.new(salt, text.encode("utf8"), hashlib.sha224).digest()).decode("utf8")
 
 def tlable(text, write=1):
     text = text.replace("\n", " ")
