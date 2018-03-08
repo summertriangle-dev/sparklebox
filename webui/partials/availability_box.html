@@ -34,15 +34,6 @@
         <li>This card is/was limited during the gacha period.</li>
       </ul>
       {% end %}
-
-      {% if presence.gaps %}
-      <ul class="avlistentry_regular_melded">
-        {% for gap in presence.gaps %}
-        <li>Missing from {{ starlight.en.gap_date_range(gap) }}</li>
-        {% end %}
-        <li title="Probably due to type boxes."><span class="help">(Why?)</span></li>
-      </ul>
-      {% end %}
     </li>
     {% end %}
 

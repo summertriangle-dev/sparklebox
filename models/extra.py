@@ -56,7 +56,7 @@ def combine_availability(l):
         bet = availability.start - prev.end
         # max 3 day gap, and both descriptions must be limited/non-limited
         if bet.seconds > 0 and bet.days <= 3 and prev.limited == availability.limited:
-            prev.gaps.append(Gap(prev.end, availability.start))
+            # prev.gaps.append(Gap(prev.end, availability.start))
             prev.end = availability.end
         else:
             new_list.append(prev)
