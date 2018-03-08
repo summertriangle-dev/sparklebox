@@ -62,11 +62,12 @@ SKILL_DESCRIPTIONS = {
     18: """that Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
     19: """that Nice/Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
     20: """that currently active skills will be boosted""",
-    21: """that when there are only Cute idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
-    22: """that when there are only Cool idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
-    23: """that when there are only Passion idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
+    21: """that with only Cute idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
+    22: """that with only Cool idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
+    23: """that with only Passion idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
     24: """that you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will restore <span class="let">{2}</span> health""",
     25: """that you will gain an extra combo bonus based on your current health""",
+    26: """that with all three types of idols on the team, you will gain an extra <span class="let">{2}</span>% combo bonus, and Perfect notes will receive a <span class="let">{0}</span>% score bonus plus restore <span class="let">{3}</span> HP,""",
 }
 
 REMOVE_HTML = re.compile(r"</?span[^>]*>")
@@ -84,17 +85,18 @@ def describe_skill_html(skill):
     fire_interval = skill.condition
     effect_val = skill.value
     # TODO symbols
-    if skill.skill_type in [1, 2, 3, 4, 14, 15, 21, 22, 23, 24]:
+    if skill.skill_type in [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26]:
         effect_val -= 100
     elif skill.skill_type in [20]:
         effect_val = (effect_val//10) - 100
 
     value_2 = skill.value_2
-    if skill.skill_type in [21, 22, 23]:
+    if skill.skill_type in [21, 22, 23, 26]:
         value_2 -= 100
+    value_3 = skill.value_3
 
     effect_clause = SKILL_DESCRIPTIONS.get(
-        skill.skill_type, "").format(effect_val, skill.skill_trigger_value, value_2)
+        skill.skill_type, "").format(effect_val, skill.skill_trigger_value, value_2, value_3)
     interval_clause = """Every <span class="let">{0}</span> seconds:""".format(
         fire_interval)
     probability_clause = """there is a <span class="var">{0}</span>% chance""".format(
@@ -170,6 +172,16 @@ def describe_lead_skill_html(skill):
         return built
     elif skill.up_type == 1 and skill.type == 30:
         effect_clause = "Gives extra rewards when you finish a live"
+
+        predicate_clause = build_lead_skill_predicate(skill)
+        if predicate_clause:
+            built = " ".join((effect_clause, predicate_clause))
+        else:
+            built = effect_clause + "."
+        return built
+    elif skill.up_type == 1 and skill.type == 40:
+        effect_clause = "Increases fan gain by <span class=\"let\">{0}</span>% when you finish a live".format(
+            skill.up_value)
 
         predicate_clause = build_lead_skill_predicate(skill)
         if predicate_clause:

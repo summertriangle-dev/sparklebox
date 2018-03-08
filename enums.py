@@ -64,7 +64,8 @@ skill_type = enum([
     23, "Passion Focus",
 
     24, "All-Round",
-    25, "Life Sparkle"
+    25, "Life Sparkle",
+    26, "Tricolor Synergy"
 ])
 
 skill_probability = enum([
@@ -169,6 +170,7 @@ skill_class = enum([
 
     24, "s_allround",
     25, "s_cbonus_based_life",
+    26, "s_synergy"
 ])
 
 stat_dot = enum([
