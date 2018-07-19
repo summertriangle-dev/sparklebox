@@ -44,7 +44,7 @@ def is_usable():
         and not os.getenv("DISABLE_AUTO_UPDATES", None)
 
 class ApiClient(object):
-    BASE = "https://game.starlight-stage.jp"
+    BASE = "https://apis.game.starlight-stage.jp"
     SHARED_INSTANCE = None
 
     @classmethod
