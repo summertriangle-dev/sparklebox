@@ -574,6 +574,13 @@ td.Passion a {
 .name_tag .item.name {
   word-wrap: break-word;
 }
+.name_tag .item.name a {
+  color: white;
+  text-decoration: none;
+}
+.name_tag .item.name a:hover {
+  text-decoration: underline;
+}
 .name_tag .item {
   display: inline-block;
   vertical-align: middle;
@@ -610,6 +617,9 @@ td.Passion a {
 .name_tag.Passion {
   color: #222;
   background-color: #fca926;
+}
+.name_tag.Passion .name a {
+  color: #222;
 }
 .name_tag.Passion .title {
   background-color: #fdbd58;

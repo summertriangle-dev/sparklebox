@@ -27,7 +27,7 @@
         <span class="icon {{ enums.skill_class(card.skill.skill_type) }}"
               title="{{ _(enums.skill_type(card.skill.skill_type)) }}"></span>
         {% end %}
-        {{ starlight.data.translate_name(card.name_only) }}
+        <a href="/card/{{ card.id }}">{{ starlight.data.translate_name(card.name_only) }}</a>
         <small>[{{ enums.rarity(card.rarity) }}]</small>
       </span>
     </div>

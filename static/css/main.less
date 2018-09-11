@@ -565,6 +565,14 @@ td {
       word-wrap:break-word;
   }
 
+  .item.name a {
+    color: white;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .item {
     display:inline-block;
     vertical-align:middle;
@@ -593,6 +601,7 @@ td {
   }
   &.Passion {
     color:#222;
+    .name a { color: #222; }
     background-color: @passion_colour;
     .title { background-color: lighten(@passion_colour, 10%); }
     .ext { border-top-color: lighten(@passion_colour, 10%); border-left-color: lighten(@passion_colour, 10%); }
