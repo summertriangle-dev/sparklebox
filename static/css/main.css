@@ -79,7 +79,7 @@ footer {
 /* chara_partial */
 .icon {
   display: inline-block;
-  background-image: url(../img/smarkers.png?v3);
+  background-image: url(../img/smarkers.png?v4);
   background-position: -48px -76px;
   width: 48px;
   height: 48px;
@@ -236,7 +236,7 @@ footer {
   .icon.s_cbonus_based_life,
   .icon.s_mimic,
   .icon.s_synergy {
-    background-image: url(../img/smarkers@2x.png?v3);
+    background-image: url(../img/smarkers@2x.png?v4);
     background-size: 202px 288px;
     border-radius: 0px;
   }
@@ -943,7 +943,7 @@ span.var {
   display: block;
   width: 9px;
   height: 9px;
-  background: url("../img/smarkers.png?v2") -115px -26px no-repeat;
+  background: url("../img/smarkers.png?v4") -115px -26px no-repeat;
   content: "";
 }
 .icon.msprites.mm_vi::before {
@@ -965,7 +965,7 @@ span.var {
   display: block;
   width: 9px;
   height: 9px;
-  background: url("../img/smarkers.png?v3") -145px -22px no-repeat;
+  background: url("../img/smarkers.png?v4") -145px -22px no-repeat;
   content: "";
 }
 .icon.msprites.ms_pl::after {
@@ -1019,7 +1019,7 @@ span.var {
 @media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 13/10), only screen and (min-resolution: 120dpi) {
   .icon.msprites::after,
   .icon.msprites::before {
-    background-image: url("../img/smarkers@2x.png?v3") !important;
+    background-image: url("../img/smarkers@2x.png?v4") !important;
     background-size: 202px 288px!important;
   }
 }
