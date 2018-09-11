@@ -68,7 +68,11 @@ SKILL_DESCRIPTIONS = {
     24: """that you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will restore <span class="let">{2}</span> health""",
     25: """that you will gain an extra combo bonus based on your current health""",
     26: """that with all three types of idols on the team, you will gain an extra <span class="let">{2}</span>% combo bonus, and Perfect notes will receive a <span class="let">{0}</span>% score bonus plus restore <span class="let">{3}</span> HP,""",
+    27: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
 }
+
+SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27]
+SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL2 = [21, 22, 23, 26, 27]
 
 REMOVE_HTML = re.compile(r"</?span[^>]*>")
 
@@ -85,13 +89,13 @@ def describe_skill_html(skill):
     fire_interval = skill.condition
     effect_val = skill.value
     # TODO symbols
-    if skill.skill_type in [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26]:
+    if skill.skill_type in SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1:
         effect_val -= 100
     elif skill.skill_type in [20]:
         effect_val = (effect_val//10) - 100
 
     value_2 = skill.value_2
-    if skill.skill_type in [21, 22, 23, 26]:
+    if skill.skill_type in SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL2:
         value_2 -= 100
     value_3 = skill.value_3
 

@@ -196,11 +196,17 @@ footer {
   &.s_focus {
     .stitches-marker(0px, -143px, 24px, 1px);
   }
+  &.s_focus.s_focus_flat {
+    .stitches-marker(-51px, -187px, 24px, 24px)!important;
+  }
   &.s_cbonus_based_life {
     .stitches-marker(0px, -187px, 24px, 24px);
   }
   &.s_mimic {
     .stitches-marker(-26px, -187px, 24px, 24px);
+  }
+  &.s_synergy {
+    .stitches-marker(-76px, -187px, 24px, 24px);
   }
   &.s_unknown {
     .stitches-marker(0px, -143px, 24px, 1px);
@@ -213,7 +219,7 @@ footer {
     &.icon_event, &.icon_n, &.icon_r, &.icon_sr, &.icon_ssr, &.m_vi,
     &.m_da, &.m_vo, &.s_pl, &.s_cprot, &.s_combobonus, &.s_scorebonus,
     &.s_heal, &.s_life, &.s_overload, &.m_ba, &.s_allround, &.s_focus,
-    &.s_perfelegant, &.s_sb, &.s_cbonus_based_life, &.s_mimic {
+    &.s_perfelegant, &.s_sb, &.s_cbonus_based_life, &.s_mimic, &.s_synergy {
       background-image:url(../img/smarkers@2x.png?v3);
       background-size: 202px 288px;
       border-radius:0px;
@@ -959,6 +965,12 @@ span.var {
   }
   &.ms_focus::after {
     background-position: -26px -151px;
+  }
+  &.ms_focus.s_focus_flat::after {
+    background-position: -46px -151px!important;
+  }
+  &.ms_synergy::after {
+    background-position: -56px -151px;
   }
   &.ms_cbonus_based_life::after {
     background-position: -36px -151px;
