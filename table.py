@@ -26,20 +26,20 @@ rarity = filter_t("Card Rarity", (
 lambda card: enums.floor_rarity(card.rarity) + "_kc")
 
 skill_type = filter_t("Skill Type", (
-    option_t("Perf. Lock*", "s_pl"),
-    option_t("C. Guard",    "s_cprot"),
-    option_t("Combo Bonus", "s_combobonus"),
-    option_t("Score Bonus", "s_scorebonus"),
-    option_t("Healer",      "s_heal"),
-    option_t("H. Guard",    "s_life"),
-    option_t("Overload",    "s_overload"),
-    option_t("All-Round",   "s_allround"),
-    option_t("Concen.",     "s_perfelegant"),
-    option_t("Skill Boost", "s_sb"),
-    option_t("Focus",       "s_focus"),
-    option_t("L. Sparkle",  "s_cbonus_based_life"),
-    option_t("Encore",      "s_mimic"),
-    option_t("T. Synergy",  "s_synergy")),
+    option_t("Perf. Lock*",  "s_pl"),
+    option_t("C. Guard",     "s_cprot"),
+    option_t("Combo Bonus",  "s_combobonus"),
+    option_t("Score Bonus",  "s_scorebonus"),
+    option_t("Healer",       "s_heal"),
+    option_t("H. Guard",     "s_life"),
+    option_t("Overload",     "s_overload"),
+    option_t("All-Round",    "s_allround"),
+    option_t("Concen.",      "s_perfelegant"),
+    option_t("Skill Boost",  "s_sb"),
+    option_t("Focus/Coord.", "s_focus"),
+    option_t("L. Sparkle",   "s_cbonus_based_life"),
+    option_t("Encore",       "s_mimic"),
+    option_t("T. Synergy",   "s_synergy")),
 lambda card: enums.skill_class(card.skill.skill_type) if card.skill else None)
 
 high_stat = filter_t("High stat", (

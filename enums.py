@@ -66,7 +66,7 @@ skill_type = enum([
     24, "All-Round",
     25, "Life Sparkle",
     26, "Tricolor Synergy",
-    27, "Focus"
+    27, "Coordinate"
 ])
 
 skill_probability = enum([
