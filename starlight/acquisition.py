@@ -1,4 +1,3 @@
-import requests
 import os
 import sqlite3
 import lz4
