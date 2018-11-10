@@ -6,7 +6,7 @@ from sqlalchemy import Column, Integer, String, UnicodeText, LargeBinary, SmallI
 
 def utext():
     # hack
-    if os.getenv("DATABASE_CONNECT").startswith("sqlite:"):
+    if not os.getenv("DATABASE_CONNECT").startswith("mysql"):
         return UnicodeText()
     else:
         return UnicodeText(collation="utf8_bin")
@@ -35,7 +35,7 @@ class TranslationCache(Base):
     __tablename__ = TABLE_PREFIX + "_translation_cache"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    key = Column(utext())
+    key = Column(utext(), index=True)
     english = Column(utext())
 
     def __repr__(self):

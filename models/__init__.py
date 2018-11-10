@@ -3,7 +3,7 @@ import json
 from pytz import utc
 from datetime import datetime
 import time
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, ProgrammingError
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, aliased, load_only
@@ -48,7 +48,7 @@ class TranslationSQL(object):
 
             try:
                 Base.metadata.create_all(self.engine)
-            except TypeError:
+            except (TypeError, ProgrammingError):
                 self.engine = create_engine(conn_s, echo=False)
                 Base.metadata.create_all(self.engine)
 
