@@ -15,7 +15,10 @@ from pytz import timezone, utc
 from collections import namedtuple
 import models
 
-from starlight import JST
+from starlight import JST, private_data_path
+import csvloader
+
+overrides = csvloader.load_keyed_db_file(private_data_path("gacha_availability_overrides.csv"))
 
 gacha_stub_t = namedtuple("gacha_stub_t", ("id", "name", "start_date", "end_date", "type", "subtype"))
 
@@ -34,10 +37,16 @@ def available(f, g):
     for x in a.execute(
         "SELECT gacha_id, step_num, reward_id, recommend_order, limited_flag FROM gacha_available WHERE gacha_id IN ({0})"
             .format(",".join("?" * len(g))), tuple(g)):
-        yield x
+        if x[2] in overrides:
+            yield (x[0], x[1], x[2], x[3], overrides[x[2]][1])
+        else:
+            yield x
     a.close()
 
 def main(file1, file2):
+    if not os.path.exists("./app.py"):
+        print("You can only run this program with the cwd set to the main code directory.")
+
     gacha_ids_a = gacha_ids(file1)
     gacha_ids_b = gacha_ids(file2)
 
