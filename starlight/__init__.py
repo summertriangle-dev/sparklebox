@@ -156,7 +156,12 @@ class DataCache(object):
         select = [gacha.id for gacha in gachas]
         query = "SELECT gacha_id, reward_id FROM gacha_available WHERE limited_flag == 1 AND gacha_id IN ({0})".format(",".join("?" * len(select)))
         tmp = defaultdict(lambda: [])
-        [tmp[gid].append(reward) for gid, reward in self.hnd.execute(query, select)]
+
+        for gid, reward in self.hnd.execute(query, select):
+            if reward in self.fix_limited:
+                # XXX we only support negative fixes for now
+                continue
+            tmp[gid].append(reward)
 
         self.primed_this["sel_la"] += 1
         return [tmp[gacha.id] for gacha in gachas]
@@ -251,6 +256,7 @@ class DataCache(object):
         self.kanji_to_name = {v.kanji: v.conventional for v in self.names.values()}
 
         self.ea_overrides = list(load_db_file(private_data_path("event_availability_overrides.csv")))
+        self.fix_limited = load_keyed_db_file(private_data_path("gacha_availability_overrides.csv"))
         self.overridden_events = set(x.event_id for x in self.ea_overrides)
 
         prob_def = self.keyed_prime_from_table("probability_type")
