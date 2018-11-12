@@ -169,7 +169,7 @@ class TranslationSQL(object):
     def add_reward_tracking_entries(self, iterator):
         with self as s:
             for ent in iterator:
-                s.add(GachaRewardEntry(gacha_id=ent[0], step_num=ent[1], reward_id=ent[2], recommend_order=ent[3], limited_flag=ent[4]))
+                s.merge(GachaRewardEntry(gacha_id=ent[0], step_num=ent[1], reward_id=ent[2], recommend_order=ent[3], limited_flag=ent[4]))
             s.commit()
 
     @retry(5)
