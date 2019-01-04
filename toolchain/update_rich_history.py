@@ -19,11 +19,14 @@ QUERY_GET_NORMAL_GACHAS =   """SELECT gacha_data.id, gacha_data.name, start_date
 QUERY_GET_GACHA_REWARD_META = """SELECT reward_id, limited_flag, recommend_order
     FROM gacha_available WHERE gacha_id = ? AND recommend_order != 0
     ORDER BY recommend_order"""
+QUERY_GET_GACHA_REWARD_META_V2 = """SELECT card_id, limited_flag, recommend_order
+    FROM gacha_available_2 WHERE gacha_id = ? ORDER BY recommend_order"""
 QUERY_GET_ROOTS = "SELECT id FROM card_data WHERE evolution_id != 0"
 QUERY_GET_STORY_START_DATES = """SELECT card_data.id, start_date FROM card_data
     LEFT JOIN story_detail ON (open_story_id == story_detail.id)
     WHERE card_data.id IN ({0})"""
 QUERY_FIND_CONTAINING_GACHA = "SELECT DISTINCT gacha_id FROM gacha_available WHERE reward_id = ? AND gacha_id IN ({0})"
+QUERY_FIND_CONTAINING_GACHA_V2 = "SELECT DISTINCT gacha_id FROM gacha_available_2 WHERE card_id = ? AND gacha_id IN ({0})"
 
 ea_overrides = list(csvloader.load_db_file(starlight.private_data_path("event_availability_overrides.csv")))
 overridden_events = set(x.event_id for x in ea_overrides)
@@ -141,7 +144,11 @@ def log_gachas(have_logged, seen, seen_in_gacha, local, remote):
         keys = {}
         my_add_set = add_sets[gid]
 
-        for a_card, lim_flag, order in local.execute(QUERY_GET_GACHA_REWARD_META, (gid,)):
+        query_v2 = local.execute(QUERY_GET_GACHA_REWARD_META_V2, (gid,)).fetchall()
+        if not query_v2:
+            query_v2 = local.execute(QUERY_GET_GACHA_REWARD_META, (gid,)).fetchall()
+
+        for a_card, lim_flag, order in query_v2:
             my_add_set["limited" if lim_flag else "other"].append(a_card)
 
             seen.add(a_card)
@@ -166,7 +173,9 @@ def log_gachas(have_logged, seen, seen_in_gacha, local, remote):
 
     gspec = ",".join(map(str, new_gachas))
     for orphan in orphans:
-        havers = [k for k, in local.execute(QUERY_FIND_CONTAINING_GACHA.format(gspec), (orphan,))]
+        havers = [k for k, in local.execute(QUERY_FIND_CONTAINING_GACHA_V2.format(gspec), (orphan,))]
+        if not havers:
+            havers = [k for k, in local.execute(QUERY_FIND_CONTAINING_GACHA.format(gspec), (orphan,))]
         for gid in gachas_in_chrono_order:
             if gid in havers:
                 break

@@ -148,13 +148,21 @@ class DataCache(object):
         return select
 
     def available_cards(self, gacha):
-        query = "SELECT reward_id, limited_flag, (CASE WHEN recommend_order == 0 THEN 9999 ELSE recommend_order END), relative_odds, relative_sr_odds FROM gacha_available WHERE gacha_id = ?"
+        has_legacy_available_data, = self.hnd.execute("SELECT count(0) FROM gacha_available WHERE gacha_id = ?", (gacha.id,)).fetchone()
+        if has_legacy_available_data:
+            query = "SELECT reward_id, limited_flag, (CASE WHEN recommend_order == 0 THEN 9999 ELSE recommend_order END), relative_odds, relative_sr_odds FROM gacha_available WHERE gacha_id = ?"
+        else:
+            # Note: gacha_available_2 only lists featured cards.
+            query = "SELECT card_id, limited_flag, recommend_order, 0, 0 FROM gacha_available_2 WHERE gacha_id = ? ORDER BY recommend_order"
+        cur_1 = self.hnd.execute(query, (gacha.id,))
+
         self.primed_this["sel_ac"] += 1
-        return [gacha_single_reward_t(*r) for r in self.hnd.execute(query, (gacha.id,)).fetchall()]
+        return [gacha_single_reward_t(*r) for r in cur_1]
 
     def limited_availability_cards(self, gachas):
         select = [gacha.id for gacha in gachas]
         query = "SELECT gacha_id, reward_id FROM gacha_available WHERE limited_flag == 1 AND gacha_id IN ({0})".format(",".join("?" * len(select)))
+        query_2 = "SELECT gacha_id, card_id FROM gacha_available_2 WHERE limited_flag == 1 AND gacha_id IN ({0})".format(",".join("?" * len(select)))
         tmp = defaultdict(lambda: [])
 
         for gid, reward in self.hnd.execute(query, select):
@@ -162,6 +170,15 @@ class DataCache(object):
                 # XXX we only support negative fixes for now
                 continue
             tmp[gid].append(reward)
+
+        try:
+            q2_iterator = self.hnd.execute(query_2, select)
+        except sqlite3.OperationalError:
+            pass
+        else:
+            for gid, reward in q2_iterator:
+                if reward not in self.fix_limited and reward not in tmp[gid]:
+                    tmp[gid].append(reward)
 
         self.primed_this["sel_la"] += 1
         return [tmp[gacha.id] for gacha in gachas]
