@@ -6,3 +6,4 @@ pytz==2017.3
 SQLAlchemy==1.2.2
 tornado==4.5.3
 user-agents==1.1.0
+pyaes==1.6.1

@@ -17,7 +17,7 @@
 
 import base64, msgpack, hashlib, random, time, os
 from tornado import httpclient
-from . import rijndael
+import binascii, pyaes
 
 # laziness
 def VIEWER_ID_KEY():
@@ -27,17 +27,16 @@ def SID_KEY():
     return os.getenv("VC_SID_SALT", "").encode("ascii")
 
 def decrypt_cbc(s, iv, key):
-    p = b"".join(rijndael.decrypt(key, bytes(s[i:i+len(iv)])) for i in range(0, len(s), len(iv)))
-    return bytes((iv+s)[i] ^ p[i] for i in range(len(p)))
+    e = pyaes.Decrypter(pyaes.AESModeOfOperationCBC(key, iv))
+    clear = e.feed(s)
+    clear += e.feed()
+    return clear
 
 def encrypt_cbc(s, iv, key):
-    if len(s) % 32:
-        s += b"\x00" * (32 - (len(s) % 32))
-    out = [iv]
-    for i in range(0, len(s), 32):
-        blk = bytes(s[i+j] ^ out[-1][j] for j in range(32))
-        out.append(rijndael.encrypt(key, blk))
-    return b"".join(out[1:])
+    e = pyaes.Encrypter(pyaes.AESModeOfOperationCBC(key, iv))
+    clear = e.feed(s)
+    clear += e.feed()
+    return clear
 
 def is_usable():
     return all([x in os.environ for x in ["VC_ACCOUNT", "VC_AES_KEY", "VC_SID_SALT"]]) \
@@ -73,7 +72,7 @@ class ApiClient(object):
         return "".join(chr(ord(c) - 10) for c in s[6::4][:int(s[:4], 16)])
 
     def call(self, path, args, done):
-        vid_iv = ("%032d" % random.randrange(10**32)).encode("ascii")
+        vid_iv = b"1111111111111111"
         args["viewer_id"] = vid_iv + base64.b64encode(
             encrypt_cbc(bytes(self.viewer_id, "ascii"),
                         vid_iv,
@@ -81,24 +80,24 @@ class ApiClient(object):
         plain = base64.b64encode(msgpack.packb(args))
         # I don't even
         key = base64.b64encode(bytes(random.randrange(255) for i in range(32)))[:32]
-        msg_iv = self.udid.replace("-","").encode("ascii")
+        msg_iv = binascii.unhexlify(self.udid.replace("-","").encode("ascii"))
         body = base64.b64encode(encrypt_cbc(plain, msg_iv, key) + key)
         sid = self.sid if self.sid else str(self.viewer_id) + self.udid
         headers = {
             "PARAM": hashlib.sha1(bytes(self.udid + str(self.viewer_id) + path, "ascii") + plain).hexdigest(),
             "KEYCHAIN": "",
-            "USER_ID": self.lolfuscate(str(self.user)),
+            "USER-ID": self.lolfuscate(str(self.user)),
             "CARRIER": "google",
             "UDID": self.lolfuscate(self.udid),
-            "APP_VER": os.environ.get("VC_APP_VER", "1.9.1"), # in case of sent
-            "RES_VER": str(self.res_ver),
-            "IP_ADDRESS": "127.0.0.1",
-            "DEVICE_NAME": "Nexus 42",
+            "APP-VER": os.environ.get("VC_APP_VER", "1.9.1"), # in case of sent
+            "RES-VER": str(self.res_ver),
+            "IP-ADDRESS": "127.0.0.1",
+            "DEVICE-NAME": "Nexus 42",
             "X-Unity-Version": os.environ.get("VC_UNITY_VER", "5.4.5p1"),
             "SID": hashlib.md5(bytes(sid, "ascii") + SID_KEY()).hexdigest(),
-            "GRAPHICS_DEVICE_NAME": "3dfx Voodoo2 (TM)",
-            "DEVICE_ID": hashlib.md5(b"Totally a real Android").hexdigest(),
-            "PLATFORM_OS_VERSION": "Android OS 13.3.7 / API-42 (XYZZ1Y/74726f6c6c)",
+            "GRAPHICS-DEVICE-NAME": "3dfx Voodoo2 (TM)",
+            "DEVICE-ID": hashlib.md5(b"Totally a real Android").hexdigest(),
+            "PLATFORM-OS-VERSION": "Android OS 13.3.7 / API-42 (XYZZ1Y/74726f6c6c)",
             "DEVICE": "2",
             "Content-Type": "application/x-www-form-urlencoded", # lies
             "User-Agent": "Dalvik/2.1.0 (Linux; U; Android 13.3.7; Nexus 42 Build/XYZZ1Y)",
