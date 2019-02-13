@@ -15,8 +15,8 @@ except AttributeError:
     lz4_decompress = lz4.block.decompress
 
 DBMANIFEST = "https://asset-starlight-stage.akamaized.net/dl/{0}/manifests"
-ASSETBBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/High/AssetBundles/Android"
-SOUNDBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/High/Sound/Common"
+ASSETBBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/AssetBundles"
+SOUNDBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/Sound"
 SQLBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/Generic/{1}/{0}"
 CACHE = os.path.join(os.path.dirname(__file__), "__manifestloader_cache")
 try:
