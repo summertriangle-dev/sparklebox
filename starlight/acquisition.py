@@ -17,7 +17,7 @@ except AttributeError:
 DBMANIFEST = "https://asset-starlight-stage.akamaized.net/dl/{0}/manifests"
 ASSETBBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/High/AssetBundles/Android"
 SOUNDBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/High/Sound/Common"
-SQLBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/Generic/{0}"
+SQLBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/Generic/{1}/{0}"
 CACHE = os.path.join(os.path.dirname(__file__), "__manifestloader_cache")
 try:
     os.makedirs(CACHE, 0o755)
@@ -125,7 +125,7 @@ def get_master(res_ver, to_path, done):
         hash, attr = cur.fetchone()
         connection.close()
 
-        url = SQLBASEURL.format(hash)
+        url = SQLBASEURL.format(hash, hash[0:2])
         cl = httpclient.AsyncHTTPClient()
         cl.fetch(url, got_master, headers=extra_acquisition_headers())
 
