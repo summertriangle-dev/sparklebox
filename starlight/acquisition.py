@@ -14,10 +14,10 @@ except AttributeError:
     import lz4.block
     lz4_decompress = lz4.block.decompress
 
-DBMANIFEST = "http://storage.game.starlight-stage.jp/dl/{0}/manifests"
-ASSETBBASEURL = "http://storage.game.starlight-stage.jp/dl/resources/High/AssetBundles/Android"
-SOUNDBASEURL = "http://storage.game.starlight-stage.jp/dl/resources/High/Sound/Common"
-SQLBASEURL = "http://storage.game.starlight-stage.jp/dl/resources/Generic/{0}"
+DBMANIFEST = "https://asset-starlight-stage.akamaized.net/dl/{0}/manifests"
+ASSETBBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/High/AssetBundles/Android"
+SOUNDBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/High/Sound/Common"
+SQLBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/Generic/{0}"
 CACHE = os.path.join(os.path.dirname(__file__), "__manifestloader_cache")
 try:
     os.makedirs(CACHE, 0o755)
