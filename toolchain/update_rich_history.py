@@ -207,6 +207,9 @@ def log_lastresort(have_logged, seen, local, remote):
 
     spec = ",".join(map(str, orphans))
     for card, datestr in local.execute(QUERY_GET_STORY_START_DATES.format(spec)):
+        if not datestr:
+            continue
+
         buckets[starlight.JST(datestr).timestamp()].append(card)
         seen.add(card)
 

@@ -178,7 +178,11 @@ if __name__ == '__main__':
     for key in sorted(missing):
         chara = charas[key]
         print("---", chara.name, "----------")
-        res = EnamdictHandle(sys.argv[1]).find_name(chara.name, chara.name_kana)
+        try:
+            res = EnamdictHandle(sys.argv[1]).find_name(chara.name, chara.name_kana)
+        except Exception:
+            print("This input is possibly invalid:", chara.name, chara.name_kana)
+            res = None
 
         if not res:
             print("warning: No solution found at all")
