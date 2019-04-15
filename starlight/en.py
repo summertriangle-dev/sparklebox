@@ -69,9 +69,10 @@ SKILL_DESCRIPTIONS = {
     25: """that you will gain an extra combo bonus based on your current health""",
     26: """that with all three types of idols on the team, you will gain an extra <span class="let">{2}</span>% combo bonus, and Perfect notes will receive a <span class="let">{0}</span>% score bonus plus restore <span class="let">{3}</span> HP,""",
     27: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
+    31: """that you will gain an extra <span class="let">{0}</span>% combo bonus, and Nice/Great notes will become Perfect notes""",
 }
 
-SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27]
+SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 31]
 SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL2 = [21, 22, 23, 26, 27]
 
 REMOVE_HTML = re.compile(r"</?span[^>]*>")

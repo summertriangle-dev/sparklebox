@@ -79,7 +79,7 @@ footer {
 /* chara_partial */
 .icon {
   display: inline-block;
-  background-image: url(../img/smarkers.png?v4);
+  background-image: url(../img/smarkers.png?v5);
   background-position: -48px -76px;
   width: 48px;
   height: 48px;
@@ -204,6 +204,11 @@ footer {
   width: 24px;
   height: 24px;
 }
+.icon.s_tuning {
+  background-position: -101px -161px;
+  width: 24px;
+  height: 24px;
+}
 .icon.s_unknown {
   background-position: 0px -143px;
   width: 24px;
@@ -235,8 +240,9 @@ footer {
   .icon.s_sb,
   .icon.s_cbonus_based_life,
   .icon.s_mimic,
-  .icon.s_synergy {
-    background-image: url(../img/smarkers@2x.png?v4);
+  .icon.s_synergy,
+  .icon.s_tuning {
+    background-image: url(../img/smarkers@2x.png?v5);
     background-size: 202px 288px;
     border-radius: 0px;
   }
@@ -943,7 +949,7 @@ span.var {
   display: block;
   width: 9px;
   height: 9px;
-  background: url("../img/smarkers.png?v4") -115px -26px no-repeat;
+  background: url("../img/smarkers.png?v5") -115px -26px no-repeat;
   content: "";
 }
 .icon.msprites.mm_vi::before {
@@ -965,7 +971,7 @@ span.var {
   display: block;
   width: 9px;
   height: 9px;
-  background: url("../img/smarkers.png?v4") -145px -22px no-repeat;
+  background: url("../img/smarkers.png?v5") -145px -22px no-repeat;
   content: "";
 }
 .icon.msprites.ms_pl::after {
@@ -1013,13 +1019,16 @@ span.var {
 .icon.msprites.ms_mimic::after {
   background-position: -10px -151px;
 }
+.icon.msprites.ms_tuning::after {
+  background-position: -101px -151px;
+}
 .icon.msprites.ms_unknown::after {
   background-position: -145px -22px;
 }
 @media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 13/10), only screen and (min-resolution: 120dpi) {
   .icon.msprites::after,
   .icon.msprites::before {
-    background-image: url("../img/smarkers@2x.png?v4") !important;
+    background-image: url("../img/smarkers@2x.png?v5") !important;
     background-size: 202px 288px!important;
   }
 }

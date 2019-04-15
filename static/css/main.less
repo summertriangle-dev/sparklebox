@@ -133,7 +133,7 @@ footer {
 
 .icon {
   display:inline-block;
-  background-image:url(../img/smarkers.png?v4);
+  background-image:url(../img/smarkers.png?v5);
   .stitches-marker(-48px, -76px, 48px, 48px);
 
   &.icon_event {
@@ -208,6 +208,9 @@ footer {
   &.s_synergy {
     .stitches-marker(-76px, -187px, 24px, 24px);
   }
+  &.s_tuning {
+    .stitches-marker(-101px, -161px, 24px, 24px);
+  }
   &.s_unknown {
     .stitches-marker(0px, -143px, 24px, 1px);
   }
@@ -219,8 +222,9 @@ footer {
     &.icon_event, &.icon_n, &.icon_r, &.icon_sr, &.icon_ssr, &.m_vi,
     &.m_da, &.m_vo, &.s_pl, &.s_cprot, &.s_combobonus, &.s_scorebonus,
     &.s_heal, &.s_life, &.s_overload, &.m_ba, &.s_allround, &.s_focus,
-    &.s_perfelegant, &.s_sb, &.s_cbonus_based_life, &.s_mimic, &.s_synergy {
-      background-image:url(../img/smarkers@2x.png?v4);
+    &.s_perfelegant, &.s_sb, &.s_cbonus_based_life, &.s_mimic, &.s_synergy,
+    &.s_tuning {
+      background-image:url(../img/smarkers@2x.png?v5);
       background-size: 202px 288px;
       border-radius:0px;
     }
@@ -911,7 +915,7 @@ span.var {
     left:1px; top:1px;
     display:block;
     width:9px; height:9px;
-    background: url("../img/smarkers.png?v4") -115px -26px no-repeat;
+    background: url("../img/smarkers.png?v5") -115px -26px no-repeat;
 
     content:"";
   }
@@ -937,7 +941,7 @@ span.var {
     left:1px; top:10px;
     display:block;
     width:9px; height:9px;
-    background: url("../img/smarkers.png?v4") -145px -22px no-repeat;
+    background: url("../img/smarkers.png?v5") -145px -22px no-repeat;
 
     content:"";
   }
@@ -987,6 +991,9 @@ span.var {
   &.ms_mimic::after {
     background-position: -10px -151px;
   }
+  &.ms_tuning::after {
+    background-position: -101px -151px;
+  }
   &.ms_unknown::after {
     background-position: -145px -22px;
   }
@@ -994,7 +1001,7 @@ span.var {
       only screen and (-o-min-device-pixel-ratio: 13/10),
       only screen and (min-resolution: 120dpi) {
     &::after, &::before {
-      background-image:url("../img/smarkers@2x.png?v4")!important;
+      background-image:url("../img/smarkers@2x.png?v5")!important;
       background-size:202px 288px!important;
     }
   }
