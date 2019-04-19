@@ -77,7 +77,7 @@ if (!Array.prototype.forEach) {
 /* filtering, formerly skills.js */
 
 function toggle_kill_css(that) {
-    cssid = "kill_css_" + that.getAttribute("data-kill-class");
+    cssid = "kill_css_" + (that.getAttribute("data-kill-class").replace(/ /g, "_"));
     var kill_css = null;
     if ((kill_css = document.head.querySelector("#" + cssid))) {
         kill_css.parentNode.removeChild(kill_css);
@@ -85,7 +85,8 @@ function toggle_kill_css(that) {
         that.classList.add("enabled")
     } else {
         kill_css = document.createElement("style");
-        kill_css.textContent = "." + that.getAttribute("data-kill-class") + " { display:none; }"
+        var cssstring = that.getAttribute("data-kill-class").split(" ").join(", .");
+        kill_css.textContent = "." + cssstring + " { display:none; }"
         kill_css.id = cssid;
         document.head.appendChild(kill_css);
         that.innerHTML = "&nbsp;"

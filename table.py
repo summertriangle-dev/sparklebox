@@ -29,7 +29,7 @@ skill_type = filter_t("Skill Type", (
     option_t("Perf. Lock*",  "s_pl"),
     option_t("C. Guard",     "s_cprot"),
     option_t("Combo Bonus",  "s_combobonus"),
-    option_t("Score Bonus",  "s_scorebonus"),
+    option_t("Score Bonus",  "s_scorebonus s_psbvarianta s_psbvariantb"),
     option_t("Healer",       "s_heal"),
     option_t("H. Guard",     "s_life"),
     option_t("Overload",     "s_overload"),
@@ -39,7 +39,8 @@ skill_type = filter_t("Skill Type", (
     option_t("Focus/Coord.", "s_focus"),
     option_t("L. Sparkle",   "s_cbonus_based_life"),
     option_t("Encore",       "s_mimic"),
-    option_t("T. Synergy",   "s_synergy")),
+    option_t("T. Synergy",   "s_synergy"),
+    option_t("Tuning",       "s_tuning")),
 lambda card: enums.skill_class(card.skill.skill_type) if card.skill else None)
 
 high_stat = filter_t("High stat", (
