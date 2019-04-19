@@ -133,7 +133,7 @@ footer {
 
 .icon {
   display:inline-block;
-  background-image:url(../img/smarkers.png?v5);
+  background-image:url(../img/smarkers.png?v6);
   .stitches-marker(-48px, -76px, 48px, 48px);
 
   &.icon_event {
@@ -211,6 +211,12 @@ footer {
   &.s_tuning {
     .stitches-marker(-101px, -161px, 24px, 24px);
   }
+  &.s_psbvarianta {
+    .stitches-marker(-101px, -187px, 24px, 24px);
+  }
+  &.s_psbvariantb {
+    .stitches-marker(-127px, -187px, 24px, 24px);
+  }
   &.s_unknown {
     .stitches-marker(0px, -143px, 24px, 1px);
   }
@@ -223,8 +229,8 @@ footer {
     &.m_da, &.m_vo, &.s_pl, &.s_cprot, &.s_combobonus, &.s_scorebonus,
     &.s_heal, &.s_life, &.s_overload, &.m_ba, &.s_allround, &.s_focus,
     &.s_perfelegant, &.s_sb, &.s_cbonus_based_life, &.s_mimic, &.s_synergy,
-    &.s_tuning {
-      background-image:url(../img/smarkers@2x.png?v5);
+    &.s_tuning, &.s_psbvarianta, &.s_psbvariantb {
+      background-image:url(../img/smarkers@2x.png?v6);
       background-size: 202px 288px;
       border-radius:0px;
     }
@@ -915,7 +921,7 @@ span.var {
     left:1px; top:1px;
     display:block;
     width:9px; height:9px;
-    background: url("../img/smarkers.png?v5") -115px -26px no-repeat;
+    background: url("../img/smarkers.png?v6") -115px -26px no-repeat;
 
     content:"";
   }
@@ -941,7 +947,7 @@ span.var {
     left:1px; top:10px;
     display:block;
     width:9px; height:9px;
-    background: url("../img/smarkers.png?v5") -145px -22px no-repeat;
+    background: url("../img/smarkers.png?v6") -145px -22px no-repeat;
 
     content:"";
   }
@@ -994,6 +1000,12 @@ span.var {
   &.ms_tuning::after {
     background-position: -101px -151px;
   }
+  &.ms_psbvarianta::after {
+    background-position: -94px 0;
+  }
+  &.ms_psbvariantb::after {
+    background-position: -94px 0;
+  }
   &.ms_unknown::after {
     background-position: -145px -22px;
   }
@@ -1001,7 +1013,7 @@ span.var {
       only screen and (-o-min-device-pixel-ratio: 13/10),
       only screen and (min-resolution: 120dpi) {
     &::after, &::before {
-      background-image:url("../img/smarkers@2x.png?v5")!important;
+      background-image:url("../img/smarkers@2x.png?v6")!important;
       background-size:202px 288px!important;
     }
   }

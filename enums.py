@@ -67,6 +67,8 @@ skill_type = enum([
     25, "Life Sparkle",
     26, "Tricolor Synergy",
     27, "Coordinate",
+    28, "Perfect Score Bonus",
+    29, "Perfect Score Bonus",
     31, "Tuning"
 ])
 
@@ -174,6 +176,8 @@ skill_class = enum([
     25, "s_cbonus_based_life",
     26, "s_synergy",
     27, "s_focus s_focus_flat",
+    28, "s_psbvarianta",
+    29, "s_psbvariantb",
     31, "s_tuning"
 ])
 
