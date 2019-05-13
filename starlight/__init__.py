@@ -266,6 +266,9 @@ class DataCache(object):
             d.update(override_vals)
             names[real_key] = schema(**d)
 
+        # Filter out any special-purpose char entries.
+        valid_char_ids = set(id for id, in self.hnd.execute("SELECT chara_id FROM chara_data WHERE base_card_id != 0"))
+        names = {k: v for k, v in names.items() if k in valid_char_ids}
         return names
 
     def prime_caches(self):
@@ -335,7 +338,7 @@ class DataCache(object):
         return ret
 
     def cache_chars(self, idl):
-        query = "SELECT * FROM chara_data WHERE chara_id IN ({0})".format(",".join("?" * len(idl)))
+        query = "SELECT * FROM chara_data WHERE base_card_id != 0 AND chara_id IN ({0})".format(",".join("?" * len(idl)))
         cur = self.hnd.execute(query, idl)
 
         for p in self.prime_from_cursor("chara_data_t", cur,
@@ -487,7 +490,7 @@ class DataCache(object):
     def birthdays(self):
         return_value = defaultdict(lambda: [])
 
-        for month, day, chara_id in self.hnd.execute("SELECT birth_month, birth_day, chara_id FROM chara_data WHERE birth_month + birth_day > 0"):
+        for month, day, chara_id in self.hnd.execute("SELECT birth_month, birth_day, chara_id FROM chara_data WHERE birth_month + birth_day > 0 AND base_card_id != 0"):
             return_value[(month, day)].append(chara_id)
 
         self.primed_this["sel_birth"] += 1
