@@ -132,29 +132,29 @@ LEADER_SKILL_PARAM = {
 
 def build_lead_skill_predicate(skill):
     need_list = []
+    need_sum = 0
     if skill.need_cute:
         need_list.append("Cute")
+        need_sum += skill.need_cute
     if skill.need_cool:
         need_list.append("Cool")
+        need_sum += skill.need_cool
     if skill.need_passion:
         need_list.append("Passion")
+        need_sum += skill.need_passion
 
     if not need_list:
         return None
 
     if len(need_list) == 1:
         need_str = need_list[0]
+    elif len(need_list) == 2:
+        need_str = "{0} and {1}".format(*need_list)
     else:
         need_str = ", ".join(need_list[:-1])
         need_str = "{0}, and {1}".format(need_str, need_list[-1])
 
-    # FIXME: consider values of need_x in leader_skill_t
-    #   Rei_Fan49 - Today at 5:36 PM
-    #   princess and focus only works for single color
-    #   it requires 5 or 6 per color
-    #   which implies monocolor team or no activation
-    #   cinfest team requires 1 each color (according to internal data)
-    if len(need_list) < 3:
+    if len(need_list) < 3 and need_sum >= 5:
         need_str = "only " + need_str
 
     predicate_clause = """when there are {0} idols on the team.""".format(need_str)
@@ -189,6 +189,22 @@ def describe_lead_skill_html(skill):
     elif skill.up_type == 1 and skill.type == 40:
         effect_clause = "Increases fan gain by <span class=\"let\">{0}</span>% when you finish a live".format(
             skill.up_value)
+
+        predicate_clause = build_lead_skill_predicate(skill)
+        if predicate_clause:
+            built = " ".join((effect_clause, predicate_clause))
+        else:
+            built = effect_clause + "."
+        return built
+    elif skill.type == 50:
+        target_attr = LEADER_SKILL_TARGET.get(skill.target_attribute, "<unknown>")
+        target_param = LEADER_SKILL_PARAM.get(skill.target_param, "<unknown>")
+
+        target_attr_2 = LEADER_SKILL_TARGET.get(skill.target_attribute_2, "<unknown>")
+        target_param_2 = LEADER_SKILL_PARAM.get(skill.target_param_2, "<unknown>")
+
+        effect_clause = """Raises {0} of {1} members by <span class="let">{2}</span>%, and {3} of {4} members by <span class="let">{5}</span>%""".format(
+            target_param, target_attr, skill.up_value, target_param_2, target_attr_2, skill.up_value_2)
 
         predicate_clause = build_lead_skill_predicate(skill)
         if predicate_clause:
