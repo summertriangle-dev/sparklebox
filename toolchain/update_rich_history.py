@@ -28,6 +28,65 @@ QUERY_GET_STORY_START_DATES = """SELECT card_data.id, start_date FROM card_data
 QUERY_FIND_CONTAINING_GACHA = "SELECT DISTINCT gacha_id FROM gacha_available WHERE reward_id = ? AND gacha_id IN ({0})"
 QUERY_FIND_CONTAINING_GACHA_V2 = "SELECT DISTINCT gacha_id FROM gacha_available_2 WHERE card_id = ? AND gacha_id IN ({0})"
 
+# ----------------------------------------------------------------
+# Reward list generators for specific event types ----------------
+
+def merge(groups):
+    l = []
+    for g in groups.values():
+        [l.append(card) for card in g if card not in l]
+    return l
+
+def get_atapon_evt_rewards(sql, event_id):
+    t = {
+        "progression": [k for k, in sql.execute("SELECT DISTINCT reward_id FROM atapon_point_reward WHERE reward_type = 6 AND event_id = ? ORDER BY need_point", (event_id,))],
+        "ranking": [k for k, in sql.execute("SELECT DISTINCT reward_id FROM atapon_point_rank_reward WHERE reward_type = 6 AND event_id = ? ORDER BY rank_max DESC", (event_id,))],
+    }
+    t["event"] = merge(t)
+    return t
+
+def get_groove_evt_rewards(sql, event_id):
+    t = {
+        "progression": [k for k, in sql.execute("SELECT DISTINCT reward_id FROM medley_point_reward WHERE reward_type = 6 AND event_id = ? ORDER BY need_point", (event_id,))],
+        "ranking": [k for k, in sql.execute("SELECT DISTINCT reward_id FROM medley_point_rank_reward WHERE reward_type = 6 AND event_id = ? ORDER BY rank_max DESC", (event_id,))],
+    }
+    t["event"] = merge(t)
+    return t
+
+def get_party_evt_rewards(sql, event_id):
+    t = {
+        "progression": [k for k, in sql.execute("SELECT DISTINCT reward_id FROM party_point_reward WHERE reward_type = 6 AND event_id = ? ORDER BY need_point", (event_id,))],
+    }
+    t["event"] = t["progression"]
+    return t
+
+def get_parade_evt_rewards(sql, event_id):
+    t = {
+        "audience": [k for k, in sql.execute("SELECT DISTINCT reward_id FROM tour_audience_reward WHERE reward_type = 6 AND event_id = ? ORDER BY need_audience", (event_id,))],
+        "progression": [k for k, in sql.execute("SELECT DISTINCT reward_id FROM tour_point_reward WHERE reward_type = 6 AND event_id = ? ORDER BY need_point", (event_id,))],
+    }
+    t["event"] = merge(t)
+    return t
+
+def get_carnival_evt_rewards(sql, event_id):
+    t = {
+        "gacha": [k for k, in sql.execute("SELECT DISTINCT reward_id FROM box_carnival_{0} WHERE reward_type = 6 ORDER BY step_id".format(event_id))],
+    }
+    t["event"] = t["gacha"]
+    return t
+
+EVENT_REWARD_SPECIALIZATIONS = {
+    0: get_atapon_evt_rewards,
+    # 1: get_caravan_evt_rewards,           # Doesn't seem to exist.
+    2: get_groove_evt_rewards,
+    3: get_party_evt_rewards,
+    4: get_parade_evt_rewards,
+    # 5: get_bus_evt_rewards,               # another really nasty one
+    6: get_carnival_evt_rewards,
+}
+
+# ----------------------------------------------------------------
+
 ea_overrides = list(csvloader.load_db_file(starlight.private_data_path("event_availability_overrides.csv")))
 overridden_events = set(x.event_id for x in ea_overrides)
 
@@ -78,17 +137,27 @@ def log_events(have_logged, seen, local, remote):
 
     need_to_add = (event_h_ids | event_end_h_ids) - have_logged
 
-    def ge_cards(event_id):
-        if event_id in overridden_events:
-            rl = list(get_overridden(event_id))
-        else:
-            rl = [k for k, in local.execute(QUERY_GET_REWARDS_FOR_EVENT, (event_id,)).fetchall()]
+    def from_event_available(sql, event_id):
+        return {"event": [k for k, in sql.execute(QUERY_GET_REWARDS_FOR_EVENT, (event_id,)).fetchall()]}
 
-        seen.update(rl)
-        return json.dumps({ "event": rl })
+    def ge_cards(event_id, type_info):
+        queryer = EVENT_REWARD_SPECIALIZATIONS.get(type_info & 0xFF, from_event_available)
+        if event_id in overridden_events:
+            groups = { "event": list(get_overridden(event_id))}
+        else:
+            groups = queryer(local, event_id)
+            if not groups.get("event", []):
+                if "event" not in groups:
+                    print("error: specialization didn't return an event list. this will cause UI problems")
+                print("warning: specialization returned no data for", event_id, "trying generic")
+                groups = from_event_available(local, event_id)
+
+        for rl in groups.values():
+            seen.update(rl)
+        return json.dumps(groups)
 
     def eti(event_id):
-        base = (events[event_id].type - 1) & 0x7
+        base = (events[event_id].type - 1) & 0xFF
         # TODO figure out where to get token attribute/medley focus...
         return base
 
@@ -101,7 +170,7 @@ def log_events(have_logged, seen, local, remote):
             s.add(models.HistoryEventEntry(
                 descriptor=desc,
                 extra_type_info=eti(internal_id(desc)),
-                added_cards=ge_cards(internal_id(desc)),
+                added_cards=ge_cards(internal_id(desc), eti(internal_id(desc))),
                 event_name=events[internal_id(desc)].name,
 
                 start_time=starlight.JST(events[internal_id(desc)].event_start).timestamp(),
