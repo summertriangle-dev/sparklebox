@@ -11,6 +11,7 @@ import pytz
 import itertools
 import enums
 import table
+from collections import defaultdict
 from datetime import datetime, timedelta
 
 import webutil
@@ -34,7 +35,7 @@ class Home(HandlerSyncedWithMaster):
             now += timedelta(days=1)
 
         self.events = starlight.data.events(now)
-        self.event_rewards = starlight.data.event_rewards(self.events)
+        self.event_rewards = self.settings["tle"].lookup_event_rewards(self.events)
 
         self.gachas = starlight.data.gachas(now)
         self.gacha_limited = starlight.data.limited_availability_cards(self.gachas)
@@ -128,7 +129,16 @@ class Character(HandlerSyncedWithMaster):
                 unique.append(c)
 
         acard = [starlight.data.cards(ch) for ch in unique]
-        availability = starlight.data.event_availability(card_ids)
+        eventset = {x.id: x for x in starlight.data.event_ids()}
+
+        availability = defaultdict(lambda: [])
+        av_dict_from_tle = self.settings["tle"].lookup_event_cards(card_ids)
+        for cid, events in av_dict_from_tle.items():
+            for eid in events:
+                x = eventset[eid]
+                avs = starlight.Availability(starlight.Availability._TYPE_EVENT, x.name, x.start_date, x.end_date)
+                availability[cid].append(avs)
+
         ga_av = self.settings["tle"].gacha_availability(card_ids, starlight.data.gacha_ids())
         for k in ga_av:
             availability[k].extend(ga_av[k])
@@ -162,7 +172,17 @@ class Card(HandlerSyncedWithMaster):
                 unique.append(c)
 
         acard = [starlight.data.cards(ch) for ch in unique if ch]
-        availability = starlight.data.event_availability(card_ids)
+
+        eventset = {x.id: x for x in starlight.data.event_ids()}
+
+        availability = defaultdict(lambda: [])
+        av_dict_from_tle = self.settings["tle"].lookup_event_cards(card_ids)
+        for cid, events in av_dict_from_tle.items():
+            for eid in events:
+                x = eventset[eid]
+                avs = starlight.Availability(starlight.Availability._TYPE_EVENT, x.name, x.start_date, x.end_date)
+                availability[cid].append(avs)
+
         ga_av = self.settings["tle"].gacha_availability(card_ids, starlight.data.gacha_ids())
         for k in ga_av:
             availability[k].extend(ga_av[k])
@@ -437,6 +457,13 @@ class DebugKillCache(tornado.web.RequestHandler):
         self.settings["tle"].kill_caches(0)
         starlight.data = starlight.DataCache(starlight.data.version)
 
+        self.write("ok.")
+
+@route(r"/sync_event_lookup")
+@dev_mode_only
+class DebugSyncEventLookup(tornado.web.RequestHandler):
+    def get(self):
+        self.settings["tle"].sync_event_lookup_table()
         self.write("ok.")
 
 @route(r"/test_gacha_rate")

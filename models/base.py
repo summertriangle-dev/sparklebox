@@ -60,6 +60,13 @@ class GachaPresenceEntry(Base):
     avail_start = Column(Integer, nullable=False)
     avail_end = Column(Integer, nullable=False)
 
+class EventLookupEntry(Base):
+    __tablename__ = TABLE_PREFIX + "_event_lookup"
+
+    card_id = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
+    event_id = Column(Integer, primary_key=True, nullable=False)
+    acquisition_type = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
+
 class HistoryEventEntry(Base):
     __tablename__ = TABLE_PREFIX + "_history_ex"
 

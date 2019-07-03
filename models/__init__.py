@@ -294,6 +294,70 @@ class TranslationSQL(object):
             gv = rows.all()
             yield from gv
 
+    @retry(5)
+    def lookup_event_cards(self, cards):
+        with self as s:
+            ents = s.query(EventLookupEntry).filter(EventLookupEntry.card_id.in_(cards)).all()
+
+        # {card: {event: [type, type]}}
+        ret = defaultdict(lambda: defaultdict(lambda: []))
+        enum_acquisition_to_str = {1: "progression", 2: "ranking", 3: "gacha"}
+        for e in ents:
+            w = enum_acquisition_to_str.get(e.acquisition_type)
+            # Only use the generic case as a last resort
+            if w is not None or not ret[e.card_id][e.event_id]:
+                ret[e.card_id][e.event_id].append(w)
+
+        return ret
+
+    @retry(5)
+    def lookup_event_rewards(self, eids):
+        with self as s:
+            eids_only = {x.id for x in eids}
+            ents = s.query(EventLookupEntry).filter(EventLookupEntry.event_id.in_(eids_only)).all()
+
+        buckets = defaultdict(lambda: [])
+        for ent in ents:
+            if ent.card_id not in buckets[ent.event_id]:
+                buckets[ent.event_id].append(ent.card_id)
+
+        return [buckets[eid.id] for eid in eids]
+
+    def sync_event_lookup_table(self):
+        with self as s:
+            s.query(EventLookupEntry).delete()
+            s.commit()
+
+            rows = s.query(HistoryEventEntry).all()
+
+            for h_ent in rows:
+                print(h_ent)
+                if h_ent.type() != HISTORY_TYPE_EVENT:
+                    continue
+                seen = set()
+
+                l = h_ent.category_card_list("progression")
+                for cid in l:
+                    s.merge(EventLookupEntry(card_id=cid, event_id=h_ent.referred_id(), acquisition_type=1))
+                seen.update(l)
+
+                l = h_ent.category_card_list("ranking")
+                for cid in l:
+                    s.merge(EventLookupEntry(card_id=cid, event_id=h_ent.referred_id(), acquisition_type=2))
+                seen.update(l)
+
+                l = h_ent.category_card_list("gacha")
+                for cid in l:
+                    s.merge(EventLookupEntry(card_id=cid, event_id=h_ent.referred_id(), acquisition_type=3))
+                seen.update(l)
+
+                print(seen)
+
+                for any_card in h_ent.card_list():
+                    if any_card not in seen:
+                        s.merge(EventLookupEntry(card_id=any_card, event_id=h_ent.referred_id(), acquisition_type=0))
+            s.commit()
+
 class TranslationEngine(TranslationSQL):
     def __init__(self, data_source, override_url=None):
         super().__init__(override_url)

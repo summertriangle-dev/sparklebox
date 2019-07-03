@@ -186,24 +186,6 @@ class DataCache(object):
     def current_limited_availability(self):
         return self.limited_availability(TODAY())
 
-    def event_availability(self, cards):
-        events = {x.id: Availability(Availability._TYPE_EVENT, x.name, x.start_date, x.end_date) for x in self.event_ids()}
-        query = "SELECT event_id, reward_id FROM event_available WHERE reward_id IN ({0})".format(",".join("?" * len(cards)))
-        ea = defaultdict(lambda: [])
-
-        for event, reward in self.hnd.execute(query, cards):
-            if event in self.overridden_events:
-                continue
-            ea[reward].append(events[event])
-
-        for event, reward in self.ea_overrides:
-            if reward in cards:
-                ea[reward].append(events[event])
-
-        [v.sort(key=lambda x: x.start) for v in ea.values()]
-        self.primed_this["sel_evtreward_rev"] += 1
-        return ea
-
     def events(self, when):
         select = []
         for stub in reversed(self.event_ids()):
@@ -211,20 +193,6 @@ class DataCache(object):
                 select.append(stub)
 
         return select
-
-    # Sometimes this method will return more events than you asked for.
-    # Make sure to filter the results on the caller side.
-    def event_rewards(self, events):
-        select = [event.id for event in events if event.id not in self.overridden_events]
-        query = "SELECT event_id, reward_id FROM event_available WHERE event_id IN ({0})".format(",".join("?" * len(select)))
-        tmp = defaultdict(lambda: [])
-        [tmp[event].append(reward) for event, reward in self.hnd.execute(query, select)]
-
-        for event, reward in self.ea_overrides:
-            tmp[event].append(reward)
-
-        self.primed_this["sel_evtreward"] += 1
-        return [tmp[event.id] for event in events]
 
     def current_events(self):
         return self.events(TODAY())
