@@ -61,7 +61,7 @@ SKILL_DESCRIPTIONS = {
     17: """that Perfect notes will restore <span class="let">{0}</span> health""",
     18: """that Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
     19: """that Nice/Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
-    20: """that currently active skills will be boosted""",
+    20: """to boost the effects of currently active skills""",
     21: """that with only Cute idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
     22: """that with only Cool idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
     23: """that with only Passion idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
@@ -72,6 +72,9 @@ SKILL_DESCRIPTIONS = {
     28: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and hold notes a <span class="let">{2}</span>% score bonus""",
     29: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and flick notes a <span class="let">{2}</span>% score bonus""",
     31: """that you will gain an extra <span class="let">{0}</span>% combo bonus, and Nice/Great notes will become Perfect notes""",
+    32: """to boost the score/combo bonus of Cute idols' active skills""",
+    33: """to boost the score/combo bonus of Cool idols' active skills""",
+    34: """to boost the score/combo bonus of Passion idols' active skills""",
 }
 
 SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 28, 29, 31]
@@ -119,6 +122,11 @@ LEADER_SKILL_TARGET = {
     2: "all Cool",
     3: "all Passion",
     4: "all",
+
+    11: "Cute-type",
+    12: "Cool-type",
+    13: "Passion-type",
+    14: "all-type",
 }
 
 LEADER_SKILL_PARAM = {
@@ -205,6 +213,26 @@ def describe_lead_skill_html(skill):
 
         effect_clause = """Raises {0} of {1} members by <span class="let">{2}</span>%, and {3} of {4} members by <span class="let">{5}</span>%""".format(
             target_param, target_attr, skill.up_value, target_param_2, target_attr_2, skill.up_value_2)
+
+        predicate_clause = build_lead_skill_predicate(skill)
+        if predicate_clause:
+            built = " ".join((effect_clause, predicate_clause))
+        else:
+            built = effect_clause + "."
+        return built
+    elif skill.type == 60:
+        target_attr = LEADER_SKILL_TARGET.get(skill.target_attribute, "<unknown>")
+        target_param = LEADER_SKILL_PARAM.get(skill.target_param, "<unknown>")
+
+        target_attr_2 = LEADER_SKILL_TARGET.get(skill.target_attribute_2, "<unknown>")
+        target_param_2 = LEADER_SKILL_PARAM.get(skill.target_param_2, "<unknown>")
+
+        if target_param_2 != target_param:
+            effect_clause = """Raises {0} of {1} members by <span class="let">{2}</span>% (and {3} by <span class="let">{4}</span>% when playing a {5} song)""".format(
+                target_param, target_attr, skill.up_value, target_param_2, skill.up_value_2, target_attr_2)
+        else:
+            effect_clause = """Raises {0} of {1} members by <span class="let">{2}</span>% (<span class="let">{3}</span>% when playing a {4} song)""".format(
+                target_param, target_attr, skill.up_value, skill.up_value_2, target_attr_2)
 
         predicate_clause = build_lead_skill_predicate(skill)
         if predicate_clause:

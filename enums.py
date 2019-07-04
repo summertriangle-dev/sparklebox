@@ -69,7 +69,11 @@ skill_type = enum([
     27, "Coordinate",
     28, "Perfect Score Bonus",
     29, "Perfect Score Bonus",
-    31, "Tuning"
+    31, "Tuning",
+
+    32, "Cute Ensemble",
+    33, "Cool Ensemble",
+    34, "Passion Ensemble",
 ])
 
 skill_probability = enum([
@@ -178,7 +182,11 @@ skill_class = enum([
     27, "s_focus s_focus_flat",
     28, "s_psbvarianta",
     29, "s_psbvariantb",
-    31, "s_tuning"
+    31, "s_tuning",
+
+    32, "s_sb",
+    33, "s_sb",
+    34, "s_sb",
 ])
 
 stat_dot = enum([
