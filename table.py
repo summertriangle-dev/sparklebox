@@ -29,7 +29,7 @@ skill_type = filter_t("Skill Type", (
     option_t("Perf. Lock*",  "s_pl"),
     option_t("C. Guard",     "s_cprot"),
     option_t("Combo Bonus",  "s_combobonus"),
-    option_t("Score Bonus",  "s_scorebonus s_psbvarianta s_psbvariantb"),
+    option_t("Score Bonus",  "s_scorebonus s_psbvarianta s_psbvariantb s_psbvariantc"),
     option_t("Healer",       "s_heal"),
     option_t("H. Guard",     "s_life"),
     option_t("Overload",     "s_overload"),

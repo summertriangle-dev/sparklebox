@@ -597,7 +597,7 @@ def check_version():
         # usually updates happen on the hour so this keeps our
         # schedule on the hour too
         t = time()
-        last_version_check = t - (t % 3600) - 30
+        last_version_check = t - (t % 3600)
         apiclient.versioncheck(check_version_api_recv)
 
 is_updating_to_new_truth = 0

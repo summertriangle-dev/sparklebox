@@ -69,6 +69,7 @@ skill_type = enum([
     27, "Coordinate",
     28, "Perfect Score Bonus",
     29, "Perfect Score Bonus",
+    30, "Perfect Score Bonus",
     31, "Tuning",
 
     32, "Cute Ensemble",
@@ -182,6 +183,7 @@ skill_class = enum([
     27, "s_focus s_focus_flat",
     28, "s_psbvarianta",
     29, "s_psbvariantb",
+    30, "s_psbvariantc",
     31, "s_tuning",
 
     32, "s_sb",

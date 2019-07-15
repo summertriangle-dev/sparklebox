@@ -154,7 +154,7 @@ def log_events(have_logged, seen, local, remote):
 
         for rl in groups.values():
             seen.update(rl)
-        return json.dumps(groups)
+        return groups
 
     def eti(event_id):
         base = (events[event_id].type - 1) & 0xFF
@@ -167,15 +167,30 @@ def log_events(have_logged, seen, local, remote):
             if starlight.JST(events[internal_id(desc)].event_start).year >= 2099:
                 continue
 
+            cats = ge_cards(internal_id(desc), eti(internal_id(desc)))
             s.add(models.HistoryEventEntry(
                 descriptor=desc,
                 extra_type_info=eti(internal_id(desc)),
-                added_cards=ge_cards(internal_id(desc), eti(internal_id(desc))),
+                added_cards=json.dumps(cats),
                 event_name=events[internal_id(desc)].name,
 
                 start_time=starlight.JST(events[internal_id(desc)].event_start).timestamp(),
                 end_time=starlight.JST(events[internal_id(desc)].event_end).timestamp()
             ))
+
+            seen = set()
+            for cid in cats.get("progression", []):
+                s.merge(models.EventLookupEntry(card_id=cid, event_id=internal_id(desc), acquisition_type=1))
+                seen.add(cid)
+            for cid in cats.get("ranking", []):
+                s.merge(models.EventLookupEntry(card_id=cid, event_id=internal_id(desc), acquisition_type=2))
+                seen.add(cid)
+            for cid in cats.get("gacha", []):
+                s.merge(models.EventLookupEntry(card_id=cid, event_id=internal_id(desc), acquisition_type=3))
+                seen.add(cid)
+            for cid in cats.get("event", []):
+                if cid not in seen:
+                    s.merge(models.EventLookupEntry(card_id=cid, event_id=internal_id(desc), acquisition_type=0))
 
         # add event end markers
         # for desc in event_end_h_ids - have_logged:
