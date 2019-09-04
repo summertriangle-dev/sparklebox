@@ -284,7 +284,6 @@ class CustomNumber(Datum):
             self.format = "<td class=\"{0}\">{{0}}</td>".format(E(dclass or ""))
 
     def make_headers(self):
-        print(self.header_class)
         return (
             """<th class="{1}">{0}</th>"""
         ).format(E(self.header_text), E(self.header_class))
