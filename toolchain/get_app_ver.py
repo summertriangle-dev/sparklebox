@@ -1,7 +1,9 @@
 import urllib.request
 import json
+import time
 
-store_api = urllib.request.urlopen("https://itunes.apple.com/jp/lookup?id=1016318735")
+rand = str(int(time.time()))
+store_api = urllib.request.urlopen("https://itunes.apple.com/jp/lookup?id=1016318735&rnd=" + rand)
 store_b = store_api.read()
 store_j = store_b.decode('utf-8')
 store_d = json.loads(store_j)
