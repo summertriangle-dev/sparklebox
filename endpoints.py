@@ -378,7 +378,12 @@ class MiniTable(ShortlinkTable):
 class MotifInternalTable(MiniTable):
     def get(self, type):
         t = int(type)
-        dataset = starlight.data.fetch_motif_data(t)
+        try:
+            dataset = starlight.data.fetch_motif_data(t)
+        except ValueError:
+            self.set_status(404)
+            self.write("This table doesn't currently exist.")
+            return
         
         css_class = self.get_argument("appeal", "vocal")
         if css_class not in {"vocal", "visual", "dance"}:
@@ -395,7 +400,12 @@ class MotifInternalTable(MiniTable):
 class SparkleInternalTable(MiniTable):
     def get(self, type):
         t = int(type)
-        dataset = starlight.data.fetch_motif_data(t)
+        try:
+            dataset = starlight.data.fetch_sparkle_data(t)
+        except ValueError:
+            self.set_status(404)
+            self.write("This table doesn't currently exist.")
+            return
 
         motif_cats = [table.IndexedCustomNumber(0, "Life value", dclass="life"),
             table.IndexedCustomNumber(1, "Combo bonus", format="+{0}%"),
