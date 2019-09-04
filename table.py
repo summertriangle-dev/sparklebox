@@ -12,13 +12,13 @@ E = xhtml_escape
 option_t = namedtuple("option_t", ("name", "kill_class"))
 filter_t = namedtuple("filter_t", ("name", "options", "gen_object_class"))
 
-card_attribute = filter_t("Idol Attribute", (
+card_attribute = filter_t("Attribute", (
     option_t("Cute",      "Cute_kc"),
     option_t("Cool",      "Cool_kc"),
     option_t("Passion",   "Passion_kc")),
 lambda card: enums.attribute(card.attribute) + "_kc")
 
-rarity = filter_t("Card Rarity", (
+rarity = filter_t("Rarity", (
     option_t("SSR", "ssr_kc"),
     option_t("SR",  "sr_kc"),
     option_t("R",   "r_kc"),
@@ -35,12 +35,16 @@ skill_type = filter_t("Skill Type", (
     option_t("Overload",     "s_overload"),
     option_t("All-Round",    "s_allround"),
     option_t("Concen.",      "s_perfelegant"),
-    option_t("Skill Boost",  "s_sb"),
+    option_t("Skill Boost",  "s_sb")),
+lambda card: enums.skill_class(card.skill.skill_type) if card.skill else None)
+
+skill_type_row_2 = filter_t("Skill Type", (
     option_t("Focus/Coord.", "s_focus"),
     option_t("L. Sparkle",   "s_cbonus_based_life"),
     option_t("Encore",       "s_mimic"),
     option_t("T. Synergy",   "s_synergy"),
-    option_t("Tuning",       "s_tuning")),
+    option_t("Tuning",       "s_tuning"),
+    option_t("Motif",        "s_motif")),
 lambda card: enums.skill_class(card.skill.skill_type) if card.skill else None)
 
 high_stat = filter_t("High stat", (
@@ -98,7 +102,7 @@ class CardProfile(Datum):
         )
 
 class SkillType(Datum):
-    applicable_filters = [skill_type]
+    applicable_filters = [skill_type, skill_type_row_2]
     uid = "S"
 
     def make_headers(self):
@@ -115,7 +119,7 @@ class SkillType(Datum):
             return """<td></td>"""
 
 class SkillName(Datum):
-    applicable_filters = [skill_type]
+    applicable_filters = [skill_type, skill_type_row_2]
     uid = "D"
 
     def make_headers(self):
@@ -132,7 +136,7 @@ class SkillName(Datum):
             return """<td></td>"""
 
 class SkillEffect(Datum):
-    applicable_filters = [skill_type]
+    applicable_filters = [skill_type, skill_type_row_2]
     uid = "E"
 
     def make_headers(self):
@@ -312,5 +316,5 @@ def select_categories(s):
     for c in cats:
         fils.extend(c.applicable_filters)
 
-    fils = sorted(set(fils))
+    fils = sorted(set(fils), key=lambda f: fils.index(f))
     return fils, cats

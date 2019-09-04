@@ -224,6 +224,11 @@ footer {
   width: 24px;
   height: 24px;
 }
+.icon.s_motif {
+  background-position: -101px -212px;
+  width: 24px;
+  height: 24px;
+}
 .icon.s_unknown {
   background-position: 0px -143px;
   width: 24px;
@@ -259,7 +264,8 @@ footer {
   .icon.s_tuning,
   .icon.s_psbvarianta,
   .icon.s_psbvariantb,
-  .icon.s_psbvariantc {
+  .icon.s_psbvariantc,
+  .icon.s_motif {
     background-image: url(../img/smarkers@2x.png?v7);
     background-size: 202px 288px;
     border-radius: 0px;
@@ -1052,6 +1058,9 @@ span.var {
 }
 .icon.msprites.ms_unknown::after {
   background-position: -145px -22px;
+}
+.icon.msprites.ms_motif::after {
+  background-position: -94px 0;
 }
 @media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 13/10), only screen and (min-resolution: 120dpi) {
   .icon.msprites::after,

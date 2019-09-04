@@ -220,6 +220,9 @@ footer {
   &.s_psbvariantc {
     .stitches-marker(-126px, -212px, 24px, 24px);
   }
+  &.s_motif {
+    .stitches-marker(-101px, -212px, 24px, 24px);
+  }
   &.s_unknown {
     .stitches-marker(0px, -143px, 24px, 1px);
   }
@@ -232,7 +235,8 @@ footer {
     &.m_da, &.m_vo, &.s_pl, &.s_cprot, &.s_combobonus, &.s_scorebonus,
     &.s_heal, &.s_life, &.s_overload, &.m_ba, &.s_allround, &.s_focus,
     &.s_perfelegant, &.s_sb, &.s_cbonus_based_life, &.s_mimic, &.s_synergy,
-    &.s_tuning, &.s_psbvarianta, &.s_psbvariantb, &.s_psbvariantc {
+    &.s_tuning, &.s_psbvarianta, &.s_psbvariantb, &.s_psbvariantc,
+    &.s_motif {
       background-image:url(../img/smarkers@2x.png?v7);
       background-size: 202px 288px;
       border-radius:0px;
@@ -1015,6 +1019,9 @@ span.var {
   }
   &.ms_unknown::after {
     background-position: -145px -22px;
+  }
+  &.ms_motif::after {
+    background-position: -94px 0;
   }
   @media only screen and (-webkit-min-device-pixel-ratio: 1.3),
       only screen and (-o-min-device-pixel-ratio: 13/10),
