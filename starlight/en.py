@@ -66,7 +66,7 @@ SKILL_DESCRIPTIONS = {
     22: """that with only Cool idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
     23: """that with only Passion idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
     24: """that you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will restore <span class="let">{2}</span> health""",
-    25: """that you will gain an extra combo bonus based on your current health""",
+    25: """that you will gain an extra <a href="/sparkle_internal/{0}">combo bonus based on your current health</a>""",
     26: """that with all three types of idols on the team, you will gain an extra <span class="let">{2}</span>% combo bonus, and Perfect notes will receive a <span class="let">{0}</span>% score bonus plus restore <span class="let">{3}</span> HP,""",
     27: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
     28: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and hold notes a <span class="let">{2}</span>% score bonus""",
@@ -76,12 +76,15 @@ SKILL_DESCRIPTIONS = {
     32: """to boost the score/combo bonus of Cute idols' active skills""",
     33: """to boost the score/combo bonus of Cool idols' active skills""",
     34: """to boost the score/combo bonus of Passion idols' active skills""",
+    35: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=vocal">score bonus determined by the team's Vocal appeal</a>""",
+    36: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=dance">score bonus determined by the team's Dance appeal</a>""",
+    37: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=visual">score bonus determined by the team's Visual appeal</a>""",
 }
 
 SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31]
 SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL2 = [21, 22, 23, 26, 27, 28, 29, 30]
 
-REMOVE_HTML = re.compile(r"</?span[^>]*>")
+REMOVE_HTML = re.compile(r"</?(span|a)[^>]*>")
 
 def describe_skill(skill):
     return REMOVE_HTML.sub("", describe_skill_html(skill))
@@ -152,10 +155,9 @@ def build_lead_skill_predicate(skill):
         need_list.append("Passion")
         need_sum += skill.need_passion
 
-    if not need_list:
-        return None
-
-    if len(need_list) == 1:
+    if len(need_list) == 0:
+        need_str = None
+    elif len(need_list) == 1:
         need_str = need_list[0]
     elif len(need_list) == 2:
         need_str = "{0} and {1}".format(*need_list)
@@ -166,8 +168,14 @@ def build_lead_skill_predicate(skill):
     if len(need_list) < 3 and need_sum >= 5:
         need_str = "only " + need_str
 
-    predicate_clause = """when there are {0} idols on the team.""".format(need_str)
-    return predicate_clause
+    if skill.need_skill_variation > 1 and need_list:
+        return """If the team has at least {1} different skill types, and there are {0} idols on the team:""".format(need_str, skill.need_skill_variation)
+    elif skill.need_skill_variation > 1:
+        return """If the team has at least {0} different skill types:""".format(skill.need_skill_variation)
+    elif need_list:
+        return """If there are {0} idols on the team:""".format(need_str)
+    else:
+        return None
 
 def describe_lead_skill_html(skill):
     if skill is None:
@@ -179,32 +187,11 @@ def describe_lead_skill_html(skill):
 
         effect_clause = """Raises {0} of {1} members by <span class="let">{2}</span>%""".format(
             target_param, target_attr, skill.up_value)
-
-        predicate_clause = build_lead_skill_predicate(skill)
-        if predicate_clause:
-            built = " ".join((effect_clause, predicate_clause))
-        else:
-            built = effect_clause + "."
-        return built
     elif skill.up_type == 1 and skill.type == 30:
         effect_clause = "Gives extra rewards when you finish a live"
-
-        predicate_clause = build_lead_skill_predicate(skill)
-        if predicate_clause:
-            built = " ".join((effect_clause, predicate_clause))
-        else:
-            built = effect_clause + "."
-        return built
     elif skill.up_type == 1 and skill.type == 40:
         effect_clause = "Increases fan gain by <span class=\"let\">{0}</span>% when you finish a live".format(
             skill.up_value)
-
-        predicate_clause = build_lead_skill_predicate(skill)
-        if predicate_clause:
-            built = " ".join((effect_clause, predicate_clause))
-        else:
-            built = effect_clause + "."
-        return built
     elif skill.type == 50:
         target_attr = LEADER_SKILL_TARGET.get(skill.target_attribute, "<unknown>")
         target_param = LEADER_SKILL_PARAM.get(skill.target_param, "<unknown>")
@@ -214,13 +201,6 @@ def describe_lead_skill_html(skill):
 
         effect_clause = """Raises {0} of {1} members by <span class="let">{2}</span>%, and {3} of {4} members by <span class="let">{5}</span>%""".format(
             target_param, target_attr, skill.up_value, target_param_2, target_attr_2, skill.up_value_2)
-
-        predicate_clause = build_lead_skill_predicate(skill)
-        if predicate_clause:
-            built = " ".join((effect_clause, predicate_clause))
-        else:
-            built = effect_clause + "."
-        return built
     elif skill.type == 60:
         target_attr = LEADER_SKILL_TARGET.get(skill.target_attribute, "<unknown>")
         target_param = LEADER_SKILL_PARAM.get(skill.target_param, "<unknown>")
@@ -234,14 +214,19 @@ def describe_lead_skill_html(skill):
         else:
             effect_clause = """Raises {0} of {1} members by <span class="let">{2}</span>% (<span class="let">{3}</span>% when playing a {4} song)""".format(
                 target_param, target_attr, skill.up_value, skill.up_value_2, target_attr_2)
+    elif skill.type == 70:
+        target_param = LEADER_SKILL_PARAM.get(skill.param_limit, "<unknown>")
 
-        predicate_clause = build_lead_skill_predicate(skill)
-        if predicate_clause:
-            built = " ".join((effect_clause, predicate_clause))
-        else:
-            built = effect_clause + "."
-        return built
+        effect_clause = """Allows active skill effects to stack, but only {0} of the team applies during the live""".format(
+                target_param)
     else:
         return """I don't know how to describe this leader skill. This is a bug, please report it. (up_type: {0}, type: {1})""".format(
             skill.up_type, skill.type
         )
+    
+    predicate_clause = build_lead_skill_predicate(skill)
+    if predicate_clause:
+        built = " ".join((predicate_clause, effect_clause))
+    else:
+        built = effect_clause
+    return built + "."

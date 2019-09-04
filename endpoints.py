@@ -363,6 +363,46 @@ class GachaTable(ShortlinkTable):
         # self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
         #     {"gid": maybe_gachaid})
 
+class MiniTable(ShortlinkTable):
+    def rendertable(self, dataset, cards, table_name="Custom Table",
+                    template="minitable.html", **extra):
+        extra.update(self.settings)
+
+        self.render(template,
+                    categories=dataset,
+                    cards=cards,
+                    table_name=table_name,
+                    **extra)
+
+@route(r"/motif_internal/([1-9][0-9]*)")
+class MotifInternalTable(MiniTable):
+    def get(self, type):
+        t = int(type)
+        dataset = starlight.data.fetch_motif_data(t)
+        
+        css_class = self.get_argument("appeal", "vocal")
+        if css_class not in {"vocal", "visual", "dance"}:
+            css_class = "vocal"
+
+        motif_cats = [table.IndexedCustomNumber(0, "Appeal value", dclass=css_class),
+            table.IndexedCustomNumber(1, "Score bonus", format="+{0}%"),
+            table.IndexedCustomNumber(2, "Score bonus (Grand Live)", format="+{0}%")]
+
+        self.rendertable(motif_cats, dataset, table_name="Motif skill bonus table")
+        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
+
+@route(r"/sparkle_internal/([1-9][0-9]*)")
+class SparkleInternalTable(MiniTable):
+    def get(self, type):
+        t = int(type)
+        dataset = starlight.data.fetch_motif_data(t)
+
+        motif_cats = [table.IndexedCustomNumber(0, "Life value", dclass="life"),
+            table.IndexedCustomNumber(1, "Combo bonus", format="+{0}%"),
+            table.IndexedCustomNumber(2, "Combo bonus (Grand Live)", format="+{0}%")]
+
+        self.rendertable(motif_cats, dataset, table_name="Life Sparkle skill bonus table")
+        self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 @route(r"/sprite_go/([0-9]+).png")
 class SpriteRedirect(tornado.web.RequestHandler):

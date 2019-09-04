@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% if is_dev %}
+  <link rel="stylesheet/less" type="text/css" href="{{ handler.static_url("css/main.less") }}" />
+  <script type="text/javascript" src="{{ handler.static_url("js/less.js") }}"></script>
+  {% else %}
+  <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
+  {% end %}
+  <script type="text/javascript" src="{{ handler.static_url("js/home.js") }}"></script>
+  <script type="text/javascript" src="{{ handler.static_url("js/tlinject.js") }}"></script>
+  <script type="text/javascript" src="{{ handler.static_url("js/sort_table.js") }}"></script>
+
+  <title>{{ table_name }} (sldb)</title>
+</head>
+
+<body>
+  {% include header.html %}
+
+  <div class="container">
+    <div class="stdcon chara_header">
+      <div class="name_slab">
+        {{ table_name }}
+      </div>
+
+      {% block extra_header %}
+      {% end %}
+
+      {% block extra_info %}
+      {% end %}
+    </div>
+
+    <div class="contains_large_table">
+      <table id="sort_target" class="table" style="width:100%">
+        <thead>
+          <tr class="control_row">
+            {% for cat in categories %}
+            {% raw cat.make_headers() %}
+            {% end %}
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for card in cards %}
+          <tr class="row_data">
+            {% for cat in categories %}
+            {% raw cat.make_values(card) %}
+            {% end %}
+          </tr>
+          {% end %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% include partials/footer.html %}
+  <script>tlinject_activate(); st_init();</script>
+</body>
+</html>

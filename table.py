@@ -269,22 +269,29 @@ class CustomNumber(Datum):
     format = "{0}"
     header_text = ""
 
-    def __init__(self, values, header_text="", format=None):
+    def __init__(self, values, header_text="", format=None, hclass=None, dclass=None):
         self.header_text = header_text
         self.values = values
+        self.header_class = hclass or ""
 
         if format is not None:
-            self.format = "<td>" + format + "</td>"
+            self.format = "<td class=\"{0}\">".format(E(dclass or "")) + format + "</td>"
         else:
-            self.format = "<td>{0}</td>"
+            self.format = "<td class=\"{0}\">{{0}}</td>".format(E(dclass or ""))
 
     def make_headers(self):
+        print(self.header_class)
         return (
-            """<th>{0}</th>"""
-        ).format(E(self.header_text))
+            """<th class="{1}">{0}</th>"""
+        ).format(E(self.header_text), E(self.header_class))
 
     def make_values(self, a_card):
         return self.format.format(self.values[a_card.id])
+
+class IndexedCustomNumber(CustomNumber):
+    # This class is intended to take the value of a column in a list of rows.
+    def make_values(self, ds):
+        return self.format.format(ds[self.values])
 
 uid_to_cls = {V.uid: V for V in Datum.__subclasses__()}
 

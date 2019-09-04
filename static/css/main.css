@@ -360,6 +360,7 @@ td.life,
 td.life span {
   background-color: #32d48a;
   color: #07331f;
+  border-color: #25ae6f;
   font-weight: normal;
 }
 td.max_level,

@@ -489,6 +489,22 @@ class DataCache(object):
 
         return self.charas(pool)
 
+    def fetch_motif_data(self, fortype):
+        if fortype > 6 or fortype < 1:
+            raise ValueError("Type doesn't exist currently")
+        query = """SELECT motif_value, skill_motif_value.type_{0:02d}_value,
+            skill_motif_value_grand.type_{0:02d}_value FROM skill_motif_value
+            INNER JOIN skill_motif_value_grand USING (motif_value)""".format(fortype)
+        return [(a[0], a[1] - 100, a[2] - 100) for a in self.hnd.execute(query)]
+
+    def fetch_sparkle_data(self, fortype):
+        if fortype > 6 or fortype < 1:
+            raise ValueError("Type doesn't exist currently")
+        query = """SELECT life_value, skill_life_value.type_{0:02d}_value,
+            skill_life_value_grand.type_{0:02d}_value FROM skill_life_value
+            INNER JOIN skill_life_value_grand USING (life_value)""".format(fortype)
+        return [(a[0], a[1] - 100, a[2] - 100) for a in self.hnd.execute(query)]
+
     def live_gacha_rates(self, gacha_t, done):
         def update_livecache_for_gacha_rates(http, api_data):
             if not api_data:
