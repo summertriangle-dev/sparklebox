@@ -78,6 +78,16 @@ def determine_best_stat(vo, vi, da):
     else:
         return BALANCED + hi_typ
 
+def paginate_id_list(idl, pagesize=500):
+    start = 0
+    step = pagesize
+    while 1:
+        page = idl[start:start + step]
+        if not page:
+            break
+        yield page
+        start += step
+
 Availability = namedtuple("Availability", ("type", "name", "start", "end"))
 Availability._TYPE_GACHA = 1
 Availability._TYPE_EVENT = 2
@@ -161,26 +171,30 @@ class DataCache(object):
 
     def limited_availability_cards(self, gachas):
         select = [gacha.id for gacha in gachas]
-        query = "SELECT gacha_id, reward_id FROM gacha_available WHERE limited_flag == 1 AND gacha_id IN ({0})".format(",".join("?" * len(select)))
-        query_2 = "SELECT gacha_id, card_id FROM gacha_available_2 WHERE limited_flag == 1 AND gacha_id IN ({0})".format(",".join("?" * len(select)))
+
         tmp = defaultdict(lambda: [])
+        lastlen = 0
+        for page in paginate_id_list(select):
+            self.primed_this["sel_la"] += 1
+            if lastlen != len(page):
+                query = "SELECT gacha_id, reward_id FROM gacha_available WHERE limited_flag == 1 AND gacha_id IN ({0})".format(",".join("?" * len(select)))
+                query_2 = "SELECT gacha_id, card_id FROM gacha_available_2 WHERE limited_flag == 1 AND gacha_id IN ({0})".format(",".join("?" * len(select)))
 
-        for gid, reward in self.hnd.execute(query, select):
-            if reward in self.fix_limited:
-                # XXX we only support negative fixes for now
+            for gid, reward in self.hnd.execute(query, page):
+                if reward in self.fix_limited:
+                    # XXX we only support negative fixes for now
+                    continue
+                tmp[gid].append(reward)
+
+            try:
+                q2_iterator = self.hnd.execute(query_2, page)
+            except sqlite3.OperationalError:
                 continue
-            tmp[gid].append(reward)
 
-        try:
-            q2_iterator = self.hnd.execute(query_2, select)
-        except sqlite3.OperationalError:
-            pass
-        else:
             for gid, reward in q2_iterator:
                 if reward not in self.fix_limited and reward not in tmp[gid]:
                     tmp[gid].append(reward)
 
-        self.primed_this["sel_la"] += 1
         return [tmp[gacha.id] for gacha in gachas]
 
     def current_limited_availability(self):
@@ -306,17 +320,23 @@ class DataCache(object):
         return ret
 
     def cache_chars(self, idl):
-        query = "SELECT * FROM chara_data WHERE base_card_id != 0 AND chara_id IN ({0})".format(",".join("?" * len(idl)))
-        cur = self.hnd.execute(query, idl)
+        lastlen = 0
+        for ids in paginate_id_list(list(set(idl))):
+            print(ids)
+            if lastlen != len(ids):
+                query = "SELECT * FROM chara_data WHERE base_card_id != 0 AND chara_id IN ({0})".format(",".join("?" * len(ids)))
+                lastlen = len(ids)
 
-        for p in self.prime_from_cursor("chara_data_t", cur,
-            kanji_spaced=lambda obj: self.names.get(obj.chara_id).kanji_spaced,
-            kana_spaced=lambda obj:  self.names.get(obj.chara_id).kana_spaced,
-            conventional=lambda obj: self.names.get(obj.chara_id).conventional,
-            valist=lambda obj: []):
-            self.char_cache[p.chara_id] = p
-            self.primed_this["prm_char"] += 1
-        self.primed_this["prm_char_calls"] += 1
+            cur = self.hnd.execute(query, ids)
+            for p in self.prime_from_cursor("chara_data_t", cur,
+                kanji_spaced=lambda obj: self.names.get(obj.chara_id).kanji_spaced,
+                kana_spaced=lambda obj:  self.names.get(obj.chara_id).kana_spaced,
+                conventional=lambda obj: self.names.get(obj.chara_id).conventional,
+                valist=lambda obj: []):
+                self.char_cache[p.chara_id] = p
+                self.primed_this["prm_char"] += 1
+            self.primed_this["prm_char_calls"] += 1
+            cur.close()
 
     def cache_cards(self, idl):
         normalized_idl = set()
@@ -326,32 +346,34 @@ class DataCache(object):
                 normalized_idl.add(a)
 
         idl = list(normalized_idl)
+        query_preload_chars = "SELECT chara_id, id FROM card_data INNER JOIN chara_data USING (chara_id) WHERE base_card_id > 0 AND evolution_id > 0"
+        self.cache_chars([row[0] for row in self.hnd.execute(query_preload_chars) if row[1] in normalized_idl])
 
-        query_preload_chars = "SELECT DISTINCT chara_id FROM card_data WHERE id IN ({0})".format(",".join("?" * len(idl)))
-        self.cache_chars(list(map(lambda x: x[0], self.hnd.execute(query_preload_chars, idl))))
+        lastlen = 0
+        for page in paginate_id_list(idl):
+            if lastlen != len(page):
+                query = "SELECT * FROM card_data WHERE series_id IN ({0})".format(",".join("?" * len(page)))
+            cur = self.hnd.execute(query, page)
 
-        query = "SELECT * FROM card_data WHERE series_id IN ({0})".format(",".join("?" * len(idl)))
-        cur = self.hnd.execute(query, idl)
+            selected = self.prime_from_cursor("card_data_t", cur,
+                chara=lambda obj: self.char_cache.get(obj.chara_id),
+                has_spread=lambda obj: obj.rarity > 4,
+                has_sign=lambda obj: obj.rarity == 7,
+                name_only=lambda obj: re.match(NAME_ONLY_REGEX, obj.name).group(1),
+                title=lambda obj: re.match(TITLE_ONLY_REGEX, obj.name).group(1) if obj.title_flag else None,
+                skill=lambda obj: self._skills.get(obj.skill_id),
+                lead_skill=lambda obj: self._lead_skills.get(obj.leader_skill_id),
+                rarity_dep=lambda obj: self.rarity_dep.get(obj.rarity),
+                overall_min=lambda obj: obj.vocal_min + obj.dance_min + obj.visual_min,
+                overall_max=lambda obj: obj.vocal_max + obj.dance_max + obj.visual_max,
+                overall_bonus=lambda obj: obj.bonus_vocal + obj.bonus_dance + obj.bonus_visual,
+                valist=lambda obj: [],
+                best_stat=lambda obj: determine_best_stat(obj.vocal_max, obj.visual_max, obj.dance_max))
 
-        selected = self.prime_from_cursor("card_data_t", cur,
-            chara=lambda obj: self.char_cache.get(obj.chara_id),
-            has_spread=lambda obj: obj.rarity > 4,
-            has_sign=lambda obj: obj.rarity == 7,
-            name_only=lambda obj: re.match(NAME_ONLY_REGEX, obj.name).group(1),
-            title=lambda obj: re.match(TITLE_ONLY_REGEX, obj.name).group(1) if obj.title_flag else None,
-            skill=lambda obj: self._skills.get(obj.skill_id),
-            lead_skill=lambda obj: self._lead_skills.get(obj.leader_skill_id),
-            rarity_dep=lambda obj: self.rarity_dep.get(obj.rarity),
-            overall_min=lambda obj: obj.vocal_min + obj.dance_min + obj.visual_min,
-            overall_max=lambda obj: obj.vocal_max + obj.dance_max + obj.visual_max,
-            overall_bonus=lambda obj: obj.bonus_vocal + obj.bonus_dance + obj.bonus_visual,
-            valist=lambda obj: [],
-            best_stat=lambda obj: determine_best_stat(obj.vocal_max, obj.visual_max, obj.dance_max))
-
-        for p in selected:
-            self.card_cache[p.id] = p
-            self.primed_this["prm_card"] += 1
-        self.primed_this["prm_card_calls"] += 1
+            for p in selected:
+                self.card_cache[p.id] = p
+                self.primed_this["prm_card"] += 1
+            self.primed_this["prm_card_calls"] += 1
 
     def card(self, id):
         if id not in self.card_cache:
@@ -360,21 +382,10 @@ class DataCache(object):
         return self.card_cache.get(id)
 
     def cards(self, ids):
-        ret = []
-        need = []
-
-        for id in ids:
-            ret.append(self.card_cache.get(id, id))
-            if isinstance(ret[-1], int):
-                need.append(id)
-
-        self.cache_cards(need)
-
-        for idx in range(len(ret)):
-            if isinstance(ret[idx], int):
-                ret[idx] = self.card_cache.get(ret[idx])
-
-        return ret
+        needed = [c for c in ids if c not in self.card_cache]
+        if needed:
+            self.cache_cards(needed)
+        return [self.card_cache.get(c) for c in ids]
 
     def cards_belonging_to_char(self, id):
         return self.all_chara_id_to_cards().get(id, [])
@@ -397,21 +408,10 @@ class DataCache(object):
         return self.char_cache.get(id)
 
     def charas(self, ids):
-        ret = []
-        need = []
-
-        for id in ids:
-            ret.append(self.char_cache.get(id, id))
-            if isinstance(ret[-1], int):
-                need.append(id)
-
-        self.cache_chars(need)
-
-        for idx in range(len(ret)):
-            if isinstance(ret[idx], int):
-                ret[idx] = self.char_cache.get(ret[idx])
-
-        return ret
+        needed = [c for c in ids if c not in self.char_cache]
+        if needed:
+            self.cache_chars(needed)
+        return [self.char_cache.get(c) for c in ids]
 
     def chain(self, id):
         series_id = self.chain_id.get(id)
@@ -630,7 +630,7 @@ data = None
 
 def init():
     global data
-    available_mdbs = sorted(list(filter(lambda x: x.endswith(".mdb"), os.listdir(transient_data_path()))), reverse=1)
+    available_mdbs = sorted((x for x in os.listdir(transient_data_path()) if x.endswith(".mdb")), reverse=1)
 
     try:
         explicit_vers = int(sys.argv[1])
