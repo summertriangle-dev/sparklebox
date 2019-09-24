@@ -138,7 +138,7 @@ async def versioncheck_bare():
 
 async def versioncheck():
     versioncheck_host = os.environ.get("VERSIONCHECK_PROXY")
-    if versioncheck_host is not None:
+    if versioncheck_host:
         path = "/api/v1/versioncheck"
         req = httpclient.HTTPRequest(versioncheck_host + path, method="GET")
         try:

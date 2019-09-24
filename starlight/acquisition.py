@@ -6,13 +6,7 @@ from time import time
 from email.utils import mktime_tz, parsedate_tz
 from collections import namedtuple
 from tornado import httpclient
-
-try:
-    lz4_decompress = lz4.loads
-    print("Warning: You're using an outdated LZ4 library. Please update it with pip.")
-except AttributeError:
-    import lz4.block
-    lz4_decompress = lz4.block.decompress
+from lz4.block import decompress as lz4_decompress
 
 DBMANIFEST = "https://asset-starlight-stage.akamaized.net/dl/{0}/manifests"
 ASSETBBASEURL = "https://asset-starlight-stage.akamaized.net/dl/resources/AssetBundles"
