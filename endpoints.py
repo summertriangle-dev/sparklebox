@@ -384,7 +384,7 @@ class MotifInternalTable(MiniTable):
             self.set_status(404)
             self.write("This table doesn't currently exist.")
             return
-        
+
         css_class = self.get_argument("appeal", "vocal")
         if css_class not in {"vocal", "visual", "dance"}:
             css_class = "vocal"

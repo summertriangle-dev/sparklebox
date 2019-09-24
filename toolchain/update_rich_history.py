@@ -205,6 +205,26 @@ def log_events(have_logged, seen, local, remote):
         #     ))
         s.commit()
 
+def update_add_set(s, gacha, add_set):
+    for flag, key in enumerate(("other", "limited")):
+        for c in add_set.get(key, []):
+            row = s.query(models.GachaLookupEntry).filter(
+                models.GachaLookupEntry.card_id == c
+                and models.GachaLookupEntry.is_limited == flag).all()
+            if row:
+                row[0].last_gacha_id = gacha.id
+                row[0].last_available = starlight.JST(gacha.end_date).timestamp()
+                s.add(row[0])
+            else:
+                s.add(models.GachaLookupEntry(
+                    card_id=c,
+                    first_gacha_id=gacha.id,
+                    last_gacha_id=gacha.id,
+                    first_available=starlight.JST(gacha.start_date).timestamp(),
+                    last_available=starlight.JST(gacha.end_date).timestamp(),
+                    is_limited=flag
+                ))
+
 def log_gachas(have_logged, seen, seen_in_gacha, local, remote):
     # code sucks
     # TODO clean up and refactor everything after this line
@@ -273,6 +293,7 @@ def log_gachas(have_logged, seen, seen_in_gacha, local, remote):
 
     with remote as s:
         for gid in new_gachas:
+            update_add_set(s, gachas[gid], add_sets[gid])
             s.add(models.HistoryEventEntry(
                 descriptor=gid | (models.HISTORY_TYPE_GACHA << 28),
                 extra_type_info=is_limited.get(gid, 0),

@@ -293,7 +293,6 @@ class DataCache(object):
         keys = list(kwargs.keys())
 
         if not the_raw_type:
-            print("trace prime_from_cursor needs to create a class")
             fields = [x[0] for x in cursor.description]
             raw_field_len = len(fields)
             the_raw_type = namedtuple("_" + typename, fields)
@@ -322,7 +321,6 @@ class DataCache(object):
     def cache_chars(self, idl):
         lastlen = 0
         for ids in paginate_id_list(list(set(idl))):
-            print(ids)
             if lastlen != len(ids):
                 query = "SELECT * FROM chara_data WHERE base_card_id != 0 AND chara_id IN ({0})".format(",".join("?" * len(ids)))
                 lastlen = len(ids)
@@ -392,7 +390,6 @@ class DataCache(object):
 
     @lru_cache(1)
     def all_chara_id_to_cards(self):
-        print("all_chara_id_to_cards")
         ret = defaultdict(lambda: [])
         idl = self.hnd.execute("SELECT card_data.chara_id, card_data.id FROM card_data "
             "INNER JOIN chara_data USING (chara_id) WHERE evolution_id != 0 AND base_card_id != 0 "

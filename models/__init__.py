@@ -241,11 +241,7 @@ class TranslationSQL(object):
             ga[k] # force the empty list to be created and cached
 
         with self as s:
-            ents = s.query(GachaPresenceEntry).filter(GachaPresenceEntry.card_id.in_(cards)).all()
-            limflags = s.query(GachaRewardEntry).options(load_only("gacha_id", "reward_id")) \
-                .filter(GachaRewardEntry.reward_id.in_(cards), GachaRewardEntry.limited_flag == 1).all()
-
-        limflags = set((x.gacha_id, x.reward_id) for x in limflags)
+            ents = s.query(GachaLookupEntry).filter(GachaLookupEntry.card_id.in_(cards)).all()
 
         def getgacha(gid):
             if gid in gacha_map:
@@ -254,21 +250,35 @@ class TranslationSQL(object):
                 return unknown_gacha_t("??? (unknown gacha ID: {0})".format(gid))
 
         for e in ents:
-            if e.gacha_id_first == e.gacha_id_last or getgacha(e.gacha_id_first).name == getgacha(e.gacha_id_last).name:
-                name = getgacha(e.gacha_id_first).name
-            else:
-                name = None
+            recent = getgacha(e.last_gacha_id)
+            name = recent.name
 
             # FIXME do this better
             if name == "プラチナオーディションガシャ":
                 name = None
 
-            ga[e.card_id].append(Availability(Availability._TYPE_GACHA, name,
-                utc.localize(datetime.utcfromtimestamp(e.avail_start)), utc.localize(datetime.utcfromtimestamp(e.avail_end)), [],
-                (e.gacha_id_first, e.card_id) in limflags))
+            # We now display the last gacha the card was featured in, according
+            # to history. This means that we may show a past date, even though the card itself
+            # is still green.
+            ga[e.card_id].append(Availability(
+                Availability._TYPE_GACHA,
+                name,
+                recent.start_date,
+                recent.end_date, [],
+                e.is_limited))
 
-        [v.sort(key=lambda x: x.start) for v in ga.values()]
-        [combine_availability(v) for v in ga.values()]
+            # For limited cards, display the most recent and the first one it appeared in.
+            if e.first_gacha_id != e.last_gacha_id and e.is_limited:
+                first = getgacha(e.first_gacha_id)
+                name_first = first.name
+                if name_first == "プラチナオーディションガシャ":
+                    name_first = None
+                ga[e.card_id].append(Availability(
+                    Availability._TYPE_GACHA,
+                    name_first,
+                    first.start_date,
+                    first.end_date, [],
+                    e.is_limited))
         return ga
 
     def get_history(self, nent):
@@ -322,41 +332,6 @@ class TranslationSQL(object):
                 buckets[ent.event_id].append(ent.card_id)
 
         return [buckets[eid.id] for eid in eids]
-
-    def sync_event_lookup_table(self):
-        with self as s:
-            s.query(EventLookupEntry).delete()
-            s.commit()
-
-            rows = s.query(HistoryEventEntry).all()
-
-            for h_ent in rows:
-                print(h_ent)
-                if h_ent.type() != HISTORY_TYPE_EVENT:
-                    continue
-                seen = set()
-
-                l = h_ent.category_card_list("progression")
-                for cid in l:
-                    s.merge(EventLookupEntry(card_id=cid, event_id=h_ent.referred_id(), acquisition_type=1))
-                seen.update(l)
-
-                l = h_ent.category_card_list("ranking")
-                for cid in l:
-                    s.merge(EventLookupEntry(card_id=cid, event_id=h_ent.referred_id(), acquisition_type=2))
-                seen.update(l)
-
-                l = h_ent.category_card_list("gacha")
-                for cid in l:
-                    s.merge(EventLookupEntry(card_id=cid, event_id=h_ent.referred_id(), acquisition_type=3))
-                seen.update(l)
-
-                print(seen)
-
-                for any_card in h_ent.card_list():
-                    if any_card not in seen:
-                        s.merge(EventLookupEntry(card_id=any_card, event_id=h_ent.referred_id(), acquisition_type=0))
-            s.commit()
 
 class TranslationEngine(TranslationSQL):
     def __init__(self, data_source, override_url=None):

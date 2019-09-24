@@ -18,8 +18,10 @@
 
     {% elif presence.type == presence._TYPE_GACHA %}
 
-    <li class="avlistentry_regular {{ "ga_available" if presence.start <= now < presence.end else "ga_unavailable" }}">
-      <strong class="{{ "ga_available" if presence.start <= now < presence.end else "ga_unavailable" }}">
+    <li class="avlistentry_regular
+        {{ "ga_available" if presence.start <= now < presence.end or not presence.limited else "ga_unavailable" }}">
+      <strong class="
+          {{ "ga_available" if presence.start <= now < presence.end or not presence.limited else "ga_unavailable" }}">
         {% if presence.name %}
         {% raw tlable(presence.name) %}
         {% else %}

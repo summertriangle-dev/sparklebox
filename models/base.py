@@ -65,7 +65,17 @@ class EventLookupEntry(Base):
 
     card_id = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
     event_id = Column(Integer, primary_key=True, nullable=False)
-    acquisition_type = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
+    acquisition_type = Column(Integer, primary_key=True, nullable=False)
+
+class GachaLookupEntry(Base):
+    __tablename__ = TABLE_PREFIX + "_gacha_lookup"
+
+    card_id = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
+    first_gacha_id = Column(Integer, nullable=False)
+    last_gacha_id = Column(Integer, nullable=False)
+    first_available = Column(Integer)
+    last_available = Column(Integer)
+    is_limited = Column(Integer, primary_key=True, nullable=False)
 
 class HistoryEventEntry(Base):
     __tablename__ = TABLE_PREFIX + "_history_ex"
