@@ -18,6 +18,8 @@
 import base64, msgpack, hashlib, random, time, os
 from tornado import httpclient
 import binascii, pyaes
+import json
+import traceback
 
 # laziness
 def VIEWER_ID_KEY():
@@ -71,7 +73,7 @@ class ApiClient(object):
     def unlolfuscate(self, s):
         return "".join(chr(ord(c) - 10) for c in s[6::4][:int(s[:4], 16)])
 
-    def call(self, path, args, done):
+    async def call(self, path, args):
         vid_iv = b"1111111111111111"
         args["viewer_id"] = vid_iv + base64.b64encode(
             encrypt_cbc(bytes(self.viewer_id, "ascii"),
@@ -104,25 +106,27 @@ class ApiClient(object):
         }
 
         req = httpclient.HTTPRequest(self.BASE + path, method="POST", headers=headers, body=body)
-        httpclient.AsyncHTTPClient().fetch(req, self.wrap_callback(done, msg_iv))
+        try:
+            response = await httpclient.AsyncHTTPClient().fetch(req)
+        except httpclient.HTTPError as e:
+            print("Got HTTP error while talking to API:", e.code)
+            return (response, None)
+        except Exception as e:
+            print("Unexpected error: ", e)
+            traceback.print_exc()
+            return (response, None)
 
-    def wrap_callback(self, done, iv):
-        def callback(response):
-            if response.error:
-                done(response, None)
-                return
+        reply = base64.b64decode(response.buffer.read())
+        plain = decrypt_cbc(reply[:-32], msg_iv, reply[-32:]).split(b"\0")[0]
+        msg = msgpack.unpackb(base64.b64decode(plain))
+        try:
+            self.sid = msg["data_headers"]["sid"]
+        except KeyError:
+            pass
 
-            reply = base64.b64decode(response.buffer.read())
-            plain = decrypt_cbc(reply[:-32], iv, reply[-32:]).split(b"\0")[0]
-            msg = msgpack.unpackb(base64.b64decode(plain))
-            try:
-                self.sid = msg["data_headers"]["sid"]
-            except:
-                pass
-            done(response, msg)
-        return callback
+        return (response, msg)
 
-def versioncheck(callback):
+async def versioncheck_bare():
     client = ApiClient.shared()
     args = {
         "campaign_data": "",
@@ -130,12 +134,36 @@ def versioncheck(callback):
         "campaign_sign": hashlib.md5(b"All your APIs are belong to us").hexdigest(),
         "app_type": 0,
     }
-    client.call("/load/check", args, callback)
+    return await client.call("/load/check", args)
 
-def gacha_rates(gacha_id, callback):
+async def versioncheck():
+    versioncheck_host = os.environ.get("VERSIONCHECK_PROXY")
+    if versioncheck_host is not None:
+        path = "/api/v1/versioncheck"
+        req = httpclient.HTTPRequest(versioncheck_host + path, method="GET")
+        try:
+            resp = await httpclient.AsyncHTTPClient().fetch(req)
+            reply = json.loads(resp.body.decode("utf8"))
+            if "version" in reply:
+                return (resp, {b"data_headers": {
+                    b"required_res_ver": str(reply["version"]).encode("ascii")
+                }})
+            else:
+                return await versioncheck_bare()
+        except httpclient.HTTPError as e:
+            print("Got HTTP error while talking to versioncheck proxy:", e.code)
+            return await versioncheck_bare()
+        except Exception as e:
+            print("Unexpected error: ", e)
+            traceback.print_exc()
+            return await versioncheck_bare()
+    else:
+        return await versioncheck_bare()
+
+async def gacha_rates(gacha_id):
     client = ApiClient.shared()
     args = {
         "gacha_id": gacha_id,
         "timezone": "-07:00:00",
     }
-    client.call("/gacha/get_rate", args, callback)
+    return await client.call("/gacha/get_rate", args)

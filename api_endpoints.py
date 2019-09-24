@@ -29,8 +29,8 @@ class CORSBlessMixin(object):
 class TranslateReadAPI(CORSBlessMixin, tornado.web.RequestHandler):
     """ Queries database for cs translation entries """
 
-    @tornado.web.asynchronous
-    def post(self):
+    # @tornado.web.asynchronous
+    async def post(self):
         self.set_cors_policy()
 
         try:

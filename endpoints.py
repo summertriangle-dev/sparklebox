@@ -1,7 +1,6 @@
 import tornado.web
 import tornado.template
 import tornado.escape
-import tornado.ioloop
 from dispatch import *
 import os
 import json
@@ -18,12 +17,10 @@ import webutil
 
 @route(r"/([0-9]+-[0-9]+-[0-9]+)?")
 class Home(HandlerSyncedWithMaster):
-    @tornado.web.asynchronous
-    def head(self, pretend_date):
+    async def head(self, pretend_date):
         return self.get(pretend_date)
 
-    @tornado.web.asynchronous
-    def get(self, pretend_date):
+    async def get(self, pretend_date):
         actually_now = pytz.utc.localize(datetime.utcnow())
 
         if pretend_date:
@@ -34,56 +31,42 @@ class Home(HandlerSyncedWithMaster):
         if now.day == 29 and now.month == 2:
             now += timedelta(days=1)
 
-        self.events = starlight.data.events(now)
-        self.event_rewards = self.settings["tle"].lookup_event_rewards(self.events)
+        events = starlight.data.events(now)
+        event_rewards = self.settings["tle"].lookup_event_rewards(events)
 
-        self.gachas = starlight.data.gachas(now)
-        self.gacha_limited = starlight.data.limited_availability_cards(self.gachas)
+        gachas = starlight.data.gachas(now)
+        gacha_limited = starlight.data.limited_availability_cards(gachas)
 
         # Show only cu/co/pa chara birthdays. Chihiro is a minefield and causes
         # problems
-        self.birthdays = list(filter(lambda char: 0 < char.type < 4,
-                                     starlight.data.potential_birthdays(now)))
+        birthdays = list(filter(lambda char: 0 < char.type < 4,
+                         starlight.data.potential_birthdays(now)))
 
-        self.recent_history = self.settings["tle"].get_history(10)
+        recent_history = self.settings["tle"].get_history(10)
 
         # cache priming has a high overhead so prime all icons at once
         preprime_set = set()
-        for h in self.recent_history:
+        for h in recent_history:
             preprime_set.update(h.card_list())
         starlight.data.cards(preprime_set)
 
-        self.rates = {}
-        self.complete = 0
-        for gacha in self.gachas:
+        rates = {}
+        for gacha in gachas:
             if (now >= gacha.start_date) and (now <= gacha.end_date):
-                starlight.data.live_gacha_rates(gacha, self.receive_live_gacha_rate)
-            else:
-                self.complete += 1
+                rate = await starlight.data.live_gacha_rates(gacha)
+                if not rate:
+                    continue
 
-        # case where we don't make any calls to live_gacha_rates
-        if self.complete == len(self.gachas):
-            # we need to return to the ioloop or else a bogus exception gets raised
-            tornado.ioloop.IOLoop.current().add_callback(self.complete_for_real)
+                try:
+                    rates[rate["gacha"]] = rate["rates"]
+                except KeyError:
+                    continue
 
-    def receive_live_gacha_rate(self, rate):
-        if rate:
-            try:
-                self.rates[rate["gacha"]] = rate["rates"]
-            finally:
-                self.complete += 1
-        else:
-            self.complete += 1
-
-        if self.complete == len(self.gachas):
-            self.complete_for_real()
-
-    def complete_for_real(self):
-        self.render("main.html", history=self.recent_history,
-            events=zip(self.events, self.event_rewards),
-            la_cards=zip(self.gachas, self.gacha_limited),
-            live_gacha_rates=self.rates,
-            birthdays=self.birthdays, **self.settings)
+        self.render("main.html", history=recent_history,
+            events=zip(events, event_rewards),
+            la_cards=zip(gachas, gacha_limited),
+            live_gacha_rates=rates,
+            birthdays=birthdays, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 @route("/suggest")
@@ -291,8 +274,7 @@ class CompareCard(ShortlinkTable):
 
 @route(r"/gacha(?:/([0-9]+))?")
 class GachaTable(ShortlinkTable):
-    @tornado.web.asynchronous
-    def get(self, maybe_gachaid):
+    async def get(self, maybe_gachaid):
         now = pytz.utc.localize(datetime.utcnow())
 
         if maybe_gachaid:
@@ -316,52 +298,50 @@ class GachaTable(ShortlinkTable):
         if selected_gacha is None:
             self.set_status(404)
             self.write("Not found. If there's no gacha happening right now, you'll have to specify an ID.")
-            return self.finish()
+            self.finish()
+            return
 
         is_current = (now >= selected_gacha.start_date) and (now <= selected_gacha.end_date)
 
-        self.availability_list = starlight.data.available_cards(selected_gacha)
-        self.availability_list.sort(key=lambda x: x.sort_order)
+        availability_list = starlight.data.available_cards(selected_gacha)
+        availability_list.sort(key=lambda x: x.sort_order)
 
-        self.selected_gacha = selected_gacha
-        self.card_list = starlight.data.cards(gr.card_id for gr in self.availability_list)
-        limited_flags = {gr.card_id: gr.is_limited for gr in self.availability_list}
+        selected_gacha = selected_gacha
+        card_list = starlight.data.cards(gr.card_id for gr in availability_list)
+        limited_flags = {gr.card_id: gr.is_limited for gr in availability_list}
 
-        self.filters, self.categories = table.select_categories("CASDE")
+        filters, categories = table.select_categories("CASDE")
 
         lim_cat = table.CustomBool()
         lim_cat.header_text = "Lm?"
         lim_cat.values = limited_flags
         lim_cat.yes_text = "Yes"
         lim_cat.no_text = "No"
-        self.categories.insert(0, lim_cat)
+        categories.insert(0, lim_cat)
 
         if is_current:
-            starlight.data.live_gacha_rates(self.selected_gacha, self.complete_with_rel_odds)
+            live_info = await starlight.data.live_gacha_rates(selected_gacha)
         else:
-            self.complete_with_rel_odds(None)
+            live_info = None
 
-    def complete_with_rel_odds(self, live_info):
         if live_info:
             rel_odds = live_info["indiv"].copy()
             rel_odds.update({self.flip_chain(starlight.data.card(gr.card_id)).id:
-                rel_odds.get(gr.card_id, 0.0) for gr in self.availability_list})
+                rel_odds.get(gr.card_id, 0.0) for gr in availability_list})
             odds_cat = table.CustomNumber(rel_odds, header_text="Chance", format="{0:.3f}%")
-            self.categories.insert(1, odds_cat)
+            categories.insert(1, odds_cat)
 
             live_rates = live_info["rates"]
         else:
             live_rates = None
 
-        self.rendertable( (self.filters, self.categories),
-            cards=self.card_list,
+        self.rendertable( (filters, categories),
+            cards=card_list,
             allow_shortlink=0,
-            table_name="Gacha: {0}".format(self.selected_gacha.name),
+            table_name="Gacha: {0}".format(selected_gacha.name),
             template="ext_gacha_table.html",
-            gacha=self.selected_gacha,
+            gacha=selected_gacha,
             rates=live_rates)
-        # self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
-        #     {"gid": maybe_gachaid})
 
 class MiniTable(ShortlinkTable):
     def rendertable(self, dataset, cards, table_name="Custom Table",
@@ -433,6 +413,9 @@ class SpriteRedirect(tornado.web.RequestHandler):
 @route(r"/sprite_go_ex/([0-9]+)")
 class SpriteViewerEX(tornado.web.RequestHandler):
     def get(self, chara_id):
+        # hack for footer text compat
+        self.did_trigger_update = False
+
         achar = starlight.data.chara(int(chara_id))
         if achar:
             svxdata = starlight.data.svx_data(achar.chara_id)
