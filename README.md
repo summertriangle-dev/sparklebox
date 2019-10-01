@@ -4,7 +4,7 @@ https://starlight.kirara.ca/
 
 ##### Getting started
 
-Make a virtualenv (the app is actively used with Python 3.3 and 3.5):
+Make a virtualenv (the app requires **at least Python 3.5**, and is tested with 3.7):
 
     virtualenv --python=python3 .env
     source .env/bin/activate
