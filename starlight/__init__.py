@@ -16,13 +16,12 @@ from . import en
 from . import apiclient
 from . import acquisition
 from . import extra_va_tables
+from . import update
 
 ark_data_path = partial(os.path.join, "_data", "ark")
 private_data_path = partial(os.path.join, "_data", "private")
 story_data_path = partial(os.path.join, "_data", "stories")
 transient_data_path = partial(os.path.join, os.getenv(os.getenv("TRANSIENT_DIR_POINTER", ""), "_data/transient"))
-
-acquisition.CACHE = transient_data_path()
 
 _JST = timezone("Asia/Tokyo")
 def JST(date, to_utc=1):
@@ -508,36 +507,34 @@ class DataCache(object):
             ORDER BY life_value""".format(fortype)
         return [(a[0], a[1] - 100, a[2] - 100) for a in self.hnd.execute(query)]
 
-    def live_gacha_rates(self, gacha_t, done):
-        def update_livecache_for_gacha_rates(http, api_data):
-            if not api_data:
-                done(None)
-
-            try:
-                rate_dict = api_data[b"data"][b"gacha_rate"][b"charge"]
-
-                individual_rate_dict = {}
-                for k in {b"r", b"sr", b"ssr"}:
-                    cl = {X[b"card_id"]: float(X[b"charge_odds"]) for X in api_data[b"data"][b"idol_list"].get(k, [])}
-                    individual_rate_dict.update(cl)
-
-                self.live_cache["gacha"][gacha_t.id] = {
-                    "rates": gacha_rates_t(float(rate_dict[b"r"]), float(rate_dict[b"sr"]), float(rate_dict[b"ssr"])),
-                    "indiv": individual_rate_dict,
-                    "gacha": gacha_t.id,
-                }
-            finally:
-                done(self.live_cache["gacha"].get(gacha_t.id, None))
-
+    async def live_gacha_rates(self, gacha_t):
         cached = self.live_cache["gacha"].get(gacha_t.id)
+        if cached is not None:
+            return cached
 
-        if cached is None:
-            if apiclient.is_usable():
-                apiclient.gacha_rates(gacha_t.id, update_livecache_for_gacha_rates)
-            else:
-                ioloop.IOLoop.current().add_callback(done, None)
+        if apiclient.is_usable():
+            http, api_data = await apiclient.gacha_rates(gacha_t.id)
         else:
-            ioloop.IOLoop.current().add_callback(done, cached)
+            return None
+
+        if not api_data:
+            return None
+
+        try:
+            rate_dict = api_data[b"data"][b"gacha_rate"][b"charge"]
+
+            individual_rate_dict = {}
+            for k in {b"r", b"sr", b"ssr"}:
+                cl = {X[b"card_id"]: float(X[b"charge_odds"]) for X in api_data[b"data"][b"idol_list"].get(k, [])}
+                individual_rate_dict.update(cl)
+
+            self.live_cache["gacha"][gacha_t.id] = {
+                "rates": gacha_rates_t(float(rate_dict[b"r"]), float(rate_dict[b"sr"]), float(rate_dict[b"ssr"])),
+                "indiv": individual_rate_dict,
+                "gacha": gacha_t.id,
+            }
+        finally:
+            return self.live_cache["gacha"].get(gacha_t.id)
 
     def __del__(self):
         self.hnd.close()
@@ -545,85 +542,11 @@ class DataCache(object):
 def display_app_ver():
     return os.environ.get("VC_APP_VER", "(unset)")
 
-def do_preswitch_tasks(new_db_path, old_db_path):
-    print("trace do_preswitch_tasks", new_db_path, old_db_path)
-    subprocess.call(["toolchain/name_finder.py",
-        private_data_path("enamdictu"),
-        new_db_path,
-        transient_data_path("names.csv")])
-
-    if not os.getenv("DISABLE_HISTORY_UPDATES", None):
-        subprocess.call(["toolchain/update_rich_history.py", new_db_path])
-
-    if old_db_path:
-        subprocess.call(["toolchain/make_contiguous_gacha.py", old_db_path, new_db_path])
-
-def update_to_res_ver(res_ver):
-    global is_updating_to_new_truth
-
-    def ok_to_reload(path):
-        global data, last_version_check, is_updating_to_new_truth
-
-        is_updating_to_new_truth = 0
-        last_version_check = time()
-
-        if path:
-            try:
-                do_preswitch_tasks(path, transient_data_path("{0}.mdb".format(data.version)) if data else None)
-                data = DataCache(res_ver)
-                apiclient.ApiClient.shared().res_ver = str(res_ver)
-            except Exception as e:
-                print("do_preswitch_tasks croaked, update aborted.")
-                raise
-
-    is_updating_to_new_truth = 1
-    mdb_path = ark_data_path("{0}.mdb".format(res_ver))
-    if not os.path.exists(mdb_path):
-        acquisition.get_master(res_ver, transient_data_path("{0}.mdb".format(res_ver)), ok_to_reload)
-    else:
-        ok_to_reload(mdb_path)
-
-def check_version_api_recv(response, msg):
-    global is_updating_to_new_truth
-
-    if response.error:
-        is_updating_to_new_truth = 0
-        response.rethrow()
-        return
-
-    res_ver = msg.get(b"data_headers", {}).get(b"required_res_ver", b"-1").decode("utf8")
-    if not data or res_ver != data.version:
-        if res_ver != "-1":
-            update_to_res_ver(res_ver)
-        else:
-            print("no required_res_ver, we're either on latest or app update available")
-            is_updating_to_new_truth = 0
-            # FIXME if data is none, we'll get stuck after this
-    else:
-        is_updating_to_new_truth = 0
-
-def check_version():
-    global is_updating_to_new_truth, last_version_check
-
-    if not is_updating_to_new_truth and (time() - last_version_check >= 3600
-                                         or time() < last_version_check):
-        if not apiclient.is_usable():
-            return
-
-        print("trace check_version")
-        if data:
-            data.vc_this = 1
-
-        is_updating_to_new_truth = 1
-        # usually updates happen on the hour so this keeps our
-        # schedule on the hour too
-        t = time()
-        last_version_check = t - (t % 3600)
-        apiclient.versioncheck(check_version_api_recv)
-
-is_updating_to_new_truth = 0
-last_version_check = 0
 data = None
+
+def hand_over_to_version(res_ver):
+    global data
+    data = DataCache(res_ver)
 
 def init():
     global data
@@ -643,32 +566,16 @@ def init():
         apiclient.ApiClient.shared().res_ver = str(explicit_vers)
     else:
         print("No mdb, let's download one")
-
         loop = ioloop.IOLoop.current()
-        if apiclient.is_usable():
+        if explicit_vers:
+            bound = lambda: update.update_to_res_ver(explicit_vers)
+        elif apiclient.is_usable():
             print("We have enough secrets to do an automatic version check")
-            check_version()
+            bound = lambda: update.async_version_check(lambda: None)
         else:
-            try:
-                vers = int(sys.argv[1])
-            except (ValueError, IndexError):
-                print("No data installed and we can't get it automatically. Crashing.")
-                print("Hint: Try running this again with a version number.")
-                print("    {0} 100xxxxx".format(sys.argv[0]))
-                sys.exit(1)
+            print("No data installed and we can't get it automatically. Crashing.")
+            print("Hint: Try running this again with a version number.")
+            print("    {0} 100xxxxx".format(sys.argv[0]))
+            sys.exit(1)
 
-            update_to_res_ver(vers)
-
-        check = ioloop.PeriodicCallback(are_we_there_yet, 250, loop)
-        check.start()
-        loop.start()
-        check.stop()
-        ioloop.IOLoop.clear_instance()
-        print("Initial download complete. Please restart the server...")
-        sys.exit()
-
-def are_we_there_yet():
-    if not is_updating_to_new_truth:
-        ioloop.IOLoop.instance().stop()
-    else:
-        print("not done yet")
+        loop.run_sync(bound)

@@ -95,7 +95,7 @@ def main():
         "1.9.1 (warning: Truth updates will fail in the future if an accurate VC_APP_VER "
         "is not set. Export VC_APP_VER to suppress this warning.)"))
     print("Ready.")
-    tornado.ioloop.IOLoop.instance().start()
+    tornado.ioloop.IOLoop.current().start()
 
 if __name__ == "__main__":
     main()

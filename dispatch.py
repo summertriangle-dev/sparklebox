@@ -56,7 +56,7 @@ def dev_mode_only(wrapped):
 class HandlerSyncedWithMaster(tornado.web.RequestHandler):
     def prepare(self):
         starlight.data.reset_statistics()
-        starlight.check_version()
+        self.did_trigger_update = starlight.update.check_version()
 
         super().prepare()
 
