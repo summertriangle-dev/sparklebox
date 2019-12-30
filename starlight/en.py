@@ -79,6 +79,7 @@ SKILL_DESCRIPTIONS = {
     35: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=vocal">score bonus determined by the team's Vocal appeal</a>""",
     36: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=dance">score bonus determined by the team's Dance appeal</a>""",
     37: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=visual">score bonus determined by the team's Visual appeal</a>""",
+    38: """that with all three types of idols on the team, to boost the score/combo bonus/health recovery of currently active skills"""
 }
 
 SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31]
@@ -219,6 +220,9 @@ def describe_lead_skill_html(skill):
 
         effect_clause = """Allows active skill effects to stack, but only {0} of the team applies during the live""".format(
                 target_param)
+    elif skill.type == 80:
+        effect_clause = """Raises the XP, money, and friend points that you (and your guest's producer) receive by <span class="let">{0}</span>% when you finish a live""".format(
+            skill.up_value)
     else:
         return """I don't know how to describe this leader skill. This is a bug, please report it. (up_type: {0}, type: {1})""".format(
             skill.up_type, skill.type

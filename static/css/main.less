@@ -133,7 +133,7 @@ footer {
 
 .icon {
   display:inline-block;
-  background-image:url(../img/smarkers.png?v7);
+  background-image:url(../img/smarkers.png?v8);
   .stitches-marker(-48px, -76px, 48px, 48px);
 
   &.icon_event {
@@ -205,9 +205,6 @@ footer {
   &.s_mimic {
     .stitches-marker(-26px, -187px, 24px, 24px);
   }
-  &.s_synergy {
-    .stitches-marker(-76px, -187px, 24px, 24px);
-  }
   &.s_tuning {
     .stitches-marker(-101px, -161px, 24px, 24px);
   }
@@ -223,6 +220,12 @@ footer {
   &.s_motif {
     .stitches-marker(-101px, -212px, 24px, 24px);
   }
+  &.s_symphony {
+    .stitches-marker(-26px, -212px, 24px, 24px);
+  }
+  &.s_synergy {
+    .stitches-marker(-51px, -212px, 24px, 24px);
+  }
   &.s_unknown {
     .stitches-marker(0px, -143px, 24px, 1px);
   }
@@ -236,8 +239,8 @@ footer {
     &.s_heal, &.s_life, &.s_overload, &.m_ba, &.s_allround, &.s_focus,
     &.s_perfelegant, &.s_sb, &.s_cbonus_based_life, &.s_mimic, &.s_synergy,
     &.s_tuning, &.s_psbvarianta, &.s_psbvariantb, &.s_psbvariantc,
-    &.s_motif {
-      background-image:url(../img/smarkers@2x.png?v7);
+    &.s_motif, &.s_symphony {
+      background-image:url(../img/smarkers@2x.png?v8);
       background-size: 202px 288px;
       border-radius:0px;
     }
@@ -929,7 +932,7 @@ span.var {
     left:1px; top:1px;
     display:block;
     width:9px; height:9px;
-    background: url("../img/smarkers.png?v7") -115px -26px no-repeat;
+    background: url("../img/smarkers.png?v8") -115px -26px no-repeat;
 
     content:"";
   }
@@ -955,7 +958,7 @@ span.var {
     left:1px; top:10px;
     display:block;
     width:9px; height:9px;
-    background: url("../img/smarkers.png?v7") -145px -22px no-repeat;
+    background: url("../img/smarkers.png?v8") -145px -22px no-repeat;
 
     content:"";
   }
@@ -999,6 +1002,9 @@ span.var {
   &.ms_synergy::after {
     background-position: -56px -151px;
   }
+  &.ms_symphony::after {
+    background-position: -66px -151px;
+  }
   &.ms_cbonus_based_life::after {
     background-position: -36px -151px;
   }
@@ -1027,7 +1033,7 @@ span.var {
       only screen and (-o-min-device-pixel-ratio: 13/10),
       only screen and (min-resolution: 120dpi) {
     &::after, &::before {
-      background-image:url("../img/smarkers@2x.png?v7")!important;
+      background-image:url("../img/smarkers@2x.png?v8")!important;
       background-size:202px 288px!important;
     }
   }
