@@ -79,7 +79,7 @@ footer {
 /* chara_partial */
 .icon {
   display: inline-block;
-  background-image: url(../img/smarkers.png?v8);
+  background-image: url(../img/smarkers.png?v9);
   background-position: -48px -76px;
   width: 48px;
   height: 48px;
@@ -234,6 +234,11 @@ footer {
   width: 24px;
   height: 24px;
 }
+.icon.s_alternate {
+  background-position: 0px -212px;
+  width: 24px;
+  height: 24px;
+}
 .icon.s_unknown {
   background-position: 0px -143px;
   width: 24px;
@@ -271,8 +276,9 @@ footer {
   .icon.s_psbvariantb,
   .icon.s_psbvariantc,
   .icon.s_motif,
-  .icon.s_symphony {
-    background-image: url(../img/smarkers@2x.png?v8);
+  .icon.s_symphony,
+  .icon.s_alternate {
+    background-image: url(../img/smarkers@2x.png?v9);
     background-size: 202px 288px;
     border-radius: 0px;
   }
@@ -981,7 +987,7 @@ span.var {
   display: block;
   width: 9px;
   height: 9px;
-  background: url("../img/smarkers.png?v8") -115px -26px no-repeat;
+  background: url("../img/smarkers.png?v9") -115px -26px no-repeat;
   content: "";
 }
 .icon.msprites.mm_vi::before {
@@ -1003,7 +1009,7 @@ span.var {
   display: block;
   width: 9px;
   height: 9px;
-  background: url("../img/smarkers.png?v8") -145px -22px no-repeat;
+  background: url("../img/smarkers.png?v9") -145px -22px no-repeat;
   content: "";
 }
 .icon.msprites.ms_pl::after {
@@ -1072,10 +1078,13 @@ span.var {
 .icon.msprites.ms_motif::after {
   background-position: -94px 0;
 }
+.icon.msprites.ms_alternate::after {
+  background-position: -76px -151px;
+}
 @media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 13/10), only screen and (min-resolution: 120dpi) {
   .icon.msprites::after,
   .icon.msprites::before {
-    background-image: url("../img/smarkers@2x.png?v8") !important;
+    background-image: url("../img/smarkers@2x.png?v9") !important;
     background-size: 202px 288px!important;
   }
 }

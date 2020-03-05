@@ -81,6 +81,7 @@ skill_type = enum([
     37, "Visual Motif",
 
     38, "Tricolor Symphony",
+    39, "Alternate",
 ])
 
 skill_probability = enum([
@@ -199,7 +200,8 @@ skill_class = enum([
     36, "s_motif",
     37, "s_motif",
 
-    38, "s_symphony"
+    38, "s_symphony",
+    39, "s_alternate",
 ])
 
 stat_dot = enum([

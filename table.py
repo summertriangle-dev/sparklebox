@@ -44,7 +44,9 @@ skill_type_row_2 = filter_t("Skill Type", (
     option_t("Encore",       "s_mimic"),
     option_t("T. Synergy",   "s_synergy"),
     option_t("Tuning",       "s_tuning"),
-    option_t("Motif",        "s_motif")),
+    option_t("Motif",        "s_motif"),
+    option_t("Symph.",       "s_symphony"),
+    option_t("Alternate",    "s_alternate")),
 lambda card: enums.skill_class(card.skill.skill_type) if card.skill else None)
 
 high_stat = filter_t("High stat", (

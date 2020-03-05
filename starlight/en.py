@@ -79,11 +79,20 @@ SKILL_DESCRIPTIONS = {
     35: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=vocal">score bonus determined by the team's Vocal appeal</a>""",
     36: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=dance">score bonus determined by the team's Dance appeal</a>""",
     37: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=visual">score bonus determined by the team's Visual appeal</a>""",
-    38: """that with all three types of idols on the team, to boost the score/combo bonus/health recovery of currently active skills"""
+    38: """that with all three types of idols on the team, to boost the score/combo bonus/health recovery of currently active skills""",
+    39: """to reduce combo bonus by <span class="let">{0}</span>%, but also apply the highest score bonus gained so far with a boost of <span class="let">{2}</span>%""",
 }
 
-SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31]
+SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 39]
 SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL2 = [21, 22, 23, 26, 27, 28, 29, 30]
+
+# Whether the skill's description uses the value in a negative context
+# (e.g. ...reduces by x%...)
+SKILL_TYPES_WITH_NEGATIVE_EFF_VAL1 = [39]
+SKILL_TYPES_WITH_NEGATIVE_EFF_VAL2 = []
+
+SKILL_TYPES_WITH_THOUSANDTHS_EFF_VAL1 = [20]
+SKILL_TYPES_WITH_THOUSANDTHS_EFF_VAL2 = [39]
 
 REMOVE_HTML = re.compile(r"</?(span|a)[^>]*>")
 
@@ -102,12 +111,21 @@ def describe_skill_html(skill):
     # TODO symbols
     if skill.skill_type in SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1:
         effect_val -= 100
-    elif skill.skill_type in [20]:
-        effect_val = (effect_val//10) - 100
+    elif skill.skill_type in SKILL_TYPES_WITH_THOUSANDTHS_EFF_VAL1:
+        effect_val = (effect_val // 10) - 100
+
+    if skill.skill_type in SKILL_TYPES_WITH_NEGATIVE_EFF_VAL1:
+        effect_val = -effect_val
 
     value_2 = skill.value_2
     if skill.skill_type in SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL2:
         value_2 -= 100
+    elif skill.skill_type in SKILL_TYPES_WITH_THOUSANDTHS_EFF_VAL2:
+        value_2 = (value_2 // 10) - 100
+
+    if skill.skill_type in SKILL_TYPES_WITH_NEGATIVE_EFF_VAL2:
+        value_2 = -value_2
+
     value_3 = skill.value_3
 
     effect_clause = SKILL_DESCRIPTIONS.get(
