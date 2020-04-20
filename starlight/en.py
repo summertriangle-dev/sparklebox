@@ -55,7 +55,7 @@ SKILL_DESCRIPTIONS = {
     11: """that your combo will not be broken""", #provisional
     12: """that you will not lose health""",
     13: """that all notes will restore <span class="let">{0}</span> health""", #provisional
-    14: """that <span class="let">{1}</span> life will be consumed, then: Perfect notes receive a <span class="let">{0}</span>% score bonus, and Nice/Bad notes will not break combo""",
+    14: """that <span class="let">{1}</span> life will be consumed, then: Perfect/Great notes receive a <span class="let">{0}</span>% score bonus, and Nice/Bad notes will not break combo""",
     15: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, but become harder to hit""", #provisional
     16: """to activate the previous skill again""",
     17: """that Perfect notes will restore <span class="let">{0}</span> health""",
@@ -245,7 +245,7 @@ def describe_lead_skill_html(skill):
         return """I don't know how to describe this leader skill. This is a bug, please report it. (up_type: {0}, type: {1})""".format(
             skill.up_type, skill.type
         )
-    
+
     predicate_clause = build_lead_skill_predicate(skill)
     if predicate_clause:
         built = " ".join((predicate_clause, effect_clause))
