@@ -54,38 +54,44 @@ function load_translations(trans, cb) {
 
 function submit_tl_string(node, text) {
     if (!gTLInjectEnabled) {
-        alert("Please enable translations using the button in the bottom left corner before you submit.")
+        tlinject_text_alert("Please enable translations using the button in the bottom left corner before you submit.")
         return;
     }
 
-    var sub = prompt("What is the English translation of '" + text + "'?\n\n" +
-        PROMPT_EXTRA_TEXT);
-
-    if (sub === null) return;
-
-    sub = sub.trim()
-    if (sub == "") return;
-
-    var xhr = new XMLHttpRequest()
-    xhr.open("POST", "/api/v1/send_tl", true)
-    xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
-    xhr.setRequestHeader("X-Blessing",
-        "This request bears the blessing of an Ascended Constituent of the Summer Triangle, granting it the entitlement of safe passage.")
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
-                var table = {}
-                table[text] = sub;
-                set_strings_by_table(table);
-            } else {
-                var j = JSON.parse(xhr.responseText);
-                if (j.error) {
-                    alert('Failed to submit translation. The server said: "' + j.error + '"');
+    tlinject_prompt(text,
+        function(submitText) {
+            if (submitText) {
+                submitText = submitText.trim()
+                if (submitText == "") {
+                    return;
                 }
             }
-        }
-    }
-    xhr.send(JSON.stringify({key: text, tled: sub, security: node.getAttribute("data-summertriangle-assr")}))
+
+            var request = {
+                key: text, 
+                tled: submitText, 
+                security: node.getAttribute("data-summertriangle-assr")
+            }
+
+            var xhr = new XMLHttpRequest()
+            xhr.open("POST", "/api/v1/send_tl", true)
+            xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        var table = {}
+                        table[text] = submitText? submitText : text;
+                        set_strings_by_table(table);
+                    } else {
+                        var j = JSON.parse(xhr.responseText);
+                        if (j.error) {
+                            tlinject_text_alert('Failed to submit translation. The server said: "' + j.error + '"');
+                        }
+                    }
+                }
+            }
+            xhr.send(JSON.stringify(request));
+        });
 }
 
 function set_strings_by_table(table) {
@@ -94,7 +100,7 @@ function set_strings_by_table(table) {
         var s = table[strings[i].getAttribute("data-original-string")];
         if (s === undefined) continue;
 
-        strings[i].textContent = s == "**" ? strings[i].getAttribute("data-original-string") : s;
+        strings[i].textContent = s;
     }
 }
 
@@ -155,7 +161,104 @@ function tlinject_enable() {
     tlinject_activate()
 }
 
+function tlinject_text_alert(text, done) {
+    var finish = function() {
+        if (done) {
+            done();
+        }
+        exitModal();
+    }
+
+    enterModal(function(win) {
+        var textbox = document.createElement("p");
+        textbox.style.marginTop = 0;
+        textbox.textContent = text;
+        win.appendChild(textbox);
+
+        var bg = document.createElement("div");
+        bg.className = "button_group";
+        win.appendChild(bg);
+
+        var close = document.createElement("button");
+        close.className = "button";
+        close.textContent = "Dismiss";
+        close.addEventListener("click", finish, false);
+        bg.appendChild(close);
+    }, done);
+}
+
+function tlinject_prompt(forKey, done) {
+    var cancel = function(event) {
+        event.preventDefault();
+        exitModal();
+    }
+
+    var submit = function(txt) {
+        if (txt || txt === null) {
+            done(txt);
+        }
+        exitModal();
+    }
+
+    enterModal(function(win) {
+        var beforeText = document.createTextNode("What is the English translation of ");
+        var afterText = document.createTextNode("?");
+        var key = document.createElement("strong");
+        key.textContent = '"' + forKey + '"';
+
+        var explain = document.createElement("p");
+        explain.style.marginTop = 0;
+        explain.appendChild(beforeText);
+        explain.appendChild(key);
+        explain.appendChild(afterText);
+        win.appendChild(explain);
+
+        var form = document.createElement("form");
+        win.appendChild(form);
+
+        var field = document.createElement("input");
+        field.className = "text_field";
+        field.type = "text";
+        field.placeholder = forKey;
+        form.appendChild(field);
+
+        var bg = document.createElement("div");
+        bg.className = "button_group";
+        form.appendChild(bg);
+
+        var subm = document.createElement("input");
+        subm.type = "submit";
+        subm.className = "button";
+        subm.textContent = "Submit";
+
+        var canc = document.createElement("button");
+        canc.className = "button";
+        canc.textContent = "Cancel";
+        canc.addEventListener("click", cancel, false);
+
+        var remo = document.createElement("button");
+        remo.className = "button";
+        remo.textContent = "Remove Translation";
+        remo.addEventListener("click", function() { submit(null) }, false);
+
+        var spac = document.createElement("div");
+        spac.className = "spacer";
+    
+        bg.appendChild(subm);
+        bg.appendChild(canc);
+        bg.appendChild(spac);
+        bg.appendChild(remo);
+
+        form.addEventListener("submit", function(event) { 
+            event.preventDefault(); submit(field.value)
+        }, false);
+
+        requestAnimationFrame(function() {
+            field.focus()
+        });
+    });
+}
+
 function tlinject_about() {
-    var banner = "This site uses crowd-sourced translations. If a phrase highlights in grey when you hover over it, you can click to submit a translation.";
-    alert(banner);
+    tlinject_text_alert("This site uses crowd-sourced translations. If a phrase highlights in grey when you hover over it, you can click to submit a translation.");
 }

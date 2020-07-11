@@ -1078,7 +1078,6 @@ strong.ga_available {
 }
 
 .global_header {
-  background-color: darken(#444, 13%);
   color:darken(white, 20%);
 
   & > span, & > a {
@@ -1285,4 +1284,86 @@ a.fill_cell {
 
 .very-faded {
   color: darken(@main_text, 70%);
+}
+
+/* **************** modals ****************** */
+
+.modal_fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.modal_backdrop {
+  transition: background 100ms linear; 
+  background: fade(@main_bg, 0%);
+  z-index: 999;
+
+  &.on {
+    background: fade(@main_bg, 70%);
+  }
+}
+
+.modal_container {
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  padding: 16px;
+}
+
+.modal_self {
+  margin: 0 auto;
+  max-width: 500px;
+  background-color: #333;
+  pointer-events: all;
+  padding: 16px;
+
+  border-radius: 6px;
+  box-shadow: inset 0px 1px 1px rgba(255, 255, 255, 0.2),
+    0px 8px 6px rgba(0, 0, 0, 0.3);
+
+  transition: all 150ms ease-out;
+
+  &.close {
+    transform: scale(0.7, 0.7);
+    opacity: 0;
+  }
+}
+
+.button, .text_field {
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.text_field {
+  width: 100%;
+  padding-top: 9px;
+  margin-bottom: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.3),
+    inset 0px 1px 1px rgba(0, 0, 0, 0.3);
+  border: 0px solid black;
+}
+
+.button_group {
+  display: flex;
+  flex-direction: row-reverse;
+  margin: 0 -8px;
+  margin-top: 16px;
+
+  .spacer {
+    flex-grow: 100;
+  }
+
+  .button {
+    margin: 0 8px;
+    display: block;
+    background: rgb(78, 108, 241);
+    border: 1px solid lighten(rgb(78, 108, 241), 10%);  
+    color: white;
+  }
 }

@@ -100,24 +100,24 @@ class TranslateWriteAPI(tornado.web.RequestHandler):
             self.set_status(400)
             return
 
-        key = load.get("key", "")
-        s = load.get("tled", "").strip()
+        key = load.get("key")
         assr = load.get("security")
-        #print(key, s, assr)
-        if not (key and s and assr) or webutil.tlable_make_assr(key) != assr:
+
+        if not (key and assr and "tled" in load) or webutil.tlable_make_assr(key) != assr:
             self.set_status(400)
             return
 
-        if s in self.BAD_WORDS:
-            self.set_status(400)
-            return
-
-        # ** resets the string
-        if s == "**":
+        s = load["tled"]
+        if s is not None:
+            s = s.strip().replace("\n", " ")
+            if s in self.BAD_WORDS:
+                self.set_status(400)
+                return
+        else:
             s = key
 
         self.settings["tle"].set_translation(
-            load.get("key"), s, self.request.remote_ip)
+            key, s, self.request.remote_ip)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__,
                                                    {"key": key, "value": s})
 
