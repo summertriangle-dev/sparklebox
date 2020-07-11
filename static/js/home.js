@@ -1,9 +1,17 @@
+var gis_loading_completion_list = false;
+
 function load_completion_list_and_call(func) {
+    if (gis_loading_completion_list) {
+        return;
+    }
+
+    gis_loading_completion_list = true;
     var xhr = new XMLHttpRequest()
     xhr.open("GET", "/suggest", true)
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             window.name_completion_list = JSON.parse(xhr.responseText)
+            gis_loading_completion_list = false
             func()
         }
     }
@@ -11,9 +19,9 @@ function load_completion_list_and_call(func) {
 }
 
 function fuzzyfinder(string, names) {
-    suggestions = []
-    pattern = string.split("").join('.*?')
-    regex = new RegExp(pattern)
+    var suggestions = []
+    var pattern = string.split("").join('.*?')
+    var regex = new RegExp(pattern)
 
     for (var i = 0; i < names.length; i++) {
         var match = regex.exec(names[i])
@@ -45,7 +53,6 @@ function suggest(that, text) {
 
     var found = fuzzyfinder(text, Object.keys(window.name_completion_list))
     document.getElementById("suggestions").innerHTML = ""
-    console.log(found)
 
     for (var i = 0; i < found.length; i++) {
         var n = document.createElement("a");
@@ -136,12 +143,12 @@ function birthday_hider_init() {
     // we're going right, not left
     var jst_minute_offset = -(JST_MINUTES_LEFT_OF_UTC - minutes_left_of_utc);
 
-    console.log("we're " + minutes_left_of_utc + " minutes off UTC");
-    console.log("we need to add " + jst_minute_offset + " min to our time to get to JST");
+    // console.log("we're " + minutes_left_of_utc + " minutes off UTC");
+    // console.log("we need to add " + jst_minute_offset + " min to our time to get to JST");
 
     // this date will have the wrong timezone, but we do not care
     var jsttoday = new Date(today.getTime() + (jst_minute_offset * MINUTES_TO_MILLIS));
-    console.log("it's " + jsttoday + " in Japan");
+    // console.log("it's " + jsttoday + " in Japan");
 
     for (var i = 0; i < els.length; i++) {
         var el = els[i];
