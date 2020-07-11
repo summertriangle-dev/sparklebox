@@ -1245,6 +1245,9 @@ a.fill_cell {
   border-top-color: #4d4d4d;
   border-left-color: #4d4d4d;
 }
+.box.he_new_idols > .header .right {
+  color: #eee;
+}
 .box.he_event {
   background-color: #333333;
   border-color: #3385ff;
@@ -1259,6 +1262,9 @@ a.fill_cell {
 .box.he_event > .header .ext {
   border-top-color: #3385ff;
   border-left-color: #3385ff;
+}
+.box.he_event > .header .right {
+  color: #eee;
 }
 .box.he_gacha {
   background-color: #333333;
@@ -1275,6 +1281,9 @@ a.fill_cell {
   border-top-color: #e5b700;
   border-left-color: #e5b700;
 }
+.box.he_gacha > .header .right {
+  color: #eee;
+}
 .box.he_gacha.he_limited {
   border-color: #ffa9a9;
 }
@@ -1284,6 +1293,9 @@ a.fill_cell {
 .box.he_gacha.he_limited .ext {
   border-top-color: #ffa9a9;
   border-left-color: #ffa9a9;
+}
+.box.he_gacha.he_limited .right {
+  color: #eee;
 }
 .he_divider {
   font-weight: bold;

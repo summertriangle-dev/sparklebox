@@ -1,7 +1,19 @@
+{% import enums %}
+{% from webutil import tlable, icon_ex %}
+{% from starlight import gacha_rates_t %}
 <div class="box history_ev he_gacha {{ "he_limited" if history_entry.gacha_is_limited() else "he_perma" }}">
   <div class="header">
     <span class="item left">Gacha: <strong>{% raw tlable(history_entry.event_name) %}</strong></span>
     <span class="item ext"></span>
+    <span class="item right">
+      {% if countdown %}
+      changes in <span class="counter" data-count-to="{{ history_entry.end_time }}">(JS?)</span>
+      {% end %}
+      {% set rate = rates_src.get(history_entry.referred_id()) %}
+      {% if rate and rate != gacha_rates_t._REGULAR_RATES %}
+      <small>rates: R {{ rate.r }}% / SR {{ rate.sr }}% / SSR {{ rate.ssr }}%</small>
+      {% end %}
+    </span>
   </div>
   <div class="contents" style="">
 
@@ -11,7 +23,7 @@
     <small class="he_divider">Limited</small>
     <div class="iconex_row">
     {% for card in history_entry.category_card_list("limited") %}
-      {% raw webutil.icon_ex(card, request.is_low_bandwidth, classes="he_icx_limited") %}
+      {% raw icon_ex(card, request.is_low_bandwidth, classes="he_icx_limited") %}
     {% end %}
     </div>
     {% end %}
@@ -19,7 +31,7 @@
     {% if history_entry.card_list_has_more_than_one_category() %} <hr class="he_divider_line" /> {% end %}
     <div class="iconex_row">
     {% for card in history_entry.category_card_list("other") %}
-      {% raw webutil.icon_ex(card, request.is_low_bandwidth) %}
+      {% raw icon_ex(card, request.is_low_bandwidth) %}
     {% end %}
     </div>
 
@@ -28,10 +40,14 @@
     <small>
       {% if history_entry.added_cards %}
       <a href="/card/{{ history_entry.card_urlspec() }}">Batch</a>,
+      {% if countdown %}
       <a href="/table/CASDE/{{ history_entry.card_urlspec() }}">Table</a>,
-      {% end %}
       <a href="/gacha/{{ history_entry.referred_id() }}">Full availability list</a>
+      {% else %}
+      <a href="/table/CASDE/{{ history_entry.card_urlspec() }}">Table</a>
+      {% end %}
       -
+      {% end %}
       Gacha available from
       <span class="time_localize" data-ts="{{ history_entry.start_time }}" data-fmt="date">{{ history_entry.start_dt_string() }}</span>
       to

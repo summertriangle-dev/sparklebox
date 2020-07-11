@@ -1,12 +1,19 @@
+{% import enums %}
+{% from webutil import tlable, icon_ex %}
 <div class="box history_ev he_event {{ enums.he_event_class(history_entry.event_type()) }}">
   <div class="header">
     <span class="item left">Event: <strong>{% raw tlable(history_entry.event_name) %}</strong></span>
     <span class="item ext"></span>
+    <span class="item right">
+      {% if countdown %}
+      ends in <span class="counter" data-count-to="{{ history_entry.end_time }}">(JS?)</span>
+      {% end %}
+    </span>
   </div>
   <div class="contents" style="">
     <div class="iconex_row">
     {% for card in history_entry.category_card_list("event") %}
-      {% raw webutil.icon_ex(card, request.is_low_bandwidth) %}
+      {% raw icon_ex(card, request.is_low_bandwidth) %}
     {% end %}
     </div>
 

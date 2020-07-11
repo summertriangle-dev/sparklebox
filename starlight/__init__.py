@@ -507,13 +507,13 @@ class DataCache(object):
             ORDER BY life_value""".format(fortype)
         return [(a[0], a[1] - 100, a[2] - 100) for a in self.hnd.execute(query)]
 
-    async def live_gacha_rates(self, gacha_t):
-        cached = self.live_cache["gacha"].get(gacha_t.id)
+    async def live_gacha_rates(self, gacha_id):
+        cached = self.live_cache["gacha"].get(gacha_id)
         if cached is not None:
             return cached
 
         if apiclient.is_usable():
-            http, api_data = await apiclient.gacha_rates(gacha_t.id)
+            http, api_data = await apiclient.gacha_rates(gacha_id)
         else:
             return None
 
@@ -528,13 +528,13 @@ class DataCache(object):
                 cl = {X[b"card_id"]: float(X[b"charge_odds"]) for X in api_data[b"data"][b"idol_list"].get(k, [])}
                 individual_rate_dict.update(cl)
 
-            self.live_cache["gacha"][gacha_t.id] = {
+            self.live_cache["gacha"][gacha_id] = {
                 "rates": gacha_rates_t(float(rate_dict[b"r"]), float(rate_dict[b"sr"]), float(rate_dict[b"ssr"])),
                 "indiv": individual_rate_dict,
-                "gacha": gacha_t.id,
+                "gacha": gacha_id,
             }
         finally:
-            return self.live_cache["gacha"].get(gacha_t.id)
+            return self.live_cache["gacha"].get(gacha_id)
 
     def __del__(self):
         self.hnd.close()

@@ -16,8 +16,6 @@
   <title>Starlight DB Main</title>
 </head>
 
-{% import random %}
-
 <body>
   {% include header.html %}
 
@@ -40,57 +38,19 @@
   </div>
 
   <div class="container">
-    {% set events_ = list(events) %}
-    {% set la_cards_ = list(la_cards) %}
+    <p>Current events and gachas:</p>
+    {% for history_entry in current_history %}
 
-    {% if any((events_, la_cards_)) %}
-    <div class="box black">
-      {% for event, reward_list in events_ %}
-      <div class="header">
-        <span class="item left">Event: <b>{% raw tlable(event.name) %}</b></span>
-        <span class="item ext"></span>
-        <span class="item right">ends in <span class="counter" data-count-to="{{ event.end_date.timestamp() }}">(JS?)</span></span>
-      </div>
-      <div class="content" style="background:#333;">
-        <div class="iconex_row">
-          <span>You'd better start spending. <br> Event rewards:</span>
-          {% for cid in reward_list %}
-          {% raw webutil.icon_ex(cid, request.is_low_bandwidth) %}
-          {% end %}
-        </div>
-      </div>
-      {% end %}
-      {% for gacha, available in la_cards_ %}
-      <div class="header">
-        {% if available %}
-        <span class="item left">Limited availability!</span>
+    {% if history_entry.type() == 2 %}
+      {% module Template("partials/hist_event.html", history_entry=history_entry, countdown=True) %}
+    {% elif history_entry.type() == 3 %}
+      {% module Template("partials/hist_gacha.html", history_entry=history_entry, rates_src=live_gacha_rates, countdown=True) %}
+    {% elif history_entry.type() == 4 %}
+      {% module Template("partials/hist_new_ns.html", history_entry=history_entry) %}
         {% else %}
-        <span class="item left">Current gacha</span>
-        {% end %}
-        <span class="item ext"></span>
-        <span class="item right">
-          expires in <span class="counter" data-count-to="{{ gacha.end_date.timestamp() }}">(JS?)</span>
-          {% if live_gacha_rates.get(gacha.id) and live_gacha_rates[gacha.id] != gacha.rates._REGULAR_RATES %}
-          <small>rates: R {{ live_gacha_rates[gacha.id].r }}% / SR {{ live_gacha_rates[gacha.id].sr }}% / SSR {{ live_gacha_rates[gacha.id].ssr }}%</small>
-          {% end %}
-        </span>
-      </div>
-      {% if available %}
-      <div class="content" style="background:#333;text-align:left;">
-        <div class="iconex_row">
-          {% for ent in available %}
-          {% raw webutil.icon_ex(ent, request.is_low_bandwidth) %}
-          {% end %}
-        </div>
-        <a href="/gacha/{{ gacha.id }}">(full availability list)</a>
-      </div>
-      {% else %}
-      <div class="content" style="background:#333;text-align:left;">
-        <a href="/gacha/{{ gacha.id }}">(full availability list)</a>
-      </div>
+      {# omitted #}
       {% end %}
-      {% end %}
-    </div>
+
     {% end %}
   </div>
 
@@ -104,11 +64,11 @@
     {% for history_entry in history %}
 
     {% if history_entry.type() == 2 %}
-      {% include partials/hist_event.html %}
+      {% module Template("partials/hist_event.html", history_entry=history_entry, countdown=False) %}
     {% elif history_entry.type() == 3 %}
-      {% include partials/hist_gacha.html %}
+      {% module Template("partials/hist_gacha.html", history_entry=history_entry, rates_src=live_gacha_rates, countdown=False) %}
     {% elif history_entry.type() == 4 %}
-      {% include partials/hist_new_ns.html %}
+      {% module Template("partials/hist_new_ns.html", history_entry=history_entry) %}
     {% else %}
       {# omitted #}
     {% end %}

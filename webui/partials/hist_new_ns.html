@@ -1,3 +1,5 @@
+{% import enums %}
+{% from webutil import tlable, icon_ex %}
 <div class="box history_ev he_new_idols">
   <div class="header">
     <span class="item left">New idols!</span>
@@ -9,7 +11,7 @@
   <div class="contents" style="">
     <div class="iconex_row">
     {% for card in history_entry.category_card_list("new") %}
-      {% raw webutil.icon_ex(card, request.is_low_bandwidth) %}
+      {% raw icon_ex(card, request.is_low_bandwidth) %}
     {% end %}
     </div>
 

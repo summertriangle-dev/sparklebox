@@ -10,6 +10,7 @@ import pytz
 import itertools
 import enums
 import table
+from models import extra
 from collections import defaultdict
 from datetime import datetime, timedelta
 
@@ -31,29 +32,32 @@ class Home(HandlerSyncedWithMaster):
         if now.day == 29 and now.month == 2:
             now += timedelta(days=1)
 
-        events = starlight.data.events(now)
-        event_rewards = self.settings["tle"].lookup_event_rewards(events)
-
-        gachas = starlight.data.gachas(now)
-        gacha_limited = starlight.data.limited_availability_cards(gachas)
-
         # Show only cu/co/pa chara birthdays. Chihiro is a minefield and causes
         # problems
         birthdays = list(filter(lambda char: 0 < char.type < 4,
                          starlight.data.potential_birthdays(now)))
 
         recent_history = self.settings["tle"].get_history(10)
-
+        
         # cache priming has a high overhead so prime all icons at once
         preprime_set = set()
         for h in recent_history:
             preprime_set.update(h.card_list())
         starlight.data.cards(preprime_set)
-
+        
+        # Now split the events into current/past.
+        now_utime = actually_now.timestamp()
+        current_events = [event for event in recent_history 
+            if now_utime >= event.start_time and now_utime < event.end_time]
+        # Always put events first like the old box list.
+        current_events.sort(key=lambda event: -1 if event.type() == extra.HISTORY_TYPE_EVENT else 1)
+    
         rates = {}
-        for gacha in gachas:
-            if (now >= gacha.start_date) and (now <= gacha.end_date):
-                rate = await starlight.data.live_gacha_rates(gacha)
+        for event in current_events:
+            recent_history.remove(event)
+
+            if event.type() == extra.HISTORY_TYPE_GACHA:
+                rate = await starlight.data.live_gacha_rates(event.referred_id())
                 if not rate:
                     continue
 
@@ -63,8 +67,7 @@ class Home(HandlerSyncedWithMaster):
                     continue
 
         self.render("main.html", history=recent_history,
-            events=zip(events, event_rewards),
-            la_cards=zip(gachas, gacha_limited),
+            current_history=current_events,
             live_gacha_rates=rates,
             birthdays=birthdays, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
@@ -303,12 +306,24 @@ class GachaTable(ShortlinkTable):
 
         is_current = (now >= selected_gacha.start_date) and (now <= selected_gacha.end_date)
 
+        if not is_current:
+            self.set_status(404)
+            self.write("Gacha rates are only available for current gachas. Sorry about that.")
+            self.finish()
+            return 
+            
+        live_info = await starlight.data.live_gacha_rates(selected_gacha.id)
+
         availability_list = starlight.data.available_cards(selected_gacha)
         availability_list.sort(key=lambda x: x.sort_order)
 
-        selected_gacha = selected_gacha
-        card_list = starlight.data.cards(gr.card_id for gr in availability_list)
+        want_id_list = [gr.card_id for gr in availability_list]
         limited_flags = {gr.card_id: gr.is_limited for gr in availability_list}
+
+        if live_info:
+            want_id_list.extend(cid for cid in live_info["indiv"] if cid not in limited_flags)
+
+        card_list = starlight.data.cards(want_id_list)
 
         filters, categories = table.select_categories("CASDE")
 
@@ -319,16 +334,8 @@ class GachaTable(ShortlinkTable):
         lim_cat.no_text = "No"
         categories.insert(0, lim_cat)
 
-        if is_current:
-            live_info = await starlight.data.live_gacha_rates(selected_gacha)
-        else:
-            live_info = None
-
         if live_info:
-            rel_odds = live_info["indiv"].copy()
-            rel_odds.update({self.flip_chain(starlight.data.card(gr.card_id)).id:
-                rel_odds.get(gr.card_id, 0.0) for gr in availability_list})
-            odds_cat = table.CustomNumber(rel_odds, header_text="Chance", format="{0:.3f}%")
+            odds_cat = table.CustomNumber(live_info["indiv"], header_text="Chance", format="{0:.3f}%")
             categories.insert(1, odds_cat)
 
             live_rates = live_info["rates"]
