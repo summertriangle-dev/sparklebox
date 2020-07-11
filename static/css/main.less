@@ -1339,14 +1339,41 @@ a.fill_cell {
   font-size: 16px;
 }
 
+@button_text: white;
+@button_primary_bg: #007bff;
+@button_destructive_bg: #dc3545;
+@button_secondary_bg: #6c757d;
+
+@text_field_text: white;
+
+.button {
+  display: block;
+  background: @button_secondary_bg;
+  border: 1px solid lighten(@button_secondary_bg, 10%);  
+  color: @button_text;
+
+  &.destructive {
+    background: @button_destructive_bg;
+    border: 1px solid lighten(@button_destructive_bg, 10%);  
+  }
+
+  &.primary {
+    background: @button_primary_bg;
+    border: 1px solid lighten(@button_primary_bg, 10%);  
+    font-weight: bold;
+  }
+}
+
 .text_field {
   width: 100%;
-  padding-top: 9px;
-  margin-bottom: 1px;
+  padding: 9px 11px;
   background-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.3),
-    inset 0px 1px 1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2),
+    inset 0px 1px 1px rgba(255, 255, 255, 0.2);
   border: 0px solid black;
+  color: @text_field_text;
+  font-family: sans-serif;
+  margin-bottom: 10px;
 }
 
 .button_group {
@@ -1361,9 +1388,5 @@ a.fill_cell {
 
   .button {
     margin: 0 8px;
-    display: block;
-    background: rgb(78, 108, 241);
-    border: 1px solid lighten(rgb(78, 108, 241), 10%);  
-    color: white;
   }
 }

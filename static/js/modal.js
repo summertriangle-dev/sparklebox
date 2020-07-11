@@ -11,7 +11,7 @@ function enterModal(onPresent, onExit) {
                 onExit();
             }
             exitModal();
-        })
+        }, false)
     }
 
     var container = document.createElement("div");

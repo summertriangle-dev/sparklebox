@@ -2,10 +2,8 @@ TL_ENABLED_TEXT = "<a href='javascript:;' onclick='tlinject_revert()'>Disable TL
                   "(<a href='javascript:;' onclick='tlinject_about()'>What's this?</a>)"
 TL_DISABLED_TEXT = "<a href='javascript:;' onclick='tlinject_enable()'>Enable TLs</a> " +
                    "(<a href='javascript:;' onclick='tlinject_about()'>What's this?</a>)"
-PROMPT_EXTRA_TEXT = "* The string you submit may be released as part of a public data dump. " +
-                      "These data dump(s) WILL NOT contain any metadata that can be used to identify you. " +
-                      "If you are not okay with that, click Cancel. \n" +
-                    "* Two asterisks '**' will remove the current translation. You usually don't need to do this."
+PROMPT_EXTRA_TEXT = "Fine print: your submission may be released as part of a data dump in the future. " + 
+                    "It will not include any information that can be used to identify you."
 TL_ENABLE_PREF_KEY = "sl$tlEnable"
 
 gTLInjectEnabled = false;
@@ -222,13 +220,17 @@ function tlinject_prompt(forKey, done) {
         field.placeholder = forKey;
         form.appendChild(field);
 
+        var explainText = document.createElement("small");
+        explainText.textContent = PROMPT_EXTRA_TEXT;
+        form.appendChild(explainText);
+
         var bg = document.createElement("div");
         bg.className = "button_group";
         form.appendChild(bg);
 
         var subm = document.createElement("input");
         subm.type = "submit";
-        subm.className = "button";
+        subm.className = "button primary";
         subm.textContent = "Submit";
 
         var canc = document.createElement("button");
@@ -237,9 +239,9 @@ function tlinject_prompt(forKey, done) {
         canc.addEventListener("click", cancel, false);
 
         var remo = document.createElement("button");
-        remo.className = "button";
+        remo.className = "button destructive";
         remo.textContent = "Remove Translation";
-        remo.addEventListener("click", function() { submit(null) }, false);
+        remo.addEventListener("click", function(e) { e.preventDefault(); submit(null) }, false);
 
         var spac = document.createElement("div");
         spac.className = "spacer";
