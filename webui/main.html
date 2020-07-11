@@ -47,9 +47,9 @@
       {% module Template("partials/hist_gacha.html", history_entry=history_entry, rates_src=live_gacha_rates, countdown=True) %}
     {% elif history_entry.type() == 4 %}
       {% module Template("partials/hist_new_ns.html", history_entry=history_entry) %}
-        {% else %}
+    {% else %}
       {# omitted #}
-      {% end %}
+    {% end %}
 
     {% end %}
   </div>
