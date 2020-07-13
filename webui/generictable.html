@@ -23,7 +23,7 @@
   {% include header.html %}
 
   <div class="container">
-    <div class="stdcon chara_header">
+    <div class="rel chara_header">
       {% block extra_header %}
       {% end %}
 
@@ -72,10 +72,10 @@
           {% end %}
 
           <td class="filter_switch {% if is_displaying_awake_forms %} enabled {% end %}">
-            <a class="fill_cell" href="?plus=YES">{% raw yes_symbol %}</a>
+            <a href="?plus=YES">{% raw yes_symbol %}</a>
           </td>
           <td class="filter_switch {% if not is_displaying_awake_forms %} enabled {% end %}">
-            <a class="fill_cell" href="?plus=NO">{% raw no_symbol %}</a>
+            <a href="?plus=NO">{% raw no_symbol %}</a>
           </td>
         </tr>
         <tr>
