@@ -1,0 +1,522 @@
+/*
+Icon classes can be used entirely standalone. They are named after their original file names.
+
+Example usage in HTML:
+
+`display: block` sprite:
+<div class="icon-home"></div>
+
+To change `display` (e.g. `display: inline-block;`), we suggest using a common CSS class:
+
+// CSS
+.icon {
+  display: inline-block;
+}
+
+// HTML
+<i class="icon icon-home"></i>
+*/
+.sicon.allround {
+  background-image: url(/static/img/sprites.png);
+  background-position: 0px 0px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.alternate {
+  background-image: url(/static/img/sprites.png);
+  background-position: -26px 0px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.balance {
+  background-image: url(/static/img/sprites.png);
+  background-position: 0px -26px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.cboost {
+  background-image: url(/static/img/sprites.png);
+  background-position: -26px -26px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.cguard {
+  background-image: url(/static/img/sprites.png);
+  background-position: -52px 0px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.concentrate {
+  background-image: url(/static/img/sprites.png);
+  background-position: -52px -26px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.dance {
+  background-image: url(/static/img/sprites.png);
+  background-position: 0px -52px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.encore {
+  background-image: url(/static/img/sprites.png);
+  background-position: -26px -52px;
+  width: 24px;
+  height: 24px;
+}
+.Cool .sicon.focus, .Cool_kc .sicon.focus {
+  background-image: url(/static/img/sprites.png);
+  background-position: -52px -52px;
+  width: 24px;
+  height: 24px;
+}
+.Cute .sicon.focus, .Cute_kc .sicon.focus {
+  background-image: url(/static/img/sprites.png);
+  background-position: -78px 0px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.focus_flat {
+  background-image: url(/static/img/sprites.png);
+  background-position: -78px -26px;
+  width: 24px;
+  height: 24px;
+}
+.Passion .sicon.focus, .Passion_kc .sicon.focus {
+  background-image: url(/static/img/sprites.png);
+  background-position: -78px -52px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.heal {
+  background-image: url(/static/img/sprites.png);
+  background-position: 0px -78px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.hguard {
+  background-image: url(/static/img/sprites.png);
+  background-position: -26px -78px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.motif {
+  background-image: url(/static/img/sprites.png);
+  background-position: -52px -78px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.overload {
+  background-image: url(/static/img/sprites.png);
+  background-position: -78px -78px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.plock {
+  background-image: url(/static/img/sprites.png);
+  background-position: -104px 0px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.psb_flick {
+  background-image: url(/static/img/sprites.png);
+  background-position: -104px -26px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.psb_hold {
+  background-image: url(/static/img/sprites.png);
+  background-position: -104px -52px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.psb_slide {
+  background-image: url(/static/img/sprites.png);
+  background-position: -104px -78px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.scoreup {
+  background-image: url(/static/img/sprites.png);
+  background-position: 0px -104px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.skillboost {
+  background-image: url(/static/img/sprites.png);
+  background-position: -26px -104px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.sparkle {
+  background-image: url(/static/img/sprites.png);
+  background-position: -52px -104px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.symphony {
+  background-image: url(/static/img/sprites.png);
+  background-position: -78px -104px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.synergy {
+  background-image: url(/static/img/sprites.png);
+  background-position: -104px -104px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.tuning {
+  background-image: url(/static/img/sprites.png);
+  background-position: -130px 0px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.visual {
+  background-image: url(/static/img/sprites.png);
+  background-position: -130px -26px;
+  width: 24px;
+  height: 24px;
+}
+.sicon.vocal {
+  background-image: url(/static/img/sprites.png);
+  background-position: -130px -52px;
+  width: 24px;
+  height: 24px;
+}
+.msprites.balance_sm:before {
+  background-image: url(/static/img/sprites.png);
+  background-position: -130px -78px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.dance_sm:before {
+  background-image: url(/static/img/sprites.png);
+  background-position: -141px -78px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.visual_sm:before {
+  background-image: url(/static/img/sprites.png);
+  background-position: -130px -89px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.vocal_sm:before {
+  background-image: url(/static/img/sprites.png);
+  background-position: -141px -89px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.allround_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -130px -100px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.alternate_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -141px -100px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.cboost_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -130px -111px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.cguard_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -141px -111px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.concentrate_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: 0px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.encore_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -11px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.focus_flat_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -22px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.focus_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -33px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.heal_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -44px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.hguard_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -55px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.overload_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -66px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.plock_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -77px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.scoreup_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -88px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.skillboost_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -99px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.sparkle_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -110px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.symphony_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -121px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.synergy_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -132px -130px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.tuning_sm:after {
+  background-image: url(/static/img/sprites.png);
+  background-position: -143px -130px;
+  width: 9px;
+  height: 9px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 192dpi) {
+  .sicon.allround {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.alternate {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.balance {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.cboost {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.cguard {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.concentrate {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.dance {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.encore {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .Cool .sicon.focus, .Cool_kc .sicon.focus {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .Cute .sicon.focus, .Cute_kc .sicon.focus {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.focus_flat {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .Passion .sicon.focus, .Passion_kc .sicon.focus {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.heal {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.hguard {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.motif {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.overload {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.plock {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.psb_flick {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.psb_hold {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.psb_slide {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.scoreup {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.skillboost {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.sparkle {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.symphony {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.synergy {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.tuning {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.visual {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .sicon.vocal {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.balance_sm:before {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.dance_sm:before {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.visual_sm:before {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.vocal_sm:before {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.allround_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.alternate_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.cboost_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.cguard_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.concentrate_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.encore_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.focus_flat_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.focus_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.heal_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.hguard_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.overload_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.plock_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.scoreup_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.skillboost_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.sparkle_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.symphony_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.synergy_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+  .msprites.tuning_sm:after {
+    background-image: url(/static/img/sprites@2x.png);
+    background-size: 154px 139px;
+  }
+}

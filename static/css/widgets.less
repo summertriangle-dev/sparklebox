@@ -1,0 +1,189 @@
+// @button_text             : white;
+// @button_primary_bg       : #007bff;
+// @button_destructive_bg   : #dc3545;
+// @button_secondary_bg     : #484e53;
+// @button_standard_rounding: 4px;
+
+// @text_field_text: white;
+
+// @stepper_bg  : green;
+// @stepper_text: white;
+
+/* **************** modals ****************** */
+
+.modal_fixed {
+  position: fixed;
+  top     : 0;
+  left    : 0;
+  right   : 0;
+  bottom  : 0;
+}
+
+.modal_backdrop {
+  transition: background 100ms linear;
+  background: fade(@main_bg, 0%);
+  z-index   : 999;
+
+  &.on {
+    background: fade(@main_bg, 70%);
+  }
+}
+
+.modal_container {
+  z-index       : 1000;
+  display       : flex;
+  align-items   : center;
+  pointer-events: none;
+  padding       : 16px;
+}
+
+.modal_self {
+  margin          : 0 auto;
+  max-width       : 500px;
+  background-color: rgb(54, 55, 63);
+  pointer-events  : all;
+  padding         : 16px;
+
+  border-radius: 6px;
+  box-shadow   : inset 0px 1px 1px rgba(255, 255, 255, 0.2),
+    0px 8px 20px rgba(0, 0, 0, 0.3);
+
+  transition: all 150ms ease-out;
+
+  &.close {
+    transform: scale(0.7, 0.7);
+    opacity  : 0;
+  }
+
+  .text_field {
+    margin-bottom: 8px;
+  }
+}
+
+/*********** controls *************/
+
+.button_bevel {
+  box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.2),
+    0px 0px 0px 1px rgba(0, 0, 0, 0.3);
+}
+
+.button,
+.text_field {
+  padding           : 8px 10px;
+  border-radius     : @button_standard_rounding;
+  font-size         : 16px;
+  -webkit-appearance: none;
+}
+
+.button,
+.image_switch {
+  display   : block;
+  background: @button_secondary_bg;
+  border    : 0px solid black;
+  color     : @button_text;
+  .button_bevel();
+
+  border-radius: @button_standard_rounding;
+
+  &.destructive {
+    background: @button_destructive_bg;
+  }
+
+  &.primary {
+    background : @button_primary_bg;
+    font-weight: bold;
+  }
+
+  text-decoration:none;
+
+  &:visited {
+    color: @main_text;
+  }
+
+  transition: transform 66ms ease-out;
+
+  &:active {
+    transform: scale(0.90, 0.90);
+  }
+}
+
+.image_switch {
+  padding         : 4px 8px;
+  font-size       : 13px;
+  margin          : 0 4px;
+  background-color: fade(@button_secondary_bg, 80%);
+}
+
+.text_field {
+  width           : 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow      : 0px 1px 0px rgba(255, 255, 255, 0.15),
+    inset 0px 1px 5px rgba(0, 0, 0, 0.1);
+  border     : 0px solid black;
+  color      : @text_field_text;
+  font-family: sans-serif;
+}
+
+.button_group {
+  display       : flex;
+  flex-direction: row-reverse;
+  margin        : 0 -8px;
+  margin-top    : 16px;
+
+  .spacer {
+    flex-grow: 100;
+  }
+
+  .button {
+    margin: 0 8px;
+  }
+}
+
+.profile {
+  .button_bevel();
+}
+
+/*********** stepper *************/
+
+.stepper {
+  font-size       : 0;
+  display         : inline-block;
+  line-height     : normal;
+  background-color: @stepper_bg;
+  padding         : 1px;
+  margin          : 0 4px;
+  border-radius   : @button_standard_rounding;
+  .button_bevel();
+
+  input[type="text"] {
+    padding: 0;
+    margin : 0;
+    border : none;
+
+    width      : 50px;
+    line-height: 18px;
+    font-size  : 13px;
+    text-align : center;
+
+    vertical-align: top;
+  }
+
+  button {
+    padding   : 0;
+    margin    : 0;
+    border    : none;
+    background: transparent;
+
+    min-width  : 26px;
+    line-height: 18px;
+    font-size  : 16px;
+    font-weight: bold;
+
+    color     : @stepper_text;
+    transition: transform 66ms ease-out;
+
+    &:active {
+      transform: scale(0.90, 0.90);
+    }
+  }
+}

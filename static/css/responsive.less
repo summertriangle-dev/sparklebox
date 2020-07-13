@@ -1,0 +1,59 @@
+// @compact_max_width: 600px;
+// @large_min_width  : 1280px;
+
+@media screen and (max-width: @compact_max_width) {
+  body {
+    margin: 0;
+  }
+
+  .carcon {
+    -webkit-flex-direction: column;
+    flex-direction        : column;
+
+    .card_left {
+      width: 100%;
+    }
+  }
+
+  .stats.box .icon {
+    display: block;
+    float  : right;
+  }
+
+  .stats_table tbody {
+    display: block;
+  }
+
+  .stats_table tr {
+    display: inline-block;
+  }
+
+  .stats_table td,
+  .stats_table th {
+    display: block;
+    padding: 3px 6px;
+  }
+
+  .stats_table th::before {
+    content  : " ";
+    font-size: 142%;
+  }
+
+  .stats_table th {
+    text-align: left;
+  }
+
+  .spread_view .sign_view {
+    top: 0;
+  }
+
+  .hides_under_mobile {
+    display: none;
+  }
+}
+
+@media screen and (min-width: @large_min_width) {
+  .spread_view {
+    height: 824px !important;
+  }
+}

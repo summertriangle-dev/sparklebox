@@ -1,0 +1,72 @@
+// @alt_cute_colour   : #ff6bec;
+// @alt_passion_colour: #ffc047;
+
+.birthday_banner {
+  position    : relative;
+  width       : 100%;
+  padding-left: 65px;
+  padding-top : 12px;
+  min-height  : 58px;
+
+  &.r_Cool {
+    background-color: @cool_colour;
+
+    a {
+      color: white;
+    }
+  }
+
+  &.r_Cute {
+    background-color: @alt_cute_colour;
+    color           : black;
+
+    a {
+      color: black;
+    }
+  }
+
+  &.r_Passion {
+    background-color: @alt_passion_colour;
+    color           : black;
+
+    a {
+      color: black;
+    }
+  }
+}
+
+.stitches-birthday(@x: 0, @y: 0, @width: 0, @height: 0) {
+  background-position: @x @y;
+  width              : @width;
+  height             : @height;
+}
+
+.ribbon {
+  background-image : url(../img/sribbons.png?v2);
+  background-repeat: no-repeat;
+  display          : block;
+
+  position: absolute;
+  top     : 0;
+  left    : 0;
+
+  &.r_Cool {
+    .stitches-birthday(0, 0, 48px, 48px);
+  }
+
+  &.r_Cute {
+    .stitches-birthday(-48px, 0, 48px, 48px);
+  }
+
+  &.r_Passion {
+    .stitches-birthday(0, -48px, 48px, 48px);
+  }
+
+  @media only screen and (-webkit-min-device-pixel-ratio: 1.3),
+  only screen and (-o-min-device-pixel-ratio: 13/10),
+  only screen and (min-resolution: 120dpi) {
+
+    background-image: url("../img/sribbons@2x.png?v2") !important;
+    background-size : 96px 96px !important;
+  }
+}

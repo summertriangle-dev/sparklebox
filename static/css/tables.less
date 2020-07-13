@@ -1,0 +1,221 @@
+// @table_base_row_bg                : @layer1_bg;
+// @table_second_row_bg              : darken(@layer1_bg, 3%);
+// @table_base_row_text              : @main_text;
+// @table_second_row_text            : @main_text;
+// @table_base_row_border            : darken(@table_base_row_bg, 5%);
+// @table_sorter_active_criteria_text: #fedba4;
+// @table_filter_switch_off_bg       : #777;
+// @table_filter_switch_on_bg        : #44aa55;
+// @table_filter_switch_text         : @layer2_text;
+// @large_table_min_width            : 1024px;
+
+.table {
+  background-color: @table_base_row_bg;
+  color           : @table_base_row_text;
+  font-size       : 16px;
+  border-collapse : collapse;
+
+  height: 100%;
+  width : 100%;
+
+  td {
+    border : 1px solid @table_base_row_border;
+    padding: 3px 6px;
+
+    /* helps with overflow... */
+    border-right-width: 0px !important;
+  }
+
+  tr:nth-child(even) {
+    background-color: @table_second_row_bg;
+    color           : @table_second_row_text;
+  }
+}
+
+.table .icon,
+.table .profile {
+  vertical-align: bottom;
+}
+
+th {
+  font-size     : 70%;
+  text-transform: uppercase;
+  padding       : 3px 6px;
+}
+
+td {
+
+  &.vocal,
+  &.vocal span {
+    background-color: @vocal_colour;
+    color           : lighten(saturate(@vocal_colour, 10%), 40%);
+    border-color    : darken(@vocal_colour, 10%);
+    font-weight     : normal;
+  }
+
+  &.dance,
+  &.dance span {
+    background-color: @dance_colour;
+    color           : lighten(saturate(@dance_colour, 10%), 40%);
+    border-color    : darken(@dance_colour, 10%);
+    font-weight     : normal;
+  }
+
+  &.visual,
+  &.visual span {
+    background-color: @visual_colour;
+    color           : darken(saturate(@visual_colour, 10%), 40%);
+    border-color    : darken(@visual_colour, 10%);
+    font-weight     : normal;
+  }
+
+  &.life,
+  &.life span {
+    background-color: @life_colour;
+    color           : darken(saturate(@life_colour, 10%), 40%);
+    border-color    : darken(@life_colour, 10%);
+    font-weight     : normal;
+  }
+
+  &.max_level,
+  &.max_level span {
+    background-color: @level_colour;
+    color           : darken(saturate(@level_colour, 10%), 40%);
+    font-weight     : normal;
+  }
+
+  &.kizuna,
+  &.kizuna span {
+    background-color: @kizuna_colour;
+    color           : lighten(saturate(@kizuna_colour, 10%), 40%);
+    font-weight     : normal;
+  }
+
+  &.Cute,
+  &.Cute span,
+  &.Cute a {
+    border-color    : darken(@cute_colour, 10%);
+    background-color: @cute_colour;
+    font-weight     : normal;
+    color           : white;
+  }
+
+  &.Cool,
+  &.Cool span,
+  &.Cool a {
+    border-color    : darken(@cool_colour, 10%);
+    background-color: @cool_colour;
+    font-weight     : normal;
+    color           : white;
+  }
+
+  &.Passion,
+  &.Passion span,
+  &.Passion a {
+    border-color    : lighten(@passion_colour, 10%);
+    background-color: @passion_colour;
+    font-weight     : normal;
+    color           : black;
+  }
+}
+
+.Cool_ax {
+  color: darken(@cool_colour, 10%);
+}
+
+.Cute_ax {
+  color: darken(@cute_colour, 10%);
+}
+
+.Passion_ax {
+  color: darken(@passion_colour, 10%);
+}
+
+.vocal_ax {
+  color: darken(@vocal_colour, 10%);
+}
+
+.dance_ax {
+  color: darken(@dance_colour, 10%);
+}
+
+.visual_ax {
+  color: darken(@visual_colour, 10%);
+}
+
+.kizuna_ax {
+  color: darken(@kizuna_colour, 10%);
+}
+
+.max_level_ax {
+  color: darken(@level_colour, 10%);
+}
+
+.life_ax {
+  color: darken(@life_colour, 10%);
+}
+
+.control_row {
+  background-color: @layer2_bg;
+}
+
+.control_table .control_row,
+.control_table {
+  color: @layer2_text;
+}
+
+.control_row th {
+  color         : @layer2_text;
+  text-align    : left;
+  padding       : 3px 6px;
+  text-transform: uppercase;
+  font-size     : 80%;
+}
+
+.sort_key {
+  text-decoration: underline;
+
+  &.in_use {
+    color: @table_sorter_active_criteria_text;
+  }
+
+  &[data-sort-reverse="yes"]::before {
+    content: "▾ ";
+  }
+
+  &[data-sort-reverse="no"]::before {
+    content: "▴ ";
+  }
+}
+
+.toggles_row td {
+  min-width : 30px;
+  text-align: center;
+
+  a {
+    display        : block;
+    width          : 100%;
+    color          : @table_filter_switch_text;
+    text-decoration: none;
+  }
+}
+
+td.filter_switch {
+  background-color: @table_filter_switch_off_bg;
+
+  &.enabled {
+    background-color: @table_filter_switch_on_bg;
+  }
+}
+
+.contains_large_table {
+  .table {
+    min-width: @large_table_min_width;
+  }
+
+  @media screen and (max-width:@large_table_min_width) {
+    overflow-x                : scroll;
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling        : touch;
+  }
+}

@@ -40,11 +40,11 @@ def icon_ex(card_id, is_lowbw=0, collapsible=0, classes=""):
 
         btext = "({0}) {1}".format(enums.rarity(rec.rarity), tlable(rec.title, write=0) if rec.title_flag else "")
         ish = """<div class="profile {4}">
-            <div class="icon icon_{rec.id} msprites m{1} {2}"></div>
+            <div class="icon icon_{rec.id} msprites {1}_sm {2}_sm"></div>
             <div class="profile_text {3}"><b>{0}</b><br>{btext}</div>
         </div>""".format(tornado.escape.xhtml_escape(rec.chara.conventional),
             enums.stat_dot(rec.best_stat),
-            "m" + enums.skill_class(rec.skill.skill_type) if rec.skill else "",
+            enums.skill_class(rec.skill.skill_type) if rec.skill else "none",
             "hides_under_mobile" if collapsible else "",
             classes,
             rec=rec, btext=btext)

@@ -1,0 +1,339 @@
+// @name_tag_height   : 40px;
+// @name_tag_pad      : @name_tag_height / 4;
+// @name_tag_height_sm: 28px;
+// @name_tag_pad_sm   : 6px;
+
+// @box_header_height   : 24px;
+// @box_header_font_size: 16px;
+// @box_header_pad_h    : 8px;
+// @box_header_pad_v    : 5px;
+
+.box_theme(@main_colour, @accent_colour, @text_colour) {
+  border-color: @accent_colour;
+
+  &>.header,
+  .table th,
+  .table_stub {
+    background-color: @main_colour;
+    color           : @text_colour;
+
+    .left {
+      background-color: @accent_colour;
+    }
+
+    .ext {
+      border-top-color : @accent_colour;
+      border-left-color: @accent_colour;
+    }
+  }
+}
+
+.box {
+  margin        : 0 5px 10px;
+  display       : inline-block;
+  border        : 1px solid;
+  vertical-align: top;
+
+  &.col2 {
+    /* don't know why but it works
+     * TODO replace it with something sane */
+    width: ~"calc(50% - 13px)";
+  }
+
+  &.unbordered {
+    .content {
+      padding: 0;
+    }
+
+    margin      :0;
+    border-left :none;
+    border-right:none;
+  }
+
+  &>.header {
+    color     : white;
+    min-height: @box_header_height;
+    font-size : 0;
+
+    .item {
+      display       : inline-block;
+      line-height   : @box_header_height;
+      font-size     : @box_header_font_size;
+      vertical-align: bottom;
+      padding       : 0 @box_header_pad_h / 2;
+    }
+
+    .left {
+      padding-left: @box_header_pad_h;
+    }
+
+    .right::after {
+      /* force all text to layout with ja line height */
+      content      : "あ";
+      color        : transparent;
+      padding-right: @box_header_pad_h;
+    }
+
+    .ext {
+      border-top    : @box_header_height / 2 solid transparent;
+      border-left   : @box_header_height / 4 solid transparent;
+      border-right  : @box_header_height / 4 solid transparent;
+      border-bottom : @box_header_height / 2 solid transparent;
+      vertical-align: bottom;
+      padding       : 0;
+    }
+  }
+
+  &>.content {
+    padding         : @box_header_pad_v @box_header_pad_h;
+    background-color: @layer4_bg;
+
+    &>* {
+      vertical-align: middle;
+    }
+
+    ul {
+      margin             : 0;
+      list-style-position: inside;
+      padding-left       : 5px;
+    }
+  }
+
+  .table_stub {
+    padding   : 0 10px 0 10px;
+    text-align: center;
+
+    display        : flex;
+    flex-direction : row;
+    flex-wrap      : wrap;
+    justify-content: center;
+
+    a {
+      margin-bottom: 10px;
+    }
+  }
+}
+
+.box.history_ev {
+  margin-bottom: 10px;
+
+  &>.contents {
+    padding: 6px;
+  }
+}
+
+.box.Cute {
+  .box_theme(@cute_colour, darken(@cute_colour, 10%), white);
+}
+
+.box.Cool {
+  .box_theme(@cool_colour, darken(@cool_colour, 10%), white);
+}
+
+.box.Passion {
+  .box_theme(@passion_colour, lighten(@passion_colour, 10%), #222);
+}
+
+.box.black {
+  .box_theme(@layer1_bg, lighten(@layer1_bg, 10%), white);
+  background: @layer1_bg;
+}
+
+.box.he_new_idols {
+  .box_theme(@layer1_bg, lighten(#333333, 10%), white);
+  background: @layer1_bg;
+}
+
+.box.he_event {
+  .box_theme(@layer1_bg, lighten(#0066ff, 10%), white);
+  background: @layer1_bg;
+}
+
+.box.he_gacha {
+  .box_theme(@layer1_bg, #f0ce47, black);
+  background: @layer1_bg;
+
+  .item.right {
+    color: @main_text;
+  }
+}
+
+.box.he_gacha.he_limited {
+  .box_theme(@layer1_bg, darken(#ffafa1, 2%), black);
+  background: @layer1_bg;
+
+  .item.right {
+    color: @main_text;
+  }
+}
+
+.he_divider {
+  font-weight   : bold;
+  font-size     : 70%;
+  text-transform: uppercase;
+  display       : block;
+  margin-bottom : 6px;
+}
+
+.he_divider_line {
+  border-color: lighten(#333333, 5%);
+  border-style: solid;
+}
+
+.he_icx_limited {
+  background-color: #835a5a !important;
+}
+
+/* this entire section is basically a hack to keep things aligned properly
+ * chances are if you touch something here it will break, so don't do it */
+
+@media screen and (min-width:769px) {
+  .name_tag {
+    min-height: @name_tag_height;
+
+    .item {
+      line-height: @name_tag_height;
+      font-size  : @name_tag_height - (@name_tag_pad * 2);
+      padding    : 0 @name_tag_pad 0 @name_tag_pad;
+    }
+
+    .ext {
+      border-top   : @name_tag_height / 2 solid transparent;
+      border-left  : @name_tag_height / 4 solid transparent;
+      border-right : @name_tag_height / 4 solid transparent;
+      border-bottom: (@name_tag_height / 2) solid transparent;
+    }
+
+    .sicon {
+      vertical-align: text-bottom;
+    }
+  }
+}
+
+@media screen and (max-width:768px) {
+  .name_tag {
+    min-height: @name_tag_height_sm;
+
+    .item {
+      line-height: @name_tag_height_sm;
+      font-size  : @name_tag_height_sm - (@name_tag_pad_sm * 2);
+      padding    : 0 @name_tag_pad_sm 0 @name_tag_pad_sm;
+    }
+
+    .ext {
+      border-top   : @name_tag_height_sm / 2 solid transparent;
+      border-left  : @name_tag_height_sm / 4 solid transparent;
+      border-right : @name_tag_height_sm / 4 solid transparent;
+      border-bottom: (@name_tag_height_sm / 2) solid transparent;
+    }
+  }
+
+  .sicon {
+    vertical-align: middle;
+  }
+}
+
+.name_tag {
+  color    : white;
+  font-size: 0 !important;
+
+  small {
+    vertical-align: bottom;
+  }
+
+  .item.name {
+    word-wrap: break-word;
+  }
+
+  .item.name a {
+    color          : white;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .item {
+    display       : inline-block;
+    vertical-align: middle;
+  }
+
+  .name::after {
+    /* force all-latin text to align with ja line height */
+    content: "あ";
+    color  : transparent;
+  }
+
+  .ext {
+    vertical-align: middle;
+    padding       : 0;
+  }
+
+  &.Cute {
+    background-color: @cute_colour;
+
+    .title {
+      background-color: darken(@cute_colour, 10%);
+    }
+
+    .ext {
+      border-top-color : darken(@cute_colour, 10%);
+      border-left-color: darken(@cute_colour, 10%);
+    }
+  }
+
+  &.Cool {
+    background-color: @cool_colour;
+
+    .title {
+      background-color: darken(@cool_colour, 10%);
+    }
+
+    .ext {
+      border-top-color : darken(@cool_colour, 10%);
+      border-left-color: darken(@cool_colour, 10%);
+    }
+  }
+
+  &.Passion {
+    color: #222;
+
+    .name a {
+      color: #222;
+    }
+
+    background-color: @passion_colour;
+
+    .title {
+      background-color: lighten(@passion_colour, 10%);
+    }
+
+    .ext {
+      border-top-color : lighten(@passion_colour, 10%);
+      border-left-color: lighten(@passion_colour, 10%);
+    }
+  }
+}
+
+.name_tag.force_small {
+  height: @name_tag_height_sm;
+
+  .item {
+    line-height: @name_tag_height_sm;
+    font-size  : @name_tag_height_sm - (@name_tag_pad_sm * 2);
+    padding    : 0 @name_tag_pad_sm 0 @name_tag_pad_sm;
+  }
+
+  .ext {
+    padding      : 0;
+    border-top   : @name_tag_height_sm / 2 solid transparent;
+    border-left  : @name_tag_height_sm / 4 solid transparent;
+    border-right : @name_tag_height_sm / 4 solid transparent;
+    border-bottom: (@name_tag_height_sm / 2) solid transparent;
+  }
+
+  .sicon {
+    vertical-align: middle;
+  }
+}
