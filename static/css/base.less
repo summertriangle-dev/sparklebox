@@ -120,21 +120,21 @@ span.var {
 
 td.cb_true {
   background-color: @available_colour;
-  border-color    : darken(@available_colour, 10%);
+  border-color    : darken(@available_colour, 10%) !important;
 }
 
 td.cb_false {
   background-color: @unavailable_colour;
-  border-color    : darken(@unavailable_colour, 10%);
+  border-color    : darken(@unavailable_colour, 10%) !important;
 }
 
 strong.ga_unavailable {
   text-decoration: line-through;
-  color          : darken(@unavailable_colour, 60%);
+  color          : @unavailable_colour;
 }
 
 strong.ga_available {
-  color: darken(@available_colour, 50%);
+  color: @available_colour;
 }
 
 .avlistentry_regular_melded li {
