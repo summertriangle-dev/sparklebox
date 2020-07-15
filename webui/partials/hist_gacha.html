@@ -38,14 +38,22 @@
     {% end %}
 
     <small>
+      {% set has_links = bool(history_entry.added_cards or countdown) %}
+      {% if has_links %}
+
       {% if history_entry.added_cards %}
       <a href="/card/{{ history_entry.card_urlspec() }}">Batch</a>,
       {% if countdown %}
       <a href="/table/CASDE/{{ history_entry.card_urlspec() }}">Table</a>,
-      <a href="/gacha/{{ history_entry.referred_id() }}">Full availability list</a>
       {% else %}
       <a href="/table/CASDE/{{ history_entry.card_urlspec() }}">Table</a>
       {% end %}
+      {% end %}
+
+      {% if countdown %}
+      <a href="/gacha/{{ history_entry.referred_id() }}">Full availability list</a>
+      {% end %}
+
       -
       {% end %}
       Gacha available from
