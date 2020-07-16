@@ -2,7 +2,7 @@ TL_ENABLED_TEXT = "<a href='javascript:;' onclick='tlinject_revert()'>Disable TL
                   "(<a href='javascript:;' onclick='tlinject_about()'>What's this?</a>)"
 TL_DISABLED_TEXT = "<a href='javascript:;' onclick='tlinject_enable()'>Enable TLs</a> " +
                    "(<a href='javascript:;' onclick='tlinject_about()'>What's this?</a>)"
-PROMPT_EXTRA_TEXT = "Fine print: your submission may be released as part of a data dump in the future. " + 
+PROMPT_EXTRA_TEXT = "Fine print: your submission may be released as part of a data dump in the future. " +
                     "It will not include any information that can be used to identify you."
 TL_ENABLE_PREF_KEY = "sl$tlEnable"
 
@@ -18,7 +18,7 @@ if (!String.prototype.trim) {
 function env_default_enable_tlinject() {
     var userLocale = navigator.languages? navigator.languages[0]
         : (navigator.language || navigator.userLanguage)
-    
+
     // Default: disable if user language is Japanese, otherwise enable.
     if (userLocale.match(/ja([^A-Za-z]|$)/)) {
         return false
@@ -66,8 +66,8 @@ function submit_tl_string(node, text) {
             }
 
             var request = {
-                key: text, 
-                tled: submitText, 
+                key: text,
+                tled: submitText,
                 security: node.getAttribute("data-summertriangle-assr")
             }
 
@@ -231,7 +231,7 @@ function tlinject_prompt(forKey, done) {
         var subm = document.createElement("input");
         subm.type = "submit";
         subm.className = "button primary";
-        subm.textContent = "Submit";
+        subm.value = "Submit";
 
         var canc = document.createElement("button");
         canc.className = "button";
@@ -245,13 +245,13 @@ function tlinject_prompt(forKey, done) {
 
         var spac = document.createElement("div");
         spac.className = "spacer";
-    
+
         bg.appendChild(subm);
         bg.appendChild(canc);
         bg.appendChild(spac);
         bg.appendChild(remo);
 
-        form.addEventListener("submit", function(event) { 
+        form.addEventListener("submit", function(event) {
             event.preventDefault(); submit(field.value)
         }, false);
 
