@@ -1,13 +1,25 @@
 function svx_canvas_save(body, face, file, forcedraw) {
   var canvas = document.getElementById("buffer");
+  var faceLeft = parseInt(face.style.left);
+  var faceTop = parseInt(face.style.top);
+  var allOffsetH = 0;
+  var allOffsetV = 0;
 
-  canvas.width = body.naturalWidth;
-  canvas.height = body.naturalHeight;
+  if (faceTop < 0) {
+    allOffsetV = -faceTop;
+  }
+  if (faceLeft < 0) {
+    allOffsetH = -faceTop;
+  }
+
+  // To horizontally center.
+  canvas.width = body.naturalWidth + (2 * allOffsetH);
+  canvas.height = body.naturalHeight + allOffsetV;
 
   var ctx = canvas.getContext("2d")
-  ctx.drawImage(body, 0, 0);
+  ctx.drawImage(body, allOffsetH, allOffsetV);
   if (face.style.display != "none" || forcedraw) {
-    ctx.drawImage(face, parseInt(face.style.left), parseInt(face.style.top));
+    ctx.drawImage(face, faceLeft + allOffsetH, faceTop + allOffsetV);
   }
 
   var a = document.createElement("a");
@@ -25,12 +37,8 @@ function svx_download_img(target) {
 function svx_apply_face(that) {
   var target = that.getAttribute("data-pose-target");
   var overlay = document.querySelector("#svx__face_" + target);
-  var xo = parseInt(overlay.getAttribute("data-position-x"));
-  var yo = parseInt(overlay.getAttribute("data-position-y"));
-  overlay.style.top = (yo) + "px";
-  overlay.style.left = (xo) + "px";
+  
   overlay.src = that.getAttribute("src");
-  overlay.style.display = "inline";
   overlay.setAttribute("data-face-id", that.getAttribute("data-face-id"));
 }
 
@@ -77,28 +85,25 @@ function SVX_INIT_FOR_POSE(pid, x, y) {
   }));
 }
 
-function SVX_APPLY_ADJUSTMENT(pid, x, y) {
-  var pose = document.getElementById("svx__pose_" + pid);
-  var face = document.getElementById("svx__face_" + pid);
-
-  var xr = parseInt(face.getAttribute("data-rel-position-x"));
-  var yr = parseInt(face.getAttribute("data-rel-position-y"));
-  var rw = 1 << Math.ceil(Math.log2(pose.width - x));
-  var rh = 1 << Math.ceil(Math.log2(pose.height - y));
-
-  face.setAttribute("data-position-x", (((rw / 2) - 64) + xr) + x);
-  face.setAttribute("data-position-y", ((rh - 64) - yr) + y);
-  face.setAttribute("data-adj-x", x);
-  face.setAttribute("data-adj-y", y);
-}
-
-function SVX_APPLY_ADJUSTMENTEX(pid, x, y, rw, rh) {
+function SVX_APPLY_ADJUSTMENT(pid, x, y, rw, rh) {
   var pose = document.getElementById("svx__pose_" + pid);
   var face = document.getElementById("svx__face_" + pid);
 
   var xr = parseInt(face.getAttribute("data-rel-position-x"));
   var yr = parseInt(face.getAttribute("data-rel-position-y"));
 
+  // From SVX_APPLY_ADJUSTMENTEX. Apparently the work to support 
+  // explicit pose size was already done in genfacelists, but
+  // never got used here.
+  if (rw === undefined || rh === undefined) {
+    console.debug("Using legacy apply adjustment format");
+    rw = 1 << Math.ceil(Math.log2(pose.width - x));
+    rh = 1 << Math.ceil(Math.log2(pose.height - y));
+  }
+
+  // I forgot why these are specified in 2x units.
+  face.setAttribute("data-reference-w", 128);
+  face.setAttribute("data-reference-h", 128);
   face.setAttribute("data-position-x", (((rw / 2) - 64) + xr) + x);
   face.setAttribute("data-position-y", ((rh - 64) - yr) + y);
   face.setAttribute("data-adj-x", x);
@@ -109,6 +114,18 @@ function SVX_APPLY_FACE_LIST(pid, list) {
   var a = document.querySelector("#template_flist" + pid);
   a.removeAttribute("id");
   var face = document.getElementById("svx__face_" + pid);
+
+  face.addEventListener("load", function(event) {
+    var fce = event.target;
+    var mov_w = fce.naturalWidth - parseInt(fce.getAttribute("data-reference-w"));
+    var mov_h = fce.naturalHeight - parseInt(fce.getAttribute("data-reference-h"));
+    var xo = parseInt(fce.getAttribute("data-position-x")) - (mov_w / 2);
+    var yo = parseInt(fce.getAttribute("data-position-y")) - (mov_h / 2);
+
+    fce.style.top = (yo) + "px";
+    fce.style.left = (xo) + "px";
+    fce.style.display = "inline";
+  }, false);
 
   for (var i = 0; i < list.length; i++) {
     var img = document.createElement("img");
