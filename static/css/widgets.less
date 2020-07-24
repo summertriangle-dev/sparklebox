@@ -22,7 +22,7 @@
 .modal_backdrop {
   transition: background 100ms linear;
   background: fade(@main_bg, 0%);
-  z-index   : 999;
+  z-index   : 1000;
 
   &.on {
     background: fade(@main_bg, 70%);
@@ -30,7 +30,7 @@
 }
 
 .modal_container {
-  z-index       : 1000;
+  z-index       : 1001;
   display       : flex;
   align-items   : center;
   pointer-events: none;
@@ -60,6 +60,10 @@
   }
 }
 
+.modal_container:not(:last-child) .modal_self {
+  transform: scale(0.9, 0.9);
+}
+
 /*********** controls *************/
 
 .button_bevel {
@@ -73,6 +77,10 @@
   border-radius     : @button_standard_rounding;
   font-size         : 16px;
   -webkit-appearance: none;
+
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 
 .button,

@@ -80,10 +80,19 @@ function submit_tl_string(node, text) {
                         var table = {}
                         table[text] = submitText? submitText : text;
                         set_strings_by_table(table);
+                        exitModal();
                     } else {
-                        var j = JSON.parse(xhr.responseText);
+                        var j;
+                        try {
+                            j = JSON.parse(xhr.responseText);
+                        } catch {
+                            j = {}
+                        }
+
                         if (j.error) {
                             tlinject_text_alert('Failed to submit translation. The server said: "' + j.error + '"');
+                        } else {
+                            tlinject_text_alert('Failed to submit translation. The server did not return an error message.');
                         }
                     }
                 }
@@ -195,7 +204,6 @@ function tlinject_prompt(forKey, done) {
         if (txt || txt === null) {
             done(txt);
         }
-        exitModal();
     }
 
     enterModal(function(win) {
@@ -252,7 +260,9 @@ function tlinject_prompt(forKey, done) {
         bg.appendChild(remo);
 
         form.addEventListener("submit", function(event) {
-            event.preventDefault(); submit(field.value)
+            event.preventDefault();
+            submit(field.value);
+            subm.disabled = true;
         }, false);
 
         requestAnimationFrame(function() {

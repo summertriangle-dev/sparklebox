@@ -36,17 +36,25 @@ function enterModal(onPresent, onExit) {
 }
 
 function exitModal() {
-    var backdrop = document.querySelector("#modal_backdrop");
-    if (backdrop) {
-        backdrop.classList.remove("on");
-        document.querySelector(".modal_self").classList.add("close");
+    var modals = document.querySelectorAll(".modal_container");
+    if (modals.length > 0) {
+        var closeTarget = modals[modals.length - 1];
+        closeTarget.querySelector(".modal_self").classList.add("close");
 
         setTimeout(function() {
+            var backdrop = document.querySelector("#modal_backdrop");
             if (!backdrop.classList.contains("on")) {
                 document.body.removeChild(backdrop);
             }
 
-            document.body.removeChild(document.querySelector(".modal_container"));
+            document.body.removeChild(closeTarget);
         }, 100);
+    }
+
+    if (modals.length == 1) {
+        var backdrop = document.querySelector("#modal_backdrop");
+        if (backdrop) {
+            backdrop.classList.remove("on");
+        }
     }
 }

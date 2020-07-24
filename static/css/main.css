@@ -78,7 +78,7 @@ span.var {
   bottom: 0;
   left: 0;
   background-color: rgba(42, 46, 54, 0.7);
-  z-index: 9001;
+  z-index: 999;
 }
 .crowd_tl_notice a {
   color: #eee;
@@ -946,13 +946,13 @@ td.filter_switch.enabled {
 .modal_backdrop {
   transition: background 100ms linear;
   background: rgba(42, 46, 54, 0);
-  z-index: 999;
+  z-index: 1000;
 }
 .modal_backdrop.on {
   background: rgba(42, 46, 54, 0.7);
 }
 .modal_container {
-  z-index: 1000;
+  z-index: 1001;
   display: flex;
   align-items: center;
   pointer-events: none;
@@ -975,6 +975,9 @@ td.filter_switch.enabled {
 .modal_self .text_field {
   margin-bottom: 8px;
 }
+.modal_container:not(:last-child) .modal_self {
+  transform: scale(0.9, 0.9);
+}
 /*********** controls *************/
 .button_bevel {
   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.2), 0px 0px 0px 1px rgba(0, 0, 0, 0.3);
@@ -985,6 +988,10 @@ td.filter_switch.enabled {
   border-radius: 4px;
   font-size: 16px;
   -webkit-appearance: none;
+}
+.button:disabled,
+.text_field:disabled {
+  opacity: 0.5;
 }
 .button,
 .image_switch {
