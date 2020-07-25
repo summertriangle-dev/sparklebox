@@ -1086,6 +1086,9 @@ td.filter_switch.enabled {
 .stepper button:active {
   transform: scale(0.9, 0.9);
 }
+.svx_pose_container {
+  display: inline-block;
+}
 .msprites {
   position: relative;
 }
