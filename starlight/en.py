@@ -159,6 +159,9 @@ LEADER_SKILL_PARAM = {
     4: "all appeals",
     5: "the life",
     6: "the skill probability",
+    # FIXME: only grammatically works when used in world level desc
+    # FIXME: find variants for other stats
+    13: "own Dance appeal"
 }
 
 def build_lead_skill_predicate(skill):
@@ -241,6 +244,12 @@ def describe_lead_skill_html(skill):
     elif skill.type == 80:
         effect_clause = """Raises the XP, money, and friend points that you (and your guest's producer) receive by <span class="let">{0}</span>% when you finish a live""".format(
             skill.up_value)
+    elif skill.type == 90:
+        target_param = LEADER_SKILL_PARAM.get(skill.target_param, "<unknown>")
+        target_attr_2 = LEADER_SKILL_TARGET.get(skill.target_attribute_2, "<unknown>")
+        target_param_2 = LEADER_SKILL_PARAM.get(skill.target_param_2, "<unknown>")
+        effect_clause = """Raises this card's {0} by <span class="let">{1}</span>%. If this card's costume is equipped and on your own team, raises {2} of {3} members by <span class="let">{4}</span>% when her mask is removed""".format(
+            target_param, skill.up_value, target_param_2, target_attr_2, skill.up_value_2)
     else:
         return """I don't know how to describe this leader skill. This is a bug, please report it. (up_type: {0}, type: {1})""".format(
             skill.up_type, skill.type
