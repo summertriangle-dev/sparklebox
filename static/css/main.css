@@ -49,6 +49,9 @@ footer .developer {
 .container.tight {
   font-size: 0;
 }
+.container.negative_box {
+  padding: 0 8px;
+}
 .icon {
   display: inline-block;
   width: 48px;
@@ -105,6 +108,16 @@ strong.ga_available {
   border-bottom: 1px dashed;
   cursor: help;
 }
+.page_box {
+  display: flex;
+  flex-direction: row;
+}
+.flexible_space {
+  flex-grow: 2;
+}
+.align_right {
+  text-align: right;
+}
 /* main.html */
 #search {
   font-size: 24px;
@@ -141,6 +154,9 @@ strong.ga_available {
   background: center bottom no-repeat;
   width: 100%;
   height: 100%;
+}
+.history_date_header {
+  margin: 15px 8px;
 }
 .table {
   background-color: #353a44;
@@ -421,6 +437,7 @@ td.filter_switch.enabled {
 }
 .iconex_row {
   display: flex;
+  flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -893,6 +910,9 @@ td.filter_switch.enabled {
 @media screen and (max-width: 600px) {
   body {
     margin: 0;
+  }
+  .container.negative_box {
+    margin: 0 8px;
   }
   .carcon {
     -webkit-flex-direction: column;

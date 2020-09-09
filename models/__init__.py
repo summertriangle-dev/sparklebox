@@ -33,8 +33,6 @@ class TranslationSQL(object):
         self.session_nest = []
         self.connect_url = override_url
 
-        self.history_cache = []
-        self.history_is_all_loaded = 0
         self.availability_cache = {}
         self.caches_disabled = bool(os.getenv("TLE_DISABLE_CACHES"))
         if self.caches_disabled:
@@ -281,28 +279,15 @@ class TranslationSQL(object):
                     e.is_limited))
         return ga
 
-    def get_history(self, nent):
-        if self.caches_disabled:
-            return list(self._get_history(nent))
-
-        if self.history_is_all_loaded or (nent and nent <= len(self.history_cache)):
-            return self.history_cache[:nent]
-
-        self.history_cache = list(self._get_history(nent))
-        if not nent:
-            self.history_is_all_loaded = 1
-        return self.history_cache
-
     @retry(5)
-    def _get_history(self, nent):
-        print("trace _get_history")
+    def get_history(self, nent, page=0):
         with self as s:
             rows = s.query(HistoryEventEntry).order_by(HistoryEventEntry.start_time.desc())
 
             if nent:
-                rows = rows.limit(nent)
-            gv = rows.all()
-            yield from gv
+                rows = rows.limit(nent).offset(page * nent)
+
+            return list(rows.all())
 
     @retry(5)
     def lookup_event_cards(self, cards):
@@ -342,19 +327,11 @@ class TranslationEngine(TranslationSQL):
 
     def kill_caches(self, dv):
         self.k2r = {x.kanji: x.conventional for _, x in self.dsrc.data.names.items()}
-
-        self.history_cache = []
-        self.history_is_all_loaded = 0
-
         self.availability_cache = {}
-
         self.cache_id = dv
 
-    def get_history(self, nent):
-        if self.cache_id != self.dsrc.data.version:
-            self.kill_caches(self.dsrc.data.version)
-
-        return super().get_history(nent)
+    def get_history(self, nent, page=0):
+        return super().get_history(nent, page)
 
     def gacha_availability(self, cards, gacha_list):
         if self.cache_id != self.dsrc.data.version:

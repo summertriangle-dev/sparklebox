@@ -20,7 +20,16 @@
   {% include header.html %}
 
   <div class="container">
+    {% set prev_header = None %}
     {% for history_entry in history %}
+
+    {% set dt = history_entry.start_datetime() %}
+    {% if (dt.month, dt.year) != prev_header %}
+      <h2 id="date_{{ dt.strftime("%Y%m") }}" class="history_date_header">
+        {{ dt.strftime("%B %Y") }}
+      </h2>
+      {% set prev_header = (dt.month, dt.year) %}
+    {% end %}
 
     {% if history_entry.type() == 2 %}
       {% module Template("partials/hist_event.html", history_entry=history_entry, countdown=False) %}
@@ -33,6 +42,13 @@
     {% end %}
 
     {% end %}
+  </div>
+  <div class="container negative_box align_right page_box">
+    {% if page > 1 %}
+    <a href="/history/{{ page - 1 }}">Previous page</a>
+    {% end %}
+    <div class="flexible_space"></div>
+    <a href="/history/{{ page + 1 }}">Next page</a>
   </div>
 
   {% include partials/footer.html %}

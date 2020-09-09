@@ -435,18 +435,20 @@ class SpriteViewerEX(tornado.web.RequestHandler):
             self.set_status(404)
             self.write("Not found.")
 
-@route("/history")
+@route(r"/history")
+@route(r"/history/([0-9]+)")
 class History(HandlerSyncedWithMaster):
     """ Display all history entries. """
-    def get(self):
-        all_history = self.settings["tle"].get_history(nent=None)
+    def get(self, page=None):
+        page = max(int(page or 1), 1)
+        all_history = self.settings["tle"].get_history(nent=50, page=page - 1)
 
         preprime_set = set()
         for h in all_history:
             preprime_set.update(h.card_list())
         starlight.data.cards(preprime_set)
 
-        self.render("history.html", history=all_history, **self.settings)
+        self.render("history.html", history=all_history, page=page, **self.settings)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 @route(r"/tl_cacheall")
