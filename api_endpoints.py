@@ -240,6 +240,27 @@ class ObjectAPI(CORSBlessMixin, HandlerSyncedWithMaster, APIUtilMixin):
             real_spec.extend(self.real_expand_spec(component))
         return real_spec
 
+    def compute_etag(self):
+        request_params = [
+            "list: otype=",
+            self.path_args[0],
+            ";stubs=", self.get_argument("stubs", "no"),
+            ";datetime=", self.get_argument("datetime", "unix"),
+            ";master=", str(starlight.data.version),
+            ";oids=",
+        ]
+
+        ids = self.expand_spec(self.path_args[1])
+        for k in ids:
+            request_params.append("{0},".format(k))
+
+        request_params.append(";ird=")
+
+        hasher = hashlib.sha1()
+        hasher.update("".join(request_params).encode("utf8"))
+        hasher.update(self.settings["instance_random"])
+        return "\"{0}\"".format(hasher.hexdigest())
+
     def get(self, objectid, spec):
         self.set_cors_policy()
 
@@ -312,6 +333,12 @@ class ObjectAPI(CORSBlessMixin, HandlerSyncedWithMaster, APIUtilMixin):
             self.write({"error": "you requested an unknown object type '{0}_t'".format(kind)})
             return
 
+        self.set_etag_header()
+        if self.check_etag_header():
+            self.set_status(304)
+            return
+
+        self.set_header("Cache-Control", "must-revalidate")
         self.set_header("Content-Type", "application/json; charset=utf-8")
         if self.settings["is_dev"]:
             json.dump({"result": h(ids, cfg)}, self, ensure_ascii=0, sort_keys=1, indent=2)
@@ -352,8 +379,33 @@ class CardListAPI(CORSBlessMixin, HandlerSyncedWithMaster, APIUtilMixin):
     def list_objects(self):
         return starlight.data.cards([chain[0] for _, chain in starlight.data.id_chain.items()])
 
+    def compute_etag(self):
+        request_params = [
+            "path=",
+            self.request.path,
+            ";keys=",
+        ]
+
+        normalized = [x.lower().strip() for x in self.get_argument("keys", "").split(",")]
+        normalized.sort()
+        for k in normalized:
+            if k in self.KEYS or k in self.STRUCTS:
+                request_params.append("{0},".format(k))
+
+        request_params.append(";master={0};ird=".format(starlight.data.version))
+
+        hasher = hashlib.sha1()
+        hasher.update("".join(request_params).encode("utf8"))
+        hasher.update(self.settings["instance_random"])
+        return "\"{0}\"".format(hasher.hexdigest())
+
     def get(self):
         self.set_cors_policy()
+        self.set_etag_header()
+
+        if self.check_etag_header():
+            self.set_status(304)
+            return
 
         ks_raw = self.get_argument("keys", "")
         if ks_raw:
@@ -363,6 +415,7 @@ class CardListAPI(CORSBlessMixin, HandlerSyncedWithMaster, APIUtilMixin):
         f = partial(self.stub_object, user_want_keys=list(normalized))
         roots = map(f, self.list_objects())
 
+        self.set_header("Cache-Control", "must-revalidate")
         self.set_header("Content-Type", "application/json; charset=utf-8")
         if self.settings["is_dev"]:
             json.dump({"result": list(roots)}, self, ensure_ascii=0, sort_keys=1, indent=2)
