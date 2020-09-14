@@ -84,7 +84,9 @@ def main():
         starlight=starlight,
         tlable=webutil.tlable,
         webutil=webutil,
-        analytics=analytics.Analytics())
+        analytics=analytics.Analytics(),
+        # Change every etag when the server restarts, in case we change what the output looks like.
+        instance_random=os.urandom(8))
     http_server = tornado.httpserver.HTTPServer(application, xheaders=1)
 
     addr = os.environ.get("ADDRESS", "0.0.0.0")

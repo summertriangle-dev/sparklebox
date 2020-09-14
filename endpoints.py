@@ -10,6 +10,7 @@ import pytz
 import itertools
 import enums
 import table
+import hashlib
 from models import extra
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -238,7 +239,21 @@ class ShortlinkTable(HandlerSyncedWithMaster):
 
 @route(r"/skill_table")
 class SkillTable(ShortlinkTable):
+    def compute_etag(self):
+        hasher = hashlib.sha1(b"SkillTable version ")
+        hasher.update(self.settings["instance_random"])
+        hasher.update(str(starlight.data.version).encode("utf8"))
+        hasher.update("; plus={0}".format(
+            "yes" if self.get_argument("plus", "NO") == "YES" else "no").encode("utf8"))
+        return "\"{0}\"".format(hasher.hexdigest())
+
     def get(self):
+        self.set_etag_header()
+        if self.check_etag_header():
+            self.set_status(304)
+            return
+
+        self.set_header("Cache-Control", "must-revalidate")
         ds = filter(lambda C: C.skill is not None, starlight.data.cards(starlight.data.all_chain_ids()))
         self.rendertable("CASDE", ds,
             allow_shortlink=0,
@@ -247,7 +262,21 @@ class SkillTable(ShortlinkTable):
 
 @route(r"/lead_skill_table")
 class LeadSkillTable(ShortlinkTable):
+    def compute_etag(self):
+        hasher = hashlib.sha1(b"LeadSkillTable version ")
+        hasher.update(self.settings["instance_random"])
+        hasher.update(str(starlight.data.version).encode("utf8"))
+        hasher.update("; plus={0}".format(
+            "yes" if self.get_argument("plus", "NO") == "YES" else "no").encode("utf8"))
+        return "\"{0}\"".format(hasher.hexdigest())
+
     def get(self):
+        self.set_etag_header()
+        if self.check_etag_header():
+            self.set_status(304)
+            return
+
+        self.set_header("Cache-Control", "must-revalidate")
         ds = filter(lambda C: C.lead_skill is not None, starlight.data.cards(starlight.data.all_chain_ids()))
         self.rendertable("CAKL", ds,
             allow_shortlink=0,
