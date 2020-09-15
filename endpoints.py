@@ -306,6 +306,9 @@ class CompareCard(ShortlinkTable):
 
 @route(r"/gacha(?:/([0-9]+))?")
 class GachaTable(ShortlinkTable):
+    def awakened_id(self, cid):
+        return starlight.data.chain(cid)[-1]
+
     async def get(self, maybe_gachaid):
         now = pytz.utc.localize(datetime.utcnow())
 
@@ -340,14 +343,18 @@ class GachaTable(ShortlinkTable):
             self.write("Gacha rates are only available for current gachas. Sorry about that.")
             self.finish()
             return 
-            
+        
+        want_awakened = self.get_argument("plus", "NO") == "YES"
         live_info = await starlight.data.live_gacha_rates(selected_gacha.id)
 
         availability_list = starlight.data.available_cards(selected_gacha)
         availability_list.sort(key=lambda x: x.sort_order)
 
         want_id_list = [gr.card_id for gr in availability_list]
-        limited_flags = {gr.card_id: gr.is_limited for gr in availability_list}
+        if want_awakened:
+            limited_flags = {self.awakened_id(gr.card_id): gr.is_limited for gr in availability_list}
+        else:
+            limited_flags = {gr.card_id: gr.is_limited for gr in availability_list}
 
         if live_info:
             want_id_list.extend(cid for cid in live_info["indiv"] if cid not in limited_flags)
@@ -364,7 +371,12 @@ class GachaTable(ShortlinkTable):
         categories.insert(0, lim_cat)
 
         if live_info:
-            odds_cat = table.CustomNumber(live_info["indiv"], header_text="Chance", format="{0:.3f}%")
+            if want_awakened:
+                indiv_rates = {self.awakened_id(k): v for k, v in live_info["indiv"].items()}
+            else:
+                indiv_rates = live_info["indiv"]
+
+            odds_cat = table.CustomNumber(indiv_rates, header_text="Chance", format="{0:.3f}%")
             categories.insert(1, odds_cat)
 
             live_rates = live_info["rates"]
