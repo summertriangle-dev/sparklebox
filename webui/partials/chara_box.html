@@ -16,23 +16,9 @@
       <a class="image_switch" href="http://cgdex.project-imas.com/?v=idols&o=Name%20LIKE%20%22{{ chara.conventional }}%22">CGdex</a>
       <a class="image_switch" href="http://www.project-imas.com/wiki/{{ starlight.en.westernized_name(chara).replace(" ", "_") }}">Project iM@S Wiki</a>
       <a class="image_switch" href="/sprite_go_ex/{{ chara.chara_id }}">Many faces</a>
-      {% if not request.is_low_bandwidth %}
-      <a class="image_switch" onclick="table('va_chara_{{ chara.chara_id }}', this)">Show character lines</a>
-      {% else %}
       <a class="image_switch" onclick="load_table('va_chara_{{ chara.chara_id }}', 1, [{{ chara.chara_id }}], this)">Show character lines</a>
-      {% end %}
     </div>
-    <table style="display:none" id="va_chara_{{ chara.chara_id }}" class="table">
-      {% if not request.is_low_bandwidth %}
-      {% set va_id = [chara.chara_id] %}
-      {% if chara.voice %}
-        {% set include_title_call = 1 %}
-      {% else %}
-        {% set include_title_call = 0 %}
-      {% end %}
-      {% include va_table_partial.html %}
-      {% end %}
-    </table>
+    <table style="display:none" id="va_chara_{{ chara.chara_id }}" class="table"></table>
   </div>
 </div>
 {% else %}

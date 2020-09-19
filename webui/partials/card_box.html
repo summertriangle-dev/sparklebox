@@ -140,19 +140,9 @@
       </div>
       <div class="content">
         <div class="table_stub">
-          {% if not request.is_low_bandwidth %}
-          <a class="image_switch" onclick="table('va_card_{{ card.id }}', this.parentNode)">Expand</a>
-          {% else %}
           <a class="image_switch" onclick="load_table('va_card_{{ card.id }}', 0, {{ [_card.id for _card in chain] }}, this)">Expand</a>
-          {% end %}
         </div>
-        <table style="display:none" id="va_card_{{ card.id }}" class="table">
-          {% if not request.is_low_bandwidth %}
-          {% set va_id = [_card.id for _card in chain] %}
-          {% set include_title_call = 0 %}
-          {% include va_table_partial.html %}
-          {% end %}
-        </table>
+        <table style="display:none" id="va_card_{{ card.id }}" class="table"></table>
       </div>
     </div>
   </div>
