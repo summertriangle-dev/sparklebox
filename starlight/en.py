@@ -81,6 +81,7 @@ SKILL_DESCRIPTIONS = {
     37: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=visual">score bonus determined by the team's Visual appeal</a>""",
     38: """that with all three types of idols on the team, to boost the score/combo bonus/health recovery of currently active skills""",
     39: """to reduce combo bonus by <span class="let">{0}</span>%, but also apply the highest score bonus gained so far with a boost of <span class="let">{2}</span>%""",
+    40: """to apply the effect of the best score or combo bonus skill activated so far""",
 }
 
 SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 39]
@@ -210,7 +211,11 @@ def describe_lead_skill_html(skill):
         effect_clause = """Raises {0} of {1} members by <span class="let">{2}</span>%""".format(
             target_param, target_attr, skill.up_value)
     elif skill.up_type == 1 and skill.type == 30:
-        effect_clause = "Gives extra rewards when you finish a live"
+        if skill.up_value == 12:
+            # Riina
+            effect_clause = "May drop star pieces when you finish a live. The drop rate scales based on star rank"
+        else:
+            effect_clause = "May give extra rewards when you finish a live. The drop rate scales based on star rank"
     elif skill.up_type == 1 and skill.type == 40:
         effect_clause = "Increases fan gain by <span class=\"let\">{0}</span>% when you finish a live".format(
             skill.up_value)
