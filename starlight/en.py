@@ -82,6 +82,7 @@ SKILL_DESCRIPTIONS = {
     38: """that with all three types of idols on the team, to boost the score/combo bonus/health recovery of currently active skills""",
     39: """to reduce combo bonus by <span class="let">{0}</span>%, but also apply the highest score bonus gained so far with a boost of <span class="let">{2}</span>%""",
     40: """to apply the effect of the best score or combo bonus skill activated so far""",
+    41: """to activate all skills on the team, then apply the best available score/combo bonus (according to individual skills' conditions) to each note"""
 }
 
 SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 39]
@@ -255,6 +256,8 @@ def describe_lead_skill_html(skill):
         target_param_2 = LEADER_SKILL_PARAM.get(skill.target_param_2, "<unknown>")
         effect_clause = """Raises this card's {0} by <span class="let">{1}</span>%. If this card's costume is equipped and on your own team, raises {2} of {3} members by <span class="let">{4}</span>% when her mask is removed""".format(
             target_param, skill.up_value, target_param_2, target_attr_2, skill.up_value_2)
+    elif skill.type == 100:
+        effect_clause = """Each member on your team will receive the best available leader effect from your team (including your guest's leader effect)"""
     else:
         return """I don't know how to describe this leader skill. This is a bug, please report it. (up_type: {0}, type: {1})""".format(
             skill.up_type, skill.type
