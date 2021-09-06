@@ -48,7 +48,8 @@ skill_type_row_2 = filter_t("Skill Type", (
     option_t("Symph.",       "symphony"),
     option_t("Alternate",    "alternate"),
     option_t("Refrain",      "refrain"),
-    option_t("Magic",        "magic")),
+    option_t("Magic",        "magic"),
+    option_t("Mutual",       "mutual")),
 lambda card: enums.skill_class(card.skill.skill_type) if card.skill else None)
 
 high_stat = filter_t("High stat", (

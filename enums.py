@@ -85,6 +85,7 @@ skill_type = enum([
     40, "Refrain",
     
     41, "Cinderella Magic",
+    42, "Mutual",
 ])
 
 skill_probability = enum([
@@ -208,6 +209,8 @@ skill_class = enum([
     40, "refrain",
     
     41, "magic",
+    
+    42, "mutual",
 ])
 
 stat_dot = enum([

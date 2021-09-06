@@ -82,19 +82,20 @@ SKILL_DESCRIPTIONS = {
     38: """that with all three types of idols on the team, to boost the score/combo bonus/health recovery of currently active skills""",
     39: """to reduce combo bonus by <span class="let">{0}</span>%, but also apply the highest score bonus gained so far with a boost of <span class="let">{2}</span>%""",
     40: """to apply the effect of the best score or combo bonus skill activated so far""",
-    41: """to activate all skills on the team, then apply the best available score/combo bonus (according to individual skills' conditions) to each note"""
+    41: """to activate all skills on the team, then apply the best available score/combo bonus (according to individual skills' conditions) to each note""",
+    42: """to reduce score gain by <span class="let">{0}</span>%, but also apply the highest extra combo bonus gained so far with a boost of <span class="let">{2}</span>%""",
 }
 
-SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 39]
+SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 39, 42]
 SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL2 = [21, 22, 23, 26, 27, 28, 29, 30]
 
 # Whether the skill's description uses the value in a negative context
 # (e.g. ...reduces by x%...)
-SKILL_TYPES_WITH_NEGATIVE_EFF_VAL1 = [39]
+SKILL_TYPES_WITH_NEGATIVE_EFF_VAL1 = [39, 42]
 SKILL_TYPES_WITH_NEGATIVE_EFF_VAL2 = []
 
 SKILL_TYPES_WITH_THOUSANDTHS_EFF_VAL1 = [20]
-SKILL_TYPES_WITH_THOUSANDTHS_EFF_VAL2 = [39]
+SKILL_TYPES_WITH_THOUSANDTHS_EFF_VAL2 = [39, 42]
 
 REMOVE_HTML = re.compile(r"</?(span|a)[^>]*>")
 
@@ -258,6 +259,12 @@ def describe_lead_skill_html(skill):
             target_param, skill.up_value, target_param_2, target_attr_2, skill.up_value_2)
     elif skill.type == 100:
         effect_clause = """Each member on your team will receive the best available leader effect from your team (including your guest's leader effect)"""
+    elif skill.type == 110:
+        song_attr = LEADER_SKILL_TARGET.get(skill.target_attribute_2 + 10, "<unknown>")
+        target_param = LEADER_SKILL_PARAM.get(skill.target_param, "<unknown>")
+        target_param_2 = LEADER_SKILL_PARAM.get(skill.target_param_2, "<unknown>")
+        effect_clause = """Raises {0} of all cards by <span class="let">{1}</span>%, and {2} of all cards by <span class="let">{3}</span>% (when playing a {4} song)""".format(
+            target_param, skill.up_value, target_param_2, skill.up_value_2, song_attr)
     else:
         return """I don't know how to describe this leader skill. This is a bug, please report it. (up_type: {0}, type: {1})""".format(
             skill.up_type, skill.type
