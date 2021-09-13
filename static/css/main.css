@@ -1147,344 +1147,356 @@ To change `display` (e.g. `display: inline-block;`), we suggest using a common C
 <i class="icon icon-home"></i>
 */
 .sicon.allround {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: 0px 0px;
   width: 24px;
   height: 24px;
 }
 .sicon.alternate {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -26px 0px;
   width: 24px;
   height: 24px;
 }
 .sicon.balance {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: 0px -26px;
   width: 24px;
   height: 24px;
 }
 .sicon.cboost {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -26px -26px;
   width: 24px;
   height: 24px;
 }
 .sicon.cguard {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -52px 0px;
   width: 24px;
   height: 24px;
 }
 .sicon.concentrate {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -52px -26px;
   width: 24px;
   height: 24px;
 }
 .sicon.dance {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: 0px -52px;
   width: 24px;
   height: 24px;
 }
 .sicon.encore {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -26px -52px;
   width: 24px;
   height: 24px;
 }
 .Cool .sicon.focus, .Cool_kc .sicon.focus {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -52px -52px;
   width: 24px;
   height: 24px;
 }
 .Cute .sicon.focus, .Cute_kc .sicon.focus {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -78px 0px;
   width: 24px;
   height: 24px;
 }
 .sicon.focus_flat {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -78px -26px;
   width: 24px;
   height: 24px;
 }
 .Passion .sicon.focus, .Passion_kc .sicon.focus {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -78px -52px;
   width: 24px;
   height: 24px;
 }
 .sicon.heal {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: 0px -78px;
   width: 24px;
   height: 24px;
 }
 .sicon.hguard {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -26px -78px;
   width: 24px;
   height: 24px;
 }
 .sicon.magic {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -52px -78px;
   width: 24px;
   height: 24px;
 }
 .sicon.motif {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -78px -78px;
   width: 24px;
   height: 24px;
 }
-.sicon.overload {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.mutual {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -104px 0px;
   width: 24px;
   height: 24px;
 }
-.sicon.plock {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.overload {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -104px -26px;
   width: 24px;
   height: 24px;
 }
-.sicon.psb_flick {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.plock {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -104px -52px;
   width: 24px;
   height: 24px;
 }
-.sicon.psb_hold {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.psb_flick {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -104px -78px;
   width: 24px;
   height: 24px;
 }
-.sicon.psb_slide {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.psb_hold {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: 0px -104px;
   width: 24px;
   height: 24px;
 }
-.sicon.refrain {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.psb_slide {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -26px -104px;
   width: 24px;
   height: 24px;
 }
-.sicon.scoreup {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.refrain {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -52px -104px;
   width: 24px;
   height: 24px;
 }
-.sicon.skillboost {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.scoreup {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -78px -104px;
   width: 24px;
   height: 24px;
 }
-.sicon.sparkle {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.skillboost {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -104px -104px;
   width: 24px;
   height: 24px;
 }
-.sicon.symphony {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.sparkle {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -130px 0px;
   width: 24px;
   height: 24px;
 }
-.sicon.synergy {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.symphony {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -130px -26px;
   width: 24px;
   height: 24px;
 }
-.sicon.tuning {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.synergy {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -130px -52px;
   width: 24px;
   height: 24px;
 }
-.sicon.visual {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.tuning {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -130px -78px;
   width: 24px;
   height: 24px;
 }
-.sicon.vocal {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.visual {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: -130px -104px;
   width: 24px;
   height: 24px;
 }
-.msprites.balance_sm:before {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
+.sicon.vocal {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
   background-position: 0px -130px;
+  width: 24px;
+  height: 24px;
+}
+.msprites.balance_sm:before {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -26px -130px;
   width: 9px;
   height: 9px;
 }
 .msprites.dance_sm:before {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -11px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -37px -130px;
   width: 9px;
   height: 9px;
 }
 .msprites.visual_sm:before {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -22px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -48px -130px;
   width: 9px;
   height: 9px;
 }
 .msprites.vocal_sm:before {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -33px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -59px -130px;
   width: 9px;
   height: 9px;
 }
 .msprites.allround_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -44px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -70px -130px;
   width: 9px;
   height: 9px;
 }
 .msprites.alternate_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -55px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -81px -130px;
   width: 9px;
   height: 9px;
 }
 .msprites.cboost_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -66px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -92px -130px;
   width: 9px;
   height: 9px;
 }
 .msprites.cguard_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -77px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -103px -130px;
   width: 9px;
   height: 9px;
 }
 .msprites.concentrate_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -88px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -114px -130px;
   width: 9px;
   height: 9px;
 }
 .msprites.encore_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -99px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -125px -130px;
   width: 9px;
   height: 9px;
 }
 .msprites.focus_flat_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -110px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -136px -130px;
   width: 9px;
   height: 9px;
 }
 .msprites.focus_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -121px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -26px -141px;
   width: 9px;
   height: 9px;
 }
 .msprites.heal_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -132px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -37px -141px;
   width: 9px;
   height: 9px;
 }
 .msprites.hguard_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -143px -130px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -48px -141px;
   width: 9px;
   height: 9px;
 }
 .msprites.magic_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: 0px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -59px -141px;
+  width: 9px;
+  height: 9px;
+}
+.msprites.mutual_sm:after {
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -70px -141px;
   width: 9px;
   height: 9px;
 }
 .msprites.overload_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -11px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -81px -141px;
   width: 9px;
   height: 9px;
 }
 .msprites.plock_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -22px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -92px -141px;
   width: 9px;
   height: 9px;
 }
 .msprites.psb_flick_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -33px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -103px -141px;
   width: 9px;
   height: 9px;
 }
 .msprites.psb_hold_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -44px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -114px -141px;
   width: 9px;
   height: 9px;
 }
 .msprites.psb_slide_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -55px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -125px -141px;
   width: 9px;
   height: 9px;
 }
 .msprites.refrain_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -66px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -136px -141px;
   width: 9px;
   height: 9px;
 }
 .msprites.scoreup_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -77px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -156px 0px;
   width: 9px;
   height: 9px;
 }
 .msprites.skillboost_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -88px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -156px -11px;
   width: 9px;
   height: 9px;
 }
 .msprites.sparkle_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -99px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -156px -22px;
   width: 9px;
   height: 9px;
 }
 .msprites.symphony_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -110px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -156px -33px;
   width: 9px;
   height: 9px;
 }
 .msprites.synergy_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -121px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -156px -44px;
   width: 9px;
   height: 9px;
 }
 .msprites.tuning_sm:after {
-  background-image: url(/static/img/sprites.png?5dbe7d42);
-  background-position: -132px -141px;
+  background-image: url(/static/img/sprites.png?14b8d0e9);
+  background-position: -156px -55px;
   width: 9px;
   height: 9px;
 }
@@ -1492,232 +1504,240 @@ To change `display` (e.g. `display: inline-block;`), we suggest using a common C
 @media (-webkit-min-device-pixel-ratio: 2),
        (min-resolution: 192dpi) {
   .sicon.allround {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.alternate {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.balance {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.cboost {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.cguard {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.concentrate {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.dance {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.encore {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .Cool .sicon.focus, .Cool_kc .sicon.focus {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .Cute .sicon.focus, .Cute_kc .sicon.focus {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.focus_flat {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .Passion .sicon.focus, .Passion_kc .sicon.focus {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.heal {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.hguard {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.magic {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.motif {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
+  }
+  .sicon.mutual {
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.overload {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.plock {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.psb_flick {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.psb_hold {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.psb_slide {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.refrain {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.scoreup {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.skillboost {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.sparkle {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.symphony {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.synergy {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.tuning {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.visual {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .sicon.vocal {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.balance_sm:before {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.dance_sm:before {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.visual_sm:before {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.vocal_sm:before {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.allround_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.alternate_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.cboost_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.cguard_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.concentrate_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.encore_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.focus_flat_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.focus_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.heal_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.hguard_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.magic_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
+  }
+  .msprites.mutual_sm:after {
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.overload_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.plock_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.psb_flick_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.psb_hold_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.psb_slide_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.refrain_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.scoreup_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.skillboost_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.sparkle_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.symphony_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.synergy_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
   .msprites.tuning_sm:after {
-    background-image: url(/static/img/sprites@2x.png?5dbe7d42);
-    background-size: 154px 150px;
+    background-image: url(/static/img/sprites@2x.png?14b8d0e9);
+    background-size: 165px 154px;
   }
 }
 
