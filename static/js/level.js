@@ -157,8 +157,11 @@ function load_table(id, htc, va_id, kill) {
             tab.innerHTML = xhr.responseText;
             tab.style.display = 'table';
 
-            if (window.tlinject_activate !== undefined) {
+            if (tlinject_activate !== undefined) {
                 tlinject_activate();
+            }
+            if (sound_inliner_init !== undefined) {
+                sound_inliner_init();
             }
         }
     }
