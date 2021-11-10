@@ -230,11 +230,13 @@ class ShortlinkTable(HandlerSyncedWithMaster):
         try:
             idlist = webutil.decode_cardlist(spec)
         except ValueError:
-            self.set_status(400)
-            self.write("The card list could not be parsed")
-            return
+            return self.send_error(400, app_reason="The card list could not be parsed.")
 
-        self.rendertable(dataset.upper(), starlight.data.cards(idlist))
+        card_list = [*filter(bool, starlight.data.cards(idlist))]
+        if not card_list:
+            return self.send_error(404, app_reason="Not found.")
+
+        self.rendertable(dataset.upper(), card_list)
         self.settings["analytics"].analyze_request(self.request, self.__class__.__name__)
 
 @route(r"/skill_table")
@@ -291,7 +293,7 @@ class CompareCard(ShortlinkTable):
         chains = [starlight.data.chain(id) for id in card_ids]
         unique = []
         for c in chains:
-            if c[0] not in unique:
+            if c is not None and c[0] not in unique:
                 unique.append(c[0])
 
         acard = starlight.data.cards(unique)
