@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% if is_dev %}
+  <link rel="stylesheet/less" type="text/css" href="{{ handler.static_url("css/main.less") }}" />
+  <script type="text/javascript" src="{{ handler.static_url("js/less.js") }}"></script>
+  {% else %}
+  <link rel="stylesheet" type="text/css" href="{{ handler.static_url("css/main.css") }}" />
+  {% end %}
+  <style>.container { max-width:800px; } .box { margin:0; width:100%; }</style>
+  <title>Error</title>
+</head>
+
+<body>
+  {% include header.html %}
+
+  <div class="container" style="margin-top: 3rem">
+    <div class="box history_ev he_new_idols">
+      <div class="header">
+        <span class="item left">Error {{ code }}</span>
+        <span class="item ext"></span>
+      </div>
+      <div class="contents">
+        {{ message }}
+        {% if traceback %}
+        <pre>{{ traceback }}</pre>
+        {% end %}
+      </div>
+    </div>
+  </div>
+</body>
+</html>
