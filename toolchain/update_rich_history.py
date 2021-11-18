@@ -75,6 +75,13 @@ def get_carnival_evt_rewards(sql, event_id):
     t["event"] = t["gacha"]
     return t
 
+def get_tower_evt_rewards(sql, event_id):
+    t = {
+        "progression": [k for k, in sql.execute("SELECT DISTINCT reward_id FROM tower_total_point_reward WHERE reward_type = 6 AND event_id = ? ORDER BY need_point", (event_id,))],
+    }
+    t["event"] = t["progression"]
+    return t
+
 EVENT_REWARD_SPECIALIZATIONS = {
     0: get_atapon_evt_rewards,
     # 1: get_caravan_evt_rewards,           # Doesn't seem to exist.
@@ -83,6 +90,7 @@ EVENT_REWARD_SPECIALIZATIONS = {
     4: get_parade_evt_rewards,
     # 5: get_bus_evt_rewards,               # another really nasty one
     6: get_carnival_evt_rewards,
+    7: get_tower_evt_rewards,
 }
 
 # ----------------------------------------------------------------
