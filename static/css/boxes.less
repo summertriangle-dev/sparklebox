@@ -60,7 +60,7 @@
       line-height   : @box_header_height;
       font-size     : @box_header_font_size;
       vertical-align: bottom;
-      padding       : 0 @box_header_pad_h / 2;
+      padding       : 0 (@box_header_pad_h / 2);
     }
 
     .left {
@@ -75,10 +75,10 @@
     }
 
     .ext {
-      border-top    : @box_header_height / 2 solid transparent;
-      border-left   : @box_header_height / 4 solid transparent;
-      border-right  : @box_header_height / 4 solid transparent;
-      border-bottom : @box_header_height / 2 solid transparent;
+      border-top    : (@box_header_height / 2) solid transparent;
+      border-left   : (@box_header_height / 4) solid transparent;
+      border-right  : (@box_header_height / 4) solid transparent;
+      border-bottom : (@box_header_height / 2) solid transparent;
       vertical-align: bottom;
       padding       : 0;
     }
@@ -193,14 +193,14 @@
 
     .item {
       line-height: @name_tag_height;
-      font-size  : @name_tag_height - (@name_tag_pad * 2);
+      font-size  : (@name_tag_height - (@name_tag_pad * 2));
       padding    : 0 @name_tag_pad 0 @name_tag_pad;
     }
 
     .ext {
-      border-top   : @name_tag_height / 2 solid transparent;
-      border-left  : @name_tag_height / 4 solid transparent;
-      border-right : @name_tag_height / 4 solid transparent;
+      border-top   : (@name_tag_height / 2) solid transparent;
+      border-left  : (@name_tag_height / 4) solid transparent;
+      border-right : (@name_tag_height / 4) solid transparent;
       border-bottom: (@name_tag_height / 2) solid transparent;
     }
 
@@ -221,9 +221,9 @@
     }
 
     .ext {
-      border-top   : @name_tag_height_sm / 2 solid transparent;
-      border-left  : @name_tag_height_sm / 4 solid transparent;
-      border-right : @name_tag_height_sm / 4 solid transparent;
+      border-top   : (@name_tag_height_sm / 2) solid transparent;
+      border-left  : (@name_tag_height_sm / 4) solid transparent;
+      border-right : (@name_tag_height_sm / 4) solid transparent;
       border-bottom: (@name_tag_height_sm / 2) solid transparent;
     }
   }
@@ -327,9 +327,9 @@
 
   .ext {
     padding      : 0;
-    border-top   : @name_tag_height_sm / 2 solid transparent;
-    border-left  : @name_tag_height_sm / 4 solid transparent;
-    border-right : @name_tag_height_sm / 4 solid transparent;
+    border-top   : (@name_tag_height_sm / 2) solid transparent;
+    border-left  : (@name_tag_height_sm / 4) solid transparent;
+    border-right : (@name_tag_height_sm / 4) solid transparent;
     border-bottom: (@name_tag_height_sm / 2) solid transparent;
   }
 
