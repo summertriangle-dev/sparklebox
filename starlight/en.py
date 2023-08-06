@@ -53,21 +53,21 @@ SKILL_DESCRIPTIONS = {
     9: """that Nice notes will not break combo""",
     10: """that Bad/Nice notes will not break combo""", #provisional
     11: """that your combo will not be broken""", #provisional
-    12: """that you will not lose health""",
-    13: """that all notes will restore <span class="let">{0}</span> health""", #provisional
+    12: """that you will not lose life""",
+    13: """that all notes will restore <span class="let">{0}</span> life""", #provisional
     14: """that <span class="let">{1}</span> life will be consumed, then: Perfect/Great notes receive a <span class="let">{0}</span>% score bonus, and Nice/Bad notes will not break combo""",
     15: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, but become harder to hit""", #provisional
     16: """to activate the previous skill again""",
-    17: """that Perfect notes will restore <span class="let">{0}</span> health""",
-    18: """that Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
-    19: """that Nice/Great/Perfect notes will restore <span class="let">{0}</span> health""", #provisional
+    17: """that Perfect notes will restore <span class="let">{0}</span> life""",
+    18: """that Great/Perfect notes will restore <span class="let">{0}</span> life""", #provisional
+    19: """that Nice/Great/Perfect notes will restore <span class="let">{0}</span> life""", #provisional
     20: """to boost the effects of currently active skills""",
-    21: """that with only Cute idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
-    22: """that with only Cool idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
-    23: """that with only Passion idols on the team, Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
-    24: """that you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will restore <span class="let">{2}</span> health""",
-    25: """that you will gain an extra <a href="/sparkle_internal/{0}">combo bonus based on your current health</a>""",
-    26: """that with all three types of idols on the team, you will gain an extra <span class="let">{2}</span>% combo bonus, and Perfect notes will receive a <span class="let">{0}</span>% score bonus plus restore <span class="let">{3}</span> HP,""",
+    21: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
+    22: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
+    23: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
+    24: """that you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will restore <span class="let">{2}</span> life""",
+    25: """that you will gain an extra <a href="/sparkle_internal/{0}">combo bonus based on your current life</a>""",
+    26: """that you will gain an extra <span class="let">{2}</span>% combo bonus, and Perfect notes will receive a <span class="let">{0}</span>% score bonus plus restore <span class="let">{3}</span> life""",
     27: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
     28: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and hold notes a <span class="let">{2}</span>% score bonus""",
     29: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and flick notes a <span class="let">{2}</span>% score bonus""",
@@ -79,15 +79,27 @@ SKILL_DESCRIPTIONS = {
     35: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=vocal">score bonus determined by the team's Vocal appeal</a>""",
     36: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=dance">score bonus determined by the team's Dance appeal</a>""",
     37: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=visual">score bonus determined by the team's Visual appeal</a>""",
-    38: """that with all three types of idols on the team, to boost the score/combo bonus/health recovery of currently active skills""",
+    38: """that with all three types of idols on the team, to boost the score/combo bonus/life recovery of currently active skills""",
     39: """to reduce combo bonus by <span class="let">{0}</span>%, but also apply the highest score bonus gained so far with a boost of <span class="let">{2}</span>%""",
     40: """to apply the effect of the best score or combo bonus skill activated so far""",
-    41: """to activate all skills on the team, then apply the best available score/combo bonus (according to individual skills' conditions) to each note""",
+    41: """to activate all skills on the team, then apply the best available score/combo bonus to each note""",
     42: """to reduce score gain by <span class="let">{0}</span>%, but also apply the highest extra combo bonus gained so far with a boost of <span class="let">{2}</span>%""",
+    43: """to increase combo bonus by <span class="let">{0}</span>%, and Perfect notes will restore <span class="let">{2}</span> life""",
+    44: """that <span class="let">{1}</span> life will be consumed, then you will gain an extra <span class="let">{2}</span>% combo bonus, and Perfect notes a <span class="let">{1}</span>% score bonus, """,
 }
 
-SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 39, 42]
-SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL2 = [21, 22, 23, 26, 27, 28, 29, 30]
+SKILL_CAVEATS = {
+    21: "All idols on your team must be Cute-type.",
+    22: "All idols on your team must be Cool-type.",
+    23: "All idols on your team must be Passion-type.",
+    26: "Only when all three types of idols are on the team.",
+    41: "Bonuses are subject to the conditions of each skill.",
+    43: "Only Perfect notes will continue your combo during this time.",
+    44: "Only when playing an all-type song with all three types of idols on the team."
+}
+
+SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 39, 42, 43, 44]
+SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL2 = [21, 22, 23, 26, 27, 28, 29, 30, 44]
 
 # Whether the skill's description uses the value in a negative context
 # (e.g. ...reduces by x%...)
@@ -139,6 +151,11 @@ def describe_skill_html(skill):
         skill.chance())
     length_clause = """for <span class="var">{0}</span> seconds.""".format(
         skill.dur())
+    
+    caveat_fmt = SKILL_CAVEATS.get(skill.skill_type)
+    if caveat_fmt:
+        caveat_fmt = """<span class="caveat">({0})</span>""".format(caveat_fmt)
+        return " ".join((interval_clause, probability_clause, effect_clause, length_clause, caveat_fmt))
 
     return " ".join((interval_clause, probability_clause, effect_clause, length_clause))
 
