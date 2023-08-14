@@ -80,7 +80,7 @@ function submit_tl_string(node, text) {
                         var table = {}
                         table[text] = submitText? submitText : text;
                         set_strings_by_table(table);
-                        exitModal();
+                        exitAllModals();
                     } else {
                         var j;
                         try {
@@ -197,13 +197,60 @@ function tlinject_text_alert(text, done) {
 function tlinject_prompt(forKey, done) {
     var cancel = function(event) {
         event.preventDefault();
-        exitModal();
+        exitAllModals();
     }
 
     var submit = function(txt) {
         if (txt || txt === null) {
             done(txt);
+            return true;
         }
+
+        return false;
+    }
+
+    var confirmDeleteTranslation = function() {
+        enterModal(function(win) {
+            var title = document.createElement("p");
+            title.style.marginTop = 0;
+            title.textContent = "This will remove the translated text for everyone. Are you sure you want to do this?";
+            win.appendChild(title);
+
+            var form = document.createElement("form");
+            win.appendChild(form);
+
+            var explainText = document.createElement("p");
+            explainText.className = "modal_detail_text";
+            explainText.textContent = "If you only want to see the original Japanese text, use the \"Disable TLs\" button at the bottom-left of the page."
+            form.appendChild(explainText);
+
+            var bg = document.createElement("div");
+            bg.className = "button_group";
+            form.appendChild(bg);
+
+            var subm = document.createElement("input");
+            subm.type = "submit";
+            subm.className = "button destructive";
+            subm.value = "Remove Translation";
+
+            var canc = document.createElement("button");
+            canc.className = "button";
+            canc.textContent = "Cancel";
+            canc.addEventListener("click", cancel, false);
+
+            var spac = document.createElement("div");
+            spac.className = "spacer";
+
+            bg.appendChild(subm);
+            bg.appendChild(canc);
+            bg.appendChild(spac);
+
+            form.addEventListener("submit", function(event) {
+                event.preventDefault();
+                submit(null);
+                subm.disabled = true;
+            }, false);
+        })
     }
 
     enterModal(function(win) {
@@ -228,8 +275,20 @@ function tlinject_prompt(forKey, done) {
         field.placeholder = forKey;
         form.appendChild(field);
 
-        var explainText = document.createElement("small");
-        explainText.textContent = PROMPT_EXTRA_TEXT;
+        var explainText = document.createElement("p");
+        explainText.className = "modal_detail_text";
+        explainText.appendChild(document.createTextNode(PROMPT_EXTRA_TEXT + " "));
+
+        var destructiveLink = document.createElement("a");
+        destructiveLink.textContent = "Remove this translation for everyone";
+        destructiveLink.className = "destructive";
+        destructiveLink.href = "javascript: void(0)";
+        destructiveLink.addEventListener("click", function(e) { 
+            e.preventDefault();
+            confirmDeleteTranslation();
+        }, false);
+
+        explainText.appendChild(destructiveLink);
         form.appendChild(explainText);
 
         var bg = document.createElement("div");
@@ -246,23 +305,21 @@ function tlinject_prompt(forKey, done) {
         canc.textContent = "Cancel";
         canc.addEventListener("click", cancel, false);
 
-        var remo = document.createElement("button");
-        remo.className = "button destructive";
-        remo.textContent = "Remove Translation";
-        remo.addEventListener("click", function(e) { e.preventDefault(); submit(null) }, false);
-
         var spac = document.createElement("div");
         spac.className = "spacer";
 
         bg.appendChild(subm);
         bg.appendChild(canc);
         bg.appendChild(spac);
-        bg.appendChild(remo);
 
         form.addEventListener("submit", function(event) {
             event.preventDefault();
-            submit(field.value);
-            subm.disabled = true;
+            if (submit(field.value)) {
+                subm.disabled = true;
+            } else {
+                subm.disabled = true;
+                tlinject_text_alert("You cannot submit empty translations.", function() { subm.disabled = false; })
+            }
         }, false);
 
         requestAnimationFrame(function() {

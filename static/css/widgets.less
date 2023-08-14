@@ -58,10 +58,25 @@
   .text_field {
     margin-bottom: 8px;
   }
+
+  a.destructive {
+    color: lighten(@button_destructive_bg, 10%);
+    font-weight: 600;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .modal_container:not(:last-child) .modal_self {
   transform: scale(0.9, 0.9);
+}
+
+.modal_detail_text {
+  margin: 0;
+  font-size: 90%;
 }
 
 /*********** controls *************/
