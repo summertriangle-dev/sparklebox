@@ -86,6 +86,13 @@ SKILL_DESCRIPTIONS = {
     42: """to reduce score gain by <span class="let">{0}</span>%, but also apply the highest extra combo bonus gained so far with a boost of <span class="let">{2}</span>%""",
     43: """to increase combo bonus by <span class="let">{0}</span>%, and Perfect notes will restore <span class="let">{2}</span> life""",
     44: """that <span class="let">{1}</span> life will be consumed, then you will gain an extra <span class="let">{2}</span>% combo bonus, and Perfect notes a <span class="let">{1}</span>% score bonus, """,
+    # Dominant variants
+    45: """to boost the score bonus of Cute idols' active skills, and the combo bonus of Cool idols' active skills""",
+    46: """to boost the score bonus of Cute idols' active skills, and the combo bonus of Passion idols' active skills""",
+    47: """to boost the score bonus of Cool idols' active skills, and the combo bonus of Cute idols' active skills""",
+    48: """to boost the score bonus of Cool idols' active skills, and the combo bonus of Passion idols' active skills""",
+    49: """to boost the score bonus of Passion idols' active skills, and the combo bonus of Cute idols' active skills""",
+    50: """to boost the score bonus of Passion idols' active skills, and the combo bonus of Cool idols' active skills""",
 }
 
 SKILL_CAVEATS = {
@@ -96,6 +103,15 @@ SKILL_CAVEATS = {
     41: "Bonuses are subject to the conditions of each skill.",
     43: "Only Perfect notes will continue your combo during this time.",
     44: "Only when playing an all-type song with all three types of idols on the team."
+}
+
+SKILL_TRIGGER_DUAL_TYPE = {
+    12: ("Cute", "Cool"),
+    13: ("Cute", "Passion"),
+    21: ("Cool", "Cute"),
+    23: ("Cool", "Passion"),
+    31: ("Passion", "Cute"),
+    32: ("Passion", "Cool"),
 }
 
 SKILL_TYPES_WITH_PERCENTAGE_EFF_VAL1 = [1, 2, 3, 4, 14, 15, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 39, 42, 43, 44]
@@ -116,6 +132,13 @@ def describe_skill(skill):
 
 def describe_lead_skill(lskill):
     return REMOVE_HTML.sub("", describe_lead_skill_html(lskill))
+
+def skill_caveat_from_trigger_type(skill):
+    if skill.skill_trigger_type == 6:
+        pair = SKILL_TRIGGER_DUAL_TYPE.get(skill.skill_trigger_value, ("?", "?"))
+        return "Only when team consists of just {0} and {1} idols.".format(*pair)
+
+    return None
 
 def describe_skill_html(skill):
     if skill is None:
@@ -153,6 +176,10 @@ def describe_skill_html(skill):
         skill.dur())
     
     caveat_fmt = SKILL_CAVEATS.get(skill.skill_type)
+
+    if not caveat_fmt:
+        caveat_fmt = skill_caveat_from_trigger_type(skill)
+
     if caveat_fmt:
         caveat_fmt = """<span class="caveat">({0})</span>""".format(caveat_fmt)
         return " ".join((interval_clause, probability_clause, effect_clause, length_clause, caveat_fmt))
@@ -282,6 +309,17 @@ def describe_lead_skill_html(skill):
         target_param_2 = LEADER_SKILL_PARAM.get(skill.target_param_2, "<unknown>")
         effect_clause = """Raises {0} of all cards by <span class="let">{1}</span>%, and {2} of all cards by <span class="let">{3}</span>% (when playing a {4} song)""".format(
             target_param, skill.up_value, target_param_2, skill.up_value_2, song_attr)
+    elif skill.type == 120:
+        target_attr = LEADER_SKILL_TARGET.get(skill.target_attribute, "<unknown>")
+        target_param = LEADER_SKILL_PARAM.get(skill.target_param, "<unknown>")
+
+        target_attr_2 = LEADER_SKILL_TARGET.get(skill.target_attribute_2, "<unknown>")
+        target_param_2 = LEADER_SKILL_PARAM.get(skill.target_param_2, "<unknown>")
+
+        type_bonus_target = LEADER_SKILL_TARGET.get(skill.target_attribute + 10, "<unknown>")
+        song_attr = LEADER_SKILL_TARGET.get(skill.target_attribute_2 + 10, "<unknown>")
+        effect_clause = """Raise {2} of {3} cards by <span class="let">{4}%</span>, and {5} of {6} cards by <span class="let">{7}</span>%. {0} cards will also receive the type bonus from {1} songs""".format(
+            type_bonus_target, song_attr, target_param, target_attr, skill.up_value, target_param_2, target_attr_2, skill.up_value_2)
     else:
         return """I don't know how to describe this leader skill. This is a bug, please report it. (up_type: {0}, type: {1})""".format(
             skill.up_type, skill.type

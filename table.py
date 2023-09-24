@@ -48,10 +48,14 @@ skill_type_row_2 = filter_t("Skill Type", (
     option_t("Symph.",       "symphony"),
     option_t("Alternate",    "alternate"),
     option_t("Refrain",      "refrain"),
-    option_t("Magic",        "magic"),
+    option_t("Magic",        "magic")),
+lambda card: enums.skill_class(card.skill.skill_type) if card.skill else None)
+
+skill_type_row_3 = filter_t("Skill Type", (
     option_t("Mutual",       "mutual"),
     option_t("Overdrive",    "overdrive"),
-    option_t("T. Spike",     "spike")),
+    option_t("T. Spike",     "spike"),
+    option_t("Dominant",     "dominant")),
 lambda card: enums.skill_class(card.skill.skill_type) if card.skill else None)
 
 high_stat = filter_t("High stat", (
@@ -109,7 +113,7 @@ class CardProfile(Datum):
         )
 
 class SkillType(Datum):
-    applicable_filters = [skill_type, skill_type_row_2]
+    applicable_filters = [skill_type, skill_type_row_2, skill_type_row_3]
     uid = "S"
 
     def make_headers(self):

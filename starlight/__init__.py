@@ -349,7 +349,7 @@ class DataCache(object):
         lastlen = 0
         for page in paginate_id_list(idl):
             if lastlen != len(page):
-                query = "SELECT * FROM card_data WHERE series_id IN ({0})".format(",".join("?" * len(page)))
+                query = "SELECT * FROM card_data LEFT JOIN card_subtype ON (card_data.id = card_subtype.card_data_id) WHERE series_id IN ({0})".format(",".join("?" * len(page)))
             cur = self.hnd.execute(query, page)
 
             selected = self.prime_from_cursor("card_data_t", cur,
