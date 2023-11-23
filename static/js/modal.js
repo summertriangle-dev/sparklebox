@@ -83,3 +83,29 @@ function exitModal() {
         }
     }
 }
+
+function enterSimpleTextModal(text, done) {
+    var finish = function() {
+        if (done) {
+            done();
+        }
+        exitModal();
+    }
+
+    enterModal(function(win) {
+        var textbox = document.createElement("p");
+        textbox.style.marginTop = 0;
+        textbox.textContent = text;
+        win.appendChild(textbox);
+
+        var bg = document.createElement("div");
+        bg.className = "button_group";
+        win.appendChild(bg);
+
+        var close = document.createElement("button");
+        close.className = "button";
+        close.textContent = "Dismiss";
+        close.addEventListener("click", finish, false);
+        bg.appendChild(close);
+    }, done);
+}

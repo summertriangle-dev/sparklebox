@@ -17,6 +17,10 @@ function sound_inliner_inline(e) {
     e.preventDefault();
 }
 
+function sound_inliner_explain_no_audio(e) {
+    enterSimpleTextModal("This line has no audio because it belongs to an unvoiced idol.");
+}
+
 function sound_inliner_init() {
     var elements = document.getElementsByClassName("soundinliner-apply");
     for (var i = 0; i < elements.length; ++i) {

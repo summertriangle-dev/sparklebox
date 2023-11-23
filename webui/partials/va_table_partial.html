@@ -10,7 +10,7 @@
     {% if voice %}
     <td><a class="soundinliner-apply" href="{{ image_host }}/{{ webutil.audio(id, usage, index) }}">(listen)</a></td>
     {% else %}
-    <td>🙁</td>
+    <td onclick="sound_inliner_explain_no_audio();">🔇</td>
     {% end %}
   </tr>
   {% end %}

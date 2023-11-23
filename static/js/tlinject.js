@@ -52,7 +52,7 @@ function load_translations(trans, cb) {
 
 function submit_tl_string(node, text) {
     if (!gTLInjectEnabled) {
-        tlinject_text_alert("Please enable translations using the button in the bottom left corner before you submit.")
+        enterSimpleTextModal("Please enable translations using the button in the bottom left corner before you submit.")
         return;
     }
 
@@ -90,9 +90,9 @@ function submit_tl_string(node, text) {
                         }
 
                         if (j.error) {
-                            tlinject_text_alert('Failed to submit translation. The server said: "' + j.error + '"');
+                            enterSimpleTextModal('Failed to submit translation. The server said: "' + j.error + '"');
                         } else {
-                            tlinject_text_alert('Failed to submit translation. The server did not return an error message.');
+                            enterSimpleTextModal('Failed to submit translation. The server did not return an error message.');
                         }
                     }
                 }
@@ -166,32 +166,6 @@ function tlinject_revert() {
 function tlinject_enable() {
     localStorage.setItem(TL_ENABLE_PREF_KEY, "true")
     tlinject_activate()
-}
-
-function tlinject_text_alert(text, done) {
-    var finish = function() {
-        if (done) {
-            done();
-        }
-        exitModal();
-    }
-
-    enterModal(function(win) {
-        var textbox = document.createElement("p");
-        textbox.style.marginTop = 0;
-        textbox.textContent = text;
-        win.appendChild(textbox);
-
-        var bg = document.createElement("div");
-        bg.className = "button_group";
-        win.appendChild(bg);
-
-        var close = document.createElement("button");
-        close.className = "button";
-        close.textContent = "Dismiss";
-        close.addEventListener("click", finish, false);
-        bg.appendChild(close);
-    }, done);
 }
 
 function tlinject_prompt(forKey, done) {
@@ -318,7 +292,7 @@ function tlinject_prompt(forKey, done) {
                 subm.disabled = true;
             } else {
                 subm.disabled = true;
-                tlinject_text_alert("You cannot submit empty translations.", function() { subm.disabled = false; })
+                enterSimpleTextModal("You cannot submit empty translations.", function() { subm.disabled = false; })
             }
         }, false);
 
@@ -329,5 +303,5 @@ function tlinject_prompt(forKey, done) {
 }
 
 function tlinject_about() {
-    tlinject_text_alert("This site uses crowd-sourced translations. If a phrase highlights in grey when you hover over it, you can click to submit a translation.");
+    enterSimpleTextModal("This site uses crowd-sourced translations. If a phrase highlights in grey when you hover over it, you can click to submit a translation.");
 }
