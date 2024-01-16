@@ -53,10 +53,10 @@ SKILL_DESCRIPTIONS = {
     9: """that Nice notes will not break combo""",
     10: """that Bad/Nice notes will not break combo""", #provisional
     11: """that your combo will not be broken""", #provisional
-    12: """that you will not lose life""",
+    12: """that life will not decrease""",
     13: """that all notes will restore <span class="let">{0}</span> life""", #provisional
-    14: """that <span class="let">{1}</span> life will be consumed, then: Perfect/Great notes receive a <span class="let">{0}</span>% score bonus, and Nice/Bad notes will not break combo""",
-    15: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, but become harder to hit""", #provisional
+    14: """that <span class="let">{1}</span> life will be consumed to apply a/an <span class="let">{0}</span>% Perfect/Great score bonus, and prevent Nice/Bad notes from breaking combo""",
+    15: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus""", #provisional
     16: """to activate the previous skill again""",
     17: """that Perfect notes will restore <span class="let">{0}</span> life""",
     18: """that Great/Perfect notes will restore <span class="let">{0}</span> life""", #provisional
@@ -85,16 +85,17 @@ SKILL_DESCRIPTIONS = {
     41: """to activate all skills on the team, then apply the best available score/combo bonus to each note""",
     42: """to reduce score gain by <span class="let">{0}</span>%, but also apply the highest extra combo bonus gained so far with a boost of <span class="let">{2}</span>%""",
     43: """to increase combo bonus by <span class="let">{0}</span>%, and Perfect notes will restore <span class="let">{2}</span> life""",
-    44: """that <span class="let">{1}</span> life will be consumed, then you will gain an extra <span class="let">{2}</span>% combo bonus, and Perfect notes a <span class="let">{1}</span>% score bonus, """,
+    44: """that <span class="let">{1}</span> life will be consumed to apply an extra <span class="let">{2}</span>% combo bonus, and a <span class="let">{1}</span>% Perfect score bonus, """,
 }
 
 SKILL_CAVEATS = {
+    15: "The timing window for Perfect notes becomes smaller during this time.",
     21: "All idols on your team must be Cute-type.",
     22: "All idols on your team must be Cool-type.",
     23: "All idols on your team must be Passion-type.",
     26: "Only when all three types of idols are on the team.",
     41: "Bonuses are subject to the conditions of each skill.",
-    43: "Only Perfect notes will continue your combo during this time.",
+    43: "Great notes will break your combo during this time.",
     44: "Only when playing an all-type song with all three types of idols on the team."
 }
 
