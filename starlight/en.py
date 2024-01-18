@@ -42,60 +42,61 @@ def gap_date_range(a):
 # skill describer
 
 SKILL_DESCRIPTIONS = {
-    1: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus""",
-    2: """that Great/Perfect notes will receive a <span class="let">{0}</span>% score bonus""",
-    3: """that Nice/Great/Perfect notes will receive a <span class="let">{0}</span>% score bonus""", #provisional
-    4: """that you will gain an extra <span class="let">{0}</span>% combo bonus""",
+    1: """to increase Perfect note scores by <span class="let">{0}</span>%""",
+    2: """to increase Perfect/Great note scores by <span class="let">{0}</span>%""",
+    3: """to increase Perfect/Great/Nice note scores by <span class="let">{0}</span>%""", #provisional
+    4: """to increase the combo bonus by <span class="let">{0}</span>%""",
     5: """that Great notes will become Perfect notes""",
-    6: """that Nice/Great notes will become Perfect notes""",
-    7: """that Bad/Nice/Great notes will become Perfect notes""",
+    6: """that Great/Nice notes will become Perfect notes""",
+    7: """that Great/Nice/Bad notes will become Perfect notes""",
     8: """that all notes will become Perfect notes""", #provisional
     9: """that Nice notes will not break combo""",
-    10: """that Bad/Nice notes will not break combo""", #provisional
+    10: """that Nice/Bad notes will not break combo""", #provisional
     11: """that your combo will not be broken""", #provisional
     12: """that life will not decrease""",
     13: """that all notes will restore <span class="let">{0}</span> life""", #provisional
-    14: """that <span class="let">{1}</span> life will be consumed to apply a/an <span class="let">{0}</span>% Perfect/Great score bonus, and prevent Nice/Bad notes from breaking combo""",
-    15: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus""", #provisional
+    14: """that <span class="let">{1}</span> life will be consumed to increase Perfect/Great note scores by <span class="let">{0}</span>%, and prevent Nice/Bad notes from breaking the combo""",
+    15: """to increase Perfect note scores by <span class="let">{0}</span>%""", #provisional
     16: """to activate the previous skill again""",
     17: """that Perfect notes will restore <span class="let">{0}</span> life""",
-    18: """that Great/Perfect notes will restore <span class="let">{0}</span> life""", #provisional
-    19: """that Nice/Great/Perfect notes will restore <span class="let">{0}</span> life""", #provisional
+    18: """that Perfect/Great notes will restore <span class="let">{0}</span> life""", #provisional
+    19: """that Perfect/Great/Nice notes will restore <span class="let">{0}</span> life""", #provisional
     20: """to boost the effects of currently active skills""",
-    21: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
-    22: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
-    23: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
-    24: """that you will gain an extra <span class="let">{0}</span>% combo bonus, and Perfect notes will restore <span class="let">{2}</span> life""",
-    25: """that you will gain an extra <a href="/sparkle_internal/{0}">combo bonus based on your current life</a>""",
-    26: """that you will gain an extra <span class="let">{2}</span>% combo bonus, and Perfect notes will receive a <span class="let">{0}</span>% score bonus plus restore <span class="let">{3}</span> life""",
-    27: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and you will gain an extra <span class="let">{2}</span>% combo bonus""",
-    28: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and hold notes a <span class="let">{2}</span>% score bonus""",
-    29: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and flick notes a <span class="let">{2}</span>% score bonus""",
-    30: """that Perfect notes will receive a <span class="let">{0}</span>% score bonus, and slide notes a <span class="let">{2}</span>% score bonus""",
-    31: """that you will gain an extra <span class="let">{0}</span>% combo bonus, and Nice/Great notes will become Perfect notes""",
+    21: """to increase Perfect note scores by <span class="let">{0}</span>%, and the combo bonus by <span class="let">{2}</span>%""",
+    22: """to increase Perfect note scores by <span class="let">{0}</span>%, and the combo bonus by <span class="let">{2}</span>%""",
+    23: """to increase Perfect note scores by <span class="let">{0}</span>%, and the combo bonus by <span class="let">{2}</span>%""",
+    24: """to increase the combo bonus by <span class="let">{0}</span>%, and Perfect notes will restore <span class="let">{2}</span> life""",
+    25: """that you will gain a <a href="/sparkle_internal/{0}">combo bonus based on your current life</a>""",
+    26: """to increase the combo bonus by <span class="let">{2}</span>%, and Perfect notes will receive a <span class="let">{0}</span>% score bonus plus restore <span class="let">{3}</span> life""",
+    27: """to increase Perfect note scores by <span class="let">{0}</span>%, and the combo bonus by<span class="let">{2}</span>%""",
+    28: """to increase Perfect note scores by <span class="let">{0}</span>%, and hold notes will receive a <span class="let">{2}</span>% score bonus""",
+    29: """to increase Perfect note scores by <span class="let">{0}</span>%, and flick notes will receive a <span class="let">{2}</span>% score bonus""",
+    30: """to increase Perfect note scores by <span class="let">{0}</span>%, and slide notes will receive a <span class="let">{2}</span>% score bonus""",
+    31: """to increase the combo bonus by <span class="let">{0}</span>%, and Great/Nice notes will become Perfect notes""",
     32: """to boost the score/combo bonus of Cute idols' active skills""",
     33: """to boost the score/combo bonus of Cool idols' active skills""",
     34: """to boost the score/combo bonus of Passion idols' active skills""",
     35: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=vocal">score bonus determined by the team's Vocal appeal</a>""",
     36: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=dance">score bonus determined by the team's Dance appeal</a>""",
     37: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=visual">score bonus determined by the team's Visual appeal</a>""",
-    38: """that with all three types of idols on the team, to boost the score/combo bonus/life recovery of currently active skills""",
-    39: """to reduce combo bonus by <span class="let">{0}</span>%, but also apply the highest score bonus gained so far with a boost of <span class="let">{2}</span>%""",
+    38: """to boost the score/combo bonus/life recovery effects of currently active skills""",
+    39: """to reduce combo bonus by <span class="let">{0}</span>%, but also apply the highest score bonus gained so far with a <span class="let">{2}</span>%  boost""",
     40: """to apply the effect of the best score or combo bonus skill activated so far""",
     41: """to activate all skills on the team, then apply the best available score/combo bonus to each note""",
-    42: """to reduce score gain by <span class="let">{0}</span>%, but also apply the highest extra combo bonus gained so far with a boost of <span class="let">{2}</span>%""",
-    43: """to increase combo bonus by <span class="let">{0}</span>%, and Perfect notes will restore <span class="let">{2}</span> life""",
-    44: """that <span class="let">{1}</span> life will be consumed to apply an extra <span class="let">{2}</span>% combo bonus, and a <span class="let">{1}</span>% Perfect score bonus, """,
+    42: """to reduce score gain by <span class="let">{0}</span>%, but also apply the highest extra combo bonus gained so far with a <span class="let">{2}</span>%  boost""",
+    43: """to increase the combo bonus by <span class="let">{0}</span>%, and Perfect notes will restore <span class="let">{2}</span> life""",
+    44: """that <span class="let">{1}</span> life will be consumed to increase the combo bonus by <span class="let">{2}</span>%, and Perfect note scores by <span class="let">{1}</span>%""",
 }
 
 SKILL_CAVEATS = {
-    15: "The timing window for Perfect notes becomes smaller during this time.",
-    21: "All idols on your team must be Cute-type.",
-    22: "All idols on your team must be Cool-type.",
-    23: "All idols on your team must be Passion-type.",
+    15: "The timing window for Perfect notes will be smaller during this time.",
+    21: "All idols on your team must be Cute types.",
+    22: "All idols on your team must be Cool types.",
+    23: "All idols on your team must be Passion types.",
     26: "Only when all three types of idols are on the team.",
+    38: "Only when all three types of idols are on the team.",
     41: "Bonuses are subject to the conditions of each skill.",
-    43: "Great notes will break your combo during this time.",
+    43: "Your combo will only continue on Perfect notes during this time.",
     44: "Only when playing an all-type song with all three types of idols on the team."
 }
 
@@ -146,9 +147,9 @@ def describe_skill_html(skill):
 
     effect_clause = SKILL_DESCRIPTIONS.get(
         skill.skill_type, "").format(effect_val, skill.skill_trigger_value, value_2, value_3)
-    interval_clause = """Every <span class="let">{0}</span> seconds:""".format(
+    interval_clause = """For every <span class="let">{0}</span> seconds,""".format(
         fire_interval)
-    probability_clause = """there is a <span class="var">{0}</span>% chance""".format(
+    probability_clause = """there's a <span class="var">{0}</span>% chance""".format(
         skill.chance())
     length_clause = """for <span class="var">{0}</span> seconds.""".format(
         skill.dur())
@@ -264,7 +265,7 @@ def describe_lead_skill_html(skill):
     elif skill.type == 70:
         target_param = LEADER_SKILL_PARAM.get(skill.param_limit, "<unknown>")
 
-        effect_clause = """Allows active skill effects to stack, but only {0} of the team applies during the live""".format(
+        effect_clause = """Allows active skill effects to stack, but all appeal values expect {0} are reduced by 100% during the live""".format(
                 target_param)
     elif skill.type == 80:
         effect_clause = """Raises the XP, money, and friend points that you (and your guest's producer) receive by <span class="let">{0}</span>% when you finish a live""".format(
