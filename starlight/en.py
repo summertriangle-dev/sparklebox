@@ -80,10 +80,10 @@ SKILL_DESCRIPTIONS = {
     36: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=dance">score bonus determined by the team's Dance appeal</a>""",
     37: """that Perfect notes will receive a <a href="/motif_internal/{0}?appeal=visual">score bonus determined by the team's Visual appeal</a>""",
     38: """to boost the score/combo bonus/life recovery effects of currently active skills""",
-    39: """to reduce combo bonus by <span class="let">{0}</span>%, but also apply the highest score bonus gained so far with a <span class="let">{2}</span>%  boost""",
+    39: """to reduce combo bonus by <span class="let">{0}</span>%, but also apply the highest score bonus gained so far with a <span class="let">{2}</span>% boost""",
     40: """to apply the effect of the best score or combo bonus skill activated so far""",
     41: """to activate all skills on the team, then apply the best available score/combo bonus to each note""",
-    42: """to reduce score gain by <span class="let">{0}</span>%, but also apply the highest extra combo bonus gained so far with a <span class="let">{2}</span>%  boost""",
+    42: """to reduce score gain by <span class="let">{0}</span>%, but also apply the highest extra combo bonus gained so far with a <span class="let">{2}</span>% boost""",
     43: """to increase the combo bonus by <span class="let">{0}</span>%, and Perfect notes will restore <span class="let">{2}</span> life""",
     44: """that <span class="let">{1}</span> life will be consumed to increase the combo bonus by <span class="let">{2}</span>%, and Perfect note scores by <span class="let">{1}</span>%""",
     # Dominant variants
@@ -170,9 +170,9 @@ def describe_skill_html(skill):
 
     effect_clause = SKILL_DESCRIPTIONS.get(
         skill.skill_type, "").format(effect_val, skill.skill_trigger_value, value_2, value_3)
-    interval_clause = """For every <span class="let">{0}</span> seconds,""".format(
+    interval_clause = """Every <span class="let">{0}</span> seconds,""".format(
         fire_interval)
-    probability_clause = """there's a <span class="var">{0}</span>% chance""".format(
+    probability_clause = """there is a <span class="var">{0}</span>% chance""".format(
         skill.chance())
     length_clause = """for <span class="var">{0}</span> seconds.""".format(
         skill.dur())
@@ -292,7 +292,7 @@ def describe_lead_skill_html(skill):
     elif skill.type == 70:
         target_param = LEADER_SKILL_PARAM.get(skill.param_limit, "<unknown>")
 
-        effect_clause = """Allows active skill effects to stack, but all appeal values expect {0} are reduced by 100% during the live""".format(
+        effect_clause = """Allows active skill effects to stack, but all appeal values except {0} are reduced by 100% during the live""".format(
                 target_param)
     elif skill.type == 80:
         effect_clause = """Raises the XP, money, and friend points that you (and your guest's producer) receive by <span class="let">{0}</span>% when you finish a live""".format(
