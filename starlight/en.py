@@ -93,6 +93,7 @@ SKILL_DESCRIPTIONS = {
     48: """to boost the score bonus of Cool idols' active skills, and the combo bonus of Passion idols' active skills""",
     49: """to boost the score bonus of Passion idols' active skills, and the combo bonus of Cute idols' active skills""",
     50: """to boost the score bonus of Passion idols' active skills, and the combo bonus of Cool idols' active skills""",
+    51: """At the start of a live, sets life to <span class="let">200</span>% of its maximum and reduces all incoming damage by <span class="let">50</span>%."""
 }
 
 SKILL_CAVEATS = {
@@ -104,7 +105,14 @@ SKILL_CAVEATS = {
     38: "Only when all three types of idols are on the team.",
     41: "Bonuses are subject to the conditions of each skill.",
     43: "Your combo will only continue on Perfect notes during this time.",
-    44: "Only when playing an all-type song with all three types of idols on the team."
+    44: "Only when playing an all-type song with all three types of idols on the team.",
+    45: "Only when playing a Cool-type song with only Cute and Cool-type idols on the team.",
+    46: "Only when playing a Passion-type song with only Cute and Passion-type idols on the team.",
+    47: "Only when playing a Cute-type song with only Cool and Cute-type idols on the team.",
+    48: "Only when playing a Passion-type song with only Cool and Passion-type idols on the team.",
+    49: "Only when playing a Cute-type song with only Passion and Cute-type idols on the team.",
+    50: "Only when playing a Cool-type song with only Passion and Cool-type idols on the team.",
+    51: "Cannot be re-activated by the effect of Encore or Cinderella Magic."
 }
 
 SKILL_TRIGGER_DUAL_TYPE = {
@@ -126,6 +134,8 @@ SKILL_TYPES_WITH_NEGATIVE_EFF_VAL2 = []
 
 SKILL_TYPES_WITH_THOUSANDTHS_EFF_VAL1 = [20]
 SKILL_TYPES_WITH_THOUSANDTHS_EFF_VAL2 = [39, 42]
+
+SKILL_TYPES_WITH_GLOBAL_EFFECT = [51]
 
 REMOVE_HTML = re.compile(r"</?(span|a)[^>]*>")
 
@@ -170,6 +180,16 @@ def describe_skill_html(skill):
 
     effect_clause = SKILL_DESCRIPTIONS.get(
         skill.skill_type, "").format(effect_val, skill.skill_trigger_value, value_2, value_3)
+    
+    caveat_fmt = SKILL_CAVEATS.get(skill.skill_type)
+    if caveat_fmt:
+        caveat_clause = """<span class="caveat">({0})</span>""".format(caveat_fmt)
+    else:
+        caveat_clause = ""
+
+    if skill.skill_type in SKILL_TYPES_WITH_GLOBAL_EFFECT:
+        return " ".join((effect_clause, caveat_clause))
+
     interval_clause = """Every <span class="let">{0}</span> seconds,""".format(
         fire_interval)
     probability_clause = """there is a <span class="var">{0}</span>% chance""".format(
@@ -177,16 +197,7 @@ def describe_skill_html(skill):
     length_clause = """for <span class="var">{0}</span> seconds.""".format(
         skill.dur())
     
-    caveat_fmt = SKILL_CAVEATS.get(skill.skill_type)
-
-    if not caveat_fmt:
-        caveat_fmt = skill_caveat_from_trigger_type(skill)
-
-    if caveat_fmt:
-        caveat_fmt = """<span class="caveat">({0})</span>""".format(caveat_fmt)
-        return " ".join((interval_clause, probability_clause, effect_clause, length_clause, caveat_fmt))
-
-    return " ".join((interval_clause, probability_clause, effect_clause, length_clause))
+    return " ".join((interval_clause, probability_clause, effect_clause, length_clause, caveat_clause))
 
 
 LEADER_SKILL_TARGET = {

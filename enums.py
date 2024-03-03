@@ -95,6 +95,8 @@ skill_type = enum([
     48, "Dominant Harmony",
     49, "Dominant Harmony",
     50, "Dominant Harmony",
+
+    51, "Cinderella Present",
 ])
 
 skill_probability = enum([
@@ -229,6 +231,8 @@ skill_class = enum([
     48, "dominant",
     49, "dominant",
     50, "dominant",
+
+    51, "present",
 ])
 
 stat_dot = enum([
