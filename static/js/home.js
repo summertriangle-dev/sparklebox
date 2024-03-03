@@ -51,6 +51,7 @@ function suggest(that, text) {
         return
     }
 
+    text = text.toLowerCase()
     var found = fuzzyfinder(text, Object.keys(window.name_completion_list))
     document.getElementById("suggestions").innerHTML = ""
 
