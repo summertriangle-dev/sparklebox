@@ -146,6 +146,9 @@ class Character(HandlerSyncedWithMaster, ErrorUtilsMixin):
         for k in ga_av:
             availability[k].extend(ga_av[k])
 
+        # This is so the initial (N or R) card appears first.
+        acard.sort(key=lambda x: (0 if x[0].rarity < 5 else 1, x[0].id))
+
         if achar:
             self.set_header("Content-Type", "text/html")
             self.render("chara.html",
