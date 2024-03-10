@@ -1,7 +1,5 @@
-import csvloader
-import functools
-import os
 import re
+from html import escape
 
 NO_STRING_FMT = "<Voice ID {0}:{1}:{2} has no transcript, but you can still submit a translation for it.>"
 
@@ -152,9 +150,16 @@ def skill_caveat_from_trigger_type(skill):
 
     return None
 
+def skill_fallback_html(skill):
+    return """{0} <span class="caveat">(Translated effects are not yet available for this skill.)</span>""".format(escape(skill.explain))
+
 def describe_skill_html(skill):
     if skill is None:
         return "No effect"
+
+    effect_fmt = SKILL_DESCRIPTIONS.get(skill.skill_type)
+    if effect_fmt is None:
+        return skill_fallback_html(skill)
 
     fire_interval = skill.condition
     effect_val = skill.value
@@ -178,8 +183,7 @@ def describe_skill_html(skill):
 
     value_3 = skill.value_3
 
-    effect_clause = SKILL_DESCRIPTIONS.get(
-        skill.skill_type, "").format(effect_val, skill.skill_trigger_value, value_2, value_3)
+    effect_clause = effect_fmt.format(effect_val, skill.skill_trigger_value, value_2, value_3)
     
     caveat_fmt = SKILL_CAVEATS.get(skill.skill_type)
     if caveat_fmt:
@@ -224,6 +228,9 @@ LEADER_SKILL_PARAM = {
     13: "own Dance appeal"
 }
 
+def lead_skill_fallback_html(skill):
+    return """{0} <span class="caveat">(Translated effects are not yet available for this skill.)</span>""".format(escape(skill.explain))
+ 
 def build_lead_skill_predicate(skill):
     need_list = []
     need_sum = 0
@@ -334,9 +341,7 @@ def describe_lead_skill_html(skill):
         effect_clause = """Raise {2} of {3} cards by <span class="let">{4}%</span>, and {5} of {6} cards by <span class="let">{7}</span>%. {0} cards will also receive the type bonus from {1} songs""".format(
             type_bonus_target, song_attr, target_param, target_attr, skill.up_value, target_param_2, target_attr_2, skill.up_value_2)
     else:
-        return """I don't know how to describe this leader skill. This is a bug, please report it. (up_type: {0}, type: {1})""".format(
-            skill.up_type, skill.type
-        )
+        return lead_skill_fallback_html(skill)
 
     predicate_clause = build_lead_skill_predicate(skill)
     if predicate_clause:
