@@ -82,6 +82,14 @@ def get_tower_evt_rewards(sql, event_id):
     t["event"] = t["progression"]
     return t
 
+def get_produce_evt_rewards(sql, event_id):
+    t = {
+        "progression": [k for k, in sql.execute("SELECT DISTINCT reward_id FROM meetup_event_point_reward WHERE reward_type = 6 AND event_id = ? ORDER BY need_point", (event_id,))],
+        "ranking": [k for k, in sql.execute("SELECT DISTINCT reward_id FROM meetup_event_point_rank_reward WHERE reward_type = 6 AND event_id = ? ORDER BY rank_max DESC", (event_id,))],
+    }
+    t["event"] = merge(t)
+    return t
+
 EVENT_REWARD_SPECIALIZATIONS = {
     0: get_atapon_evt_rewards,
     # 1: get_caravan_evt_rewards,           # Doesn't seem to exist.
@@ -91,6 +99,7 @@ EVENT_REWARD_SPECIALIZATIONS = {
     # 5: get_bus_evt_rewards,               # another really nasty one
     6: get_carnival_evt_rewards,
     7: get_tower_evt_rewards,
+    8: get_produce_evt_rewards,
 }
 
 # ----------------------------------------------------------------
